@@ -17,8 +17,8 @@ return new class extends Migration
             $table->decimal('price', 10, 2)->nullable();
             $table->integer('power')->nullable();
             $table->foreignId('psu_type_id')->constrained();
-            $table->foreignId('modularity_id')->constrained()->nullable();
-            $table->foreignId('efficiency_id')->constrained()->nullable();
+            $table->foreignId('modularity_id')->nullable()->constrained();
+            $table->foreignId('efficiency_id')->nullable()->constrained();
         });
     }
 

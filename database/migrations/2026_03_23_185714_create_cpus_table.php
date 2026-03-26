@@ -20,7 +20,7 @@ return new class extends Migration
             $table->decimal('frequency', 5, 2)->nullable();
             $table->decimal('max_frequency', 5, 2)->nullable();
             $table->foreignId('socket_id')->constrained();
-            $table->foreignId('igpu_id')->constrained()->nullable();
+            $table->foreignId('igpu_id')->nullable()->constrained();
         });
     }
 
