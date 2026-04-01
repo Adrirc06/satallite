@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
             // Ejecutamos el SQL sin preparar para permitir múltiples sentencias
             DB::unprepared($sql);
 
-            $this->command->info("Componetes cargados correctamente.");
+            $this->command->info('Componetes cargados correctamente.');
         } else {
             $this->command->error("No se encontró el archivo {$path}.");
         }

@@ -207,6 +207,7 @@ INSERT INTO cpus(name, price, cores, frequency, max_frequency, tdp, igpu_id, soc
 ("AMD Ryzen 5 9600X", 186.9, 6, 3.9, 5.4, 65, 1, 1),
 ("AMD Ryzen 5 5500", 84, 6, 3.6, 4.2, 65, null, 2),
 ("AMD Ryzen 9 9950X3D", 697.49, 16, 4.3, 5.7, 170, 1, 1),
+("AMD Ryzen 9 9950X3D2 Dual Edition", 697.49, 16, 4.3, 5.6, 200, 1, 1),
 ("AMD Ryzen 5 7600X", 183, 6, 4.7, 5.3, 105, 1, 1),
 ("AMD Ryzen 7 7700X", 259.45, 8, 4.5, 5.4, 105, 1, 1),
 ("AMD Ryzen 5 5600", 163.99, 6, 3.5, 4.4, 65, null, 2),
