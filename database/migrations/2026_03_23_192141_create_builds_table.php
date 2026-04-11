@@ -23,6 +23,7 @@ return new class extends Migration
             $table->foreignId('psu_id')->constrained();
             $table->foreignId('drive_id')->constrained();
             $table->foreignId('chassis_id')->constrained();
+            $table->timestamp('created_at')->useCurrent();
         });
     }
 

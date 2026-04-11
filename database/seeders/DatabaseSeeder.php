@@ -26,5 +26,9 @@ class DatabaseSeeder extends Seeder
         } else {
             $this->command->error("No se encontró el archivo {$path}.");
         }
+
+        $this->call(UsersTableSeeder::class);
+        $this->call(ArticlesTableSeeder::class);
+        $this->call(BuildsTableSeeder::class);
     }
 }

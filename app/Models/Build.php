@@ -11,12 +11,16 @@ class Build extends Model
 {
     use HasFactory;
 
+    const TABLE = 'builds';
+
+    protected $table = self::TABLE;
+
     public $timestamps = false;
 
     protected $fillable = [
         'name',
         'is_public',
-        'app_user_id',
+        'user_id',
         'motherboard_id',
         'cpu_id',
         'gpu_id',
@@ -30,7 +34,7 @@ class Build extends Model
     {
         return [
             'is_public' => 'boolean',
-            'app_user_id' => 'integer',
+            'user_id' => 'integer',
             'motherboard_id' => 'integer',
             'cpu_id' => 'integer',
             'gpu_id' => 'integer',
@@ -43,7 +47,7 @@ class Build extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'app_user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function motherboard(): BelongsTo

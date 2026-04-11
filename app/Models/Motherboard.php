@@ -10,6 +10,10 @@ class Motherboard extends Model
 {
     use HasFactory;
 
+    const TABLE = 'motherboards';
+
+    protected $table = self::TABLE;
+
     public $timestamps = false;
 
     protected $fillable = [

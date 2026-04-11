@@ -10,6 +10,10 @@ class Drive extends Model
 {
     use HasFactory;
 
+    const TABLE = 'drives';
+
+    protected $table = self::TABLE;
+
     public $timestamps = false;
 
     protected $fillable = [

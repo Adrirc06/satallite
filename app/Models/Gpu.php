@@ -10,6 +10,10 @@ class Gpu extends Model
 {
     use HasFactory;
 
+    const TABLE = 'gpus';
+
+    protected $table = self::TABLE;
+
     public $timestamps = false;
 
     protected $fillable = [

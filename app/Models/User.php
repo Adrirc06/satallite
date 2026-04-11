@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\ModelHelpers;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -10,9 +11,11 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, ModelHelpers, Notifiable;
 
-    protected $table = 'app_users';
+    const TABLE = 'users';
+
+    protected $table = self::TABLE;
 
     public $timestamps = false;
 
@@ -39,11 +42,11 @@ class User extends Authenticatable
 
     public function builds(): HasMany
     {
-        return $this->hasMany(Build::class, 'user_id');
+        return $this->hasMany(Build::class);
     }
 
     public function ratings(): HasMany
     {
-        return $this->hasMany(Rating::class, 'user_id');
+        return $this->hasMany(Rating::class);
     }
 }

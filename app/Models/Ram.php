@@ -10,6 +10,10 @@ class Ram extends Model
 {
     use HasFactory;
 
+    const TABLE = 'rams';
+
+    protected $table = self::TABLE;
+
     public $timestamps = false;
 
     protected $fillable = [

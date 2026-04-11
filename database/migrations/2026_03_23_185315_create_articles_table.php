@@ -16,9 +16,10 @@ return new class extends Migration
             $table->string('title', 255);
             $table->string('subtitle', 255);
             $table->text('content');
-            $table->string('profile_url');
+            $table->string('banner_url');
             $table->date('date')->default(now());
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->timestamp('created_at')->useCurrent();
         });
     }
 

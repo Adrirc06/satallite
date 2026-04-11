@@ -10,7 +10,9 @@ class Chassis extends Model
 {
     use HasFactory;
 
-    protected $table = 'chassis';
+    const TABLE = 'chassis';
+
+    protected $table = self::TABLE;
 
     public $timestamps = false;
 

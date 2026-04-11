@@ -10,6 +10,10 @@ class Psu extends Model
 {
     use HasFactory;
 
+    const TABLE = 'psus';
+
+    protected $table = self::TABLE;
+
     public $timestamps = false;
 
     protected $fillable = [

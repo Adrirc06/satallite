@@ -1,0 +1,30 @@
+- User:
+    GetUserById -> Entidad User
+    
+- Article:
+    GetArticleById -> Entidad Article
+    GetLatestArticles -> Array de Article (La cantidad y el offset se pasa por parámetros)
+
+- Build:
+    GetBuildById -> Entidad Build
+    GetBuildsByUserId -> Array de Build
+    GetLatestBuilds -> Array de Build
+
+- Rating:
+    GetRatingsByBuildId -> Array de Rating
+
+- Components (Cpu, Drive, Gpu, Motherboard, Psu, Ram, Chassis)
+    GetComponentById -> Entidad de cada componente
+    GetComponentByName -> Array de componentes
+
+
+REVISAR
+
+articles -> Call to undefined relationship [user] on model [App\Models\Article].
+builds -> No devuelve el user
+drives/id -> array vacío
+gpus/id -> array vacío
+chassis/id -> array vacío
+motherboards/id -> array vacío
+psus/id -> array vacío
+rams/id -> array vacío

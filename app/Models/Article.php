@@ -2,13 +2,18 @@
 
 namespace App\Models;
 
+use App\Traits\HasAuthor;
+use App\Traits\ModelHelpers;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Article extends Model
 {
-    use HasFactory;
+    use HasAuthor, HasFactory, ModelHelpers;
+
+    const TABLE = 'articles';
+
+    protected $table = self::TABLE;
 
     public $timestamps = false;
 
@@ -16,7 +21,7 @@ class Article extends Model
         'title',
         'subtitle',
         'content',
-        'profile_url',
+        'banner_url',
         'date',
         'user_id',
     ];
@@ -26,10 +31,5 @@ class Article extends Model
         return [
             'date' => 'date',
         ];
-    }
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
     }
 }

@@ -10,6 +10,10 @@ class Cpu extends Model
 {
     use HasFactory;
 
+    const TABLE = 'cpus';
+
+    protected $table = self::TABLE;
+
     public $timestamps = false;
 
     protected $fillable = [

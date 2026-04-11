@@ -10,6 +10,10 @@ class Rating extends Model
 {
     use HasFactory;
 
+    const TABLE = 'ratings';
+
+    protected $table = self::TABLE;
+
     public $timestamps = false;
 
     protected $fillable = [

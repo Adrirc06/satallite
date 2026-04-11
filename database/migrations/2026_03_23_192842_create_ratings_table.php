@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('rating')->between(0, 100);
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('build_id')->constrained()->onDelete('cascade');
+            $table->timestamp('created_at')->useCurrent();
         });
     }
 
