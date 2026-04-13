@@ -1,3 +1,5 @@
+@import "bootstrap/dist/css/bootstrap.min.css";
+@import "bootstrap-icons/font/bootstrap-icons.css";
 @import 'tailwindcss';
 
 @config "../../tailwind.config.js";
@@ -6,8 +8,240 @@
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
 @source '../**/*.js';
+@source '../**/*.vue';
 
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --text-white: #f9f9f9;
+  --indigo: #615fff;
+  --indigo-hover: #7375f3;
+  --light-indigo: #9496fd;
+  --light-purple: #a073f3;
+  --border-gray: #c7c7c7;
+  --hero-shadow: #090031;
+  --background-light: #f0f0f0;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: "Chiron GoRound TC", sans-serif;
+  scrollbar-color: var(--light-indigo) #2c2c2c;
+}
+
+[data-bs-theme="dark"] body {
+  color: var(--background-light );
+}
+
+::selection {
+  background-color: var(--indigo);
+  color: var(--text-white);
+}
+
+.quantico-regular {
+  font-family: "Quantico", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.quantico-bold {
+  font-family: "Quantico", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.quantico-regular-italic {
+  font-family: "Quantico", sans-serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.quantico-bold-italic {
+  font-family: "Quantico", sans-serif;
+  font-weight: 700;
+  font-style: italic;
+}
+
+
+.chiron-goround {
+  font-family: "Chiron GoRound TC", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  color: white;
+}
+
+nav.navbar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1030;
+  transition: transform 0.3s ease;
+}
+
+nav.navbar.navbar-hidden {
+  transform: translateY(-100%);
+}
+
+.navbar-logo {
+  max-width: 33vw;
+  max-height: 5em;
+  object-fit: contain;
+}
+
+.white {
+  color: var(--text-white);
+}
+
+.navbar-hover {
+  border-bottom: var(--indigo) 2px solid;
+}
+
+.navbar-hover:hover {
+  color: var(--text-white);
+  border-bottom: var(--text-white) 2px solid;
+}
+
+.navbar-hover:focus {
+  color: var(--text-white);
+  border-bottom: var(--text-white) 2px solid;
+}
+
+.dropdown-option-top {
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.dropdown-option-bottom {
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.dropdown-option:hover {
+  background-color: var(--indigo);
+}
+
+.custom-news-button {
+  background-color: var(--indigo);
+  border: var(--indigo) 1px solid;
+  border-radius: 10px;
+  border-bottom-left-radius: 20px;
+}
+
+.custom-news-button:hover {
+  background-color: var(--indigo-hover);
+  border: var(--indigo-hover) 1px solid;
+}
+
+.article-thumbnail-banner {
+  width: 100%;
+  height: 10em;
+  object-fit: cover; 
+}
+
+.hero-section {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 50vh;
+}
+
+.hero-filter {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(160, 115, 243, 0.4);
+  z-index: 2;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+}
+
+.hero-logo {
+  height: 10vh;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.7));
+}
+
+.hero-content {
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.75);
+}
+
+.carousel-infinite {
+  display: flex;
+  width: max-content;
+  height: 100%;
+}
+
+.group {
+  display: flex;
+  flex-shrink: 0;
+  will-change: transform;
+  animation: scrolling 120s linear infinite;
+}
+
+.left-btn {
+  border-radius: 10px 0 0 10px;
+}
+
+.right-btn {
+  border-radius: 0 10px 10px 0;
+}
+
+.infinite-carousel-card {
+  flex-shrink: 0;
+  height: 100%;
+}
+
+.infinite-carousel-image {
+  height: 100%;
+  width: auto;
+  display: block;
+  object-fit: cover;
+}
+
+.rounded-bottom-right-none {
+  border-bottom-right-radius: 0 !important;
+}
+
+.translucent-bg {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.build-thumbnail {
+  width: 15vw;
+  height: auto;
+  min-width: 300px;
+}
+
+.keyboard-safe-area {
+    padding-bottom: calc(env(safe-area-inset-bottom) + var(--keyboard-inset-height, 0px));
+}
+
+@keyframes scrolling {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
 }

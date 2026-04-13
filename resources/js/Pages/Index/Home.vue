@@ -1,13 +1,12 @@
 <template>
-    <p class="tw:text-red-500 tw:bg-indigo-500 tw:hover:text-black">Index</p>
-    <Link href="/">Index</Link>
-    <Link href="/articles">Articles</Link>
-    <Link href="/builder">Builder</Link>
-    <Link href="/login">Login</Link>
-    <Link href="/signup">Signup</Link>
-    <Link href="/profile">Profile</Link>
+    <Header/>
+    <InfiniteCarousel/>
+    <div class="tw:h-400">Prueba Scroll en Home</div>
+    <Footer/>
 </template>
 
 <script setup>
-import { Link } from '@inertiajs/vue3';
+import Header from '@/Layouts/Header.vue';
+import InfiniteCarousel from '@/Layouts/InfiniteCarousel.vue';
+import Footer from '@/Layouts/Footer.vue';
 </script>

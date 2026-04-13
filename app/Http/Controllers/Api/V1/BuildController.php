@@ -41,7 +41,6 @@ class BuildController extends Controller
      */
     public function store(StoreBuildRequest $request): BuildResource
     {
-        // La validación ya ocurrió en el StoreBuildRequest
         $build = request()->user()->builds()->create($request->validated());
 
         // Cargamos las relaciones para la respuesta
