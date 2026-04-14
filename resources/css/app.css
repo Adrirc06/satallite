@@ -201,10 +201,12 @@ nav.navbar.navbar-hidden {
 
 .left-btn {
   border-radius: 10px 0 0 10px;
+  transition: color 0.25s ease-in-out;
 }
 
 .right-btn {
   border-radius: 0 10px 10px 0;
+  transition: color 0.25s ease-in-out;
 }
 
 .infinite-carousel-card {

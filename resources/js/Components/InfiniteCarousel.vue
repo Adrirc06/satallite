@@ -91,11 +91,11 @@
 
                     <div class="btn-group tw:box-shadow-lg">
                         <button type="button"
-                            class="tw:border tw:border-gray-400 tw:text-gray-400 tw:hover:border-indigo-500 tw:hover:bg-indigo-500 tw:hover:text-white fs-4 tw:text-shadow-lg tw:p-2.5 left-btn">
+                            class="tw:border tw:border-gray-400 tw:text-gray-400 tw:hover:border-indigo-500 tw:hover:bg-indigo-500 tw:hover:text-white fs-4 tw:text-shadow-lg py-1 px-3 left-btn">
                             Noticias
                         </button>
                         <button type="button"
-                            class="tw:border tw:border-gray-400 tw:text-gray-400 tw:hover:border-indigo-500 tw:hover:bg-indigo-500 tw:hover:text-white fs-4 tw:text-shadow-lg tw:p-2.5 right-btn">
+                            class="tw:border tw:border-gray-400 tw:text-gray-400 tw:hover:border-indigo-500 tw:hover:bg-indigo-500 tw:hover:text-white fs-4 tw:text-shadow-lg py-1 px-3 right-btn">
                             Configurador de PCs
                         </button>
                     </div>
@@ -104,6 +104,3 @@
         </div>
     </section>
 </template>
-<script setup>
-import { Link } from '@inertiajs/vue3';
-</script>
