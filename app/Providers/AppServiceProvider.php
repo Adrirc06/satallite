@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Auth\Notifications\ResetPassword;
+use Cloudinary\Configuration\Configuration;
 use Illuminate\Support\ServiceProvider;
+use Cloudinary\Cloudinary;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -12,7 +14,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(Cloudinary::class, function ($app) {
+            return new Cloudinary(Configuration::instance(env('CLOUDINARY_URL')));
+        });
     }
 
     /**

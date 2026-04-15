@@ -14,13 +14,15 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button"
-                        class="btn tw:border tw:border-gray-500 tw:text-gray-500 tw:bg-transparent tw:hover:border-red-600 tw:hover:bg-red-600 tw:hover:text-white"
+                        class="custom-btn tw:border tw:border-gray-500 tw:text-gray-500 tw:bg-transparent tw:hover:border-red-600 tw:hover:bg-red-600 tw:hover:text-white"
                         data-bs-dismiss="modal">
                         Cerrar
                     </button>
                     <a type="button"
-                        class="btn tw:border tw:border-gray-500 tw:text-gray-500 tw:bg-transparent tw:hover:border-indigo-500 tw:hover:bg-indigo-500 tw:hover:text-white"
-                        href="https://github.com/" target="_blank">Aceptar</a>
+                        class="custom-btn tw:border tw:border-gray-500 tw:!text-gray-500 tw:bg-transparent tw:hover:border-indigo-500 tw:hover:bg-indigo-500 tw:hover:!text-white"
+                        href="https://github.com/" target="_blank">
+                        Aceptar
+                    </a>
                 </div>
             </div>
         </div>
@@ -39,10 +41,13 @@
                     seguro de que quieres continuar?
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn tw:border tw:border-gray-500 tw:text-gray-500 tw:bg-transparent tw:hover:border-red-600 tw:hover:bg-red-600 tw:hover:text-white" data-bs-dismiss="modal">
+                    <button type="button" class="custom-btn tw:border tw:border-gray-500 tw:text-gray-500 tw:bg-transparent tw:hover:border-red-600 tw:hover:bg-red-600 tw:hover:text-white" data-bs-dismiss="modal">
                         Cerrar
                     </button>
-                    <a type="button" class="btn tw:border tw:border-gray-500 tw:text-gray-500 tw:bg-transparent tw:hover:border-indigo-500 tw:hover:bg-indigo-500 tw:hover:text-white" href="https://instagram.com/" target="_blank">Aceptar</a>
+                    <a type="button" 
+                        class="custom-btn tw:border tw:border-gray-500 tw:!text-gray-500 tw:bg-transparent tw:hover:border-indigo-500 tw:hover:bg-indigo-500 tw:hover:!text-white" href="https://instagram.com/" target="_blank">
+                        Aceptar
+                    </a>
                 </div>
             </div>
         </div>
@@ -56,8 +61,6 @@
         <div class="d-flex justify-content-around w-50 mx-auto pt-2">
             <i class="tw:text-white bi bi-github h5 tw:cursor-pointer" data-bs-toggle="modal" data-bs-title="Nuestro GitHub"
                 data-bs-target="#modalGithub"></i>
-            <i class="tw:text-white bi bi-file-earmark-text h5 tw:cursor-pointer" data-bs-toggle="tooltip"
-                data-bs-title="Changelog no disponible"></i>
             <i class="tw:text-white bi bi-instagram h5 tw:cursor-pointer" data-bs-toggle="modal" data-bs-title="Nuestro Instagram"
                 data-bs-target="#modalInstagram"></i>
         </div>
