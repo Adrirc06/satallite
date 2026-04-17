@@ -201,10 +201,27 @@ nav.navbar.navbar-hidden {
 
 .left-btn {
   border-radius: 10px 0 0 10px;
+  transition: color 0.25s ease-in-out;
 }
 
 .right-btn {
   border-radius: 0 10px 10px 0;
+  transition: color 0.25s ease-in-out;
+}
+
+.custom-btn {
+  display: inline-block;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  border-radius: 0.375rem;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
 .infinite-carousel-card {
@@ -235,6 +252,32 @@ nav.navbar.navbar-hidden {
 
 .keyboard-safe-area {
     padding-bottom: calc(env(safe-area-inset-bottom) + var(--keyboard-inset-height, 0px));
+}
+
+.top-article {
+  padding: 0;
+  margin: 0;
+  object-fit: cover;
+  height: 15em;
+  width: 100%;
+  object-fit: cover;
+}
+
+.article-title {
+  font-size: 3.5em;
+}
+
+.article-subtitle {
+  font-size: 2em;
+}
+
+.article-content {
+  font-size: 1.25em;
+  text-align: justify;
+}
+
+.hidden {
+  display: none;
 }
 
 @keyframes scrolling {

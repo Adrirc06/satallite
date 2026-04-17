@@ -1,12 +1,20 @@
 <template>
     <Header/>
     <InfiniteCarousel/>
-    <div class="tw:h-400">Prueba Scroll en Home</div>
+    <ArticlesSection :articles="articles" />
     <Footer/>
 </template>
 
 <script setup>
 import Header from '@/Layouts/Header.vue';
-import InfiniteCarousel from '@/Layouts/InfiniteCarousel.vue';
+import InfiniteCarousel from '@/Components/InfiniteCarousel.vue';
 import Footer from '@/Layouts/Footer.vue';
+import ArticlesSection from '@/Sections/ArticlesSection.vue';
+
+defineProps({
+    articles: {
+        type: Array,
+        default: () => []
+    }
+});
 </script>

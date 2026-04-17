@@ -90,14 +90,14 @@
                     </p>
 
                     <div class="btn-group tw:box-shadow-lg">
-                        <button type="button"
-                            class="tw:border tw:border-gray-400 tw:text-gray-400 tw:hover:border-indigo-500 tw:hover:bg-indigo-500 tw:hover:text-white fs-4 tw:text-shadow-lg tw:p-2.5 left-btn">
+                        <Link type="button" href="/articles"
+                            class="tw:border tw:border-gray-400 tw:!text-gray-400 tw:bg-indigo-900/35 tw:hover:border-indigo-500 tw:hover:bg-indigo-500 tw:hover:!text-white fs-4 tw:text-shadow-lg py-1 px-3 left-btn text-decoration-none">
                             Noticias
-                        </button>
-                        <button type="button"
-                            class="tw:border tw:border-gray-400 tw:text-gray-400 tw:hover:border-indigo-500 tw:hover:bg-indigo-500 tw:hover:text-white fs-4 tw:text-shadow-lg tw:p-2.5 right-btn">
+                        </Link>
+                        <Link type="button" href="/builder"
+                            class="tw:border tw:border-gray-400 tw:!text-gray-400 tw:bg-indigo-900/35 tw:hover:border-indigo-500 tw:hover:bg-indigo-500 tw:hover:!text-white fs-4 tw:text-shadow-lg py-1 px-3 right-btn text-decoration-none">
                             Configurador de PCs
-                        </button>
+                        </Link>
                     </div>
                 </div>
             </div>
