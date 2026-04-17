@@ -18,10 +18,10 @@
       <p class="quantico-regular h2 text-center  pb-2">
           {{ message || 'El contenido al que intentas acceder no ha sido encontrado.' }}
         </p>
-        <Link
+        <a
         href="/"
         class="py-1 px-5 tw:bg-indigo-500 rounded-3 text-white text-decoration-none h5 rounded-bottom-right-none"
-        >Volver a Inicio</Link
+        >Volver a Inicio</a
         >
     </div>
     <footer
