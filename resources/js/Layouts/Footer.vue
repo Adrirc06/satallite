@@ -59,9 +59,9 @@
             </p>
         </div>
         <div class="d-flex justify-content-around w-50 mx-auto pt-2">
-            <i class="tw:text-white bi bi-github h5 tw:cursor-pointer" data-bs-toggle="modal" data-bs-title="Nuestro GitHub"
+            <i class="white bi bi-github h5 tw:cursor-pointer" data-bs-toggle="modal" data-bs-title="Nuestro GitHub"
                 data-bs-target="#modalGithub"></i>
-            <i class="tw:text-white bi bi-instagram h5 tw:cursor-pointer" data-bs-toggle="modal" data-bs-title="Nuestro Instagram"
+            <i class="white bi bi-instagram h5 tw:cursor-pointer" data-bs-toggle="modal" data-bs-title="Nuestro Instagram"
                 data-bs-target="#modalInstagram"></i>
         </div>
     </footer>

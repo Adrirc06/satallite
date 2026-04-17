@@ -4,15 +4,18 @@
             Últimas noticias
         </p>
         <div class="container d-flex flex-wrap justify-content-center gap-3 row mx-auto">
-            <ArticleCard/>
-            <ArticleCard/>
-            <ArticleCard/>
-            <ArticleCard/>
-            <ArticleCard/>
-            <ArticleCard/>
+            <ArticleCard v-for="article in articles" :key="article.id" :article="article" />
         </div>
     </section>
 </template>
 <script setup>
 import ArticleCard from '@/Components/ArticleCard.vue';
+
+defineProps({
+    articles: {
+        type: Array,
+        required: true,
+        default: () => []
+    }
+});
 </script>

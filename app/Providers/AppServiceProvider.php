@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Auth\Notifications\ResetPassword;
-use Cloudinary\Configuration\Configuration;
-use Illuminate\Support\ServiceProvider;
 use Cloudinary\Cloudinary;
+use Cloudinary\Configuration\Configuration;
+use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {

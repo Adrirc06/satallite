@@ -2,11 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\ArticlesProvider;
+
 class IndexController extends Controller
 {
-    public function home()
+    public function home(ArticlesProvider $articlesProvider)
     {
-        return inertia('Index/Home');
+        $articles = $articlesProvider->getLatestArticles();
+
+        return inertia('Index/Home', [
+            'articles' => $articles,
+        ]);
     }
 
     public function articles()
@@ -32,5 +38,18 @@ class IndexController extends Controller
     public function profile()
     {
         return inertia('Index/Profile');
+    }
+
+    public function article($id, ArticlesProvider $articlesProvider)
+    {
+        $article = $articlesProvider->getArticle((int) $id);
+
+        if (! $article) {
+            abort(404);
+        }
+
+        return inertia('Screens/ArticleScreen', [
+            'article' => $article,
+        ]);
     }
 }
