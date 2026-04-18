@@ -32,8 +32,12 @@ class ArticleController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'subtitle' => 'required|string|max:255',
             'content' => 'required|string',
+            'banner_url' => 'required|url',
         ]);
+
+        $validated['date'] = now();
 
         $article = $request->user()->articles()->create($validated);
 

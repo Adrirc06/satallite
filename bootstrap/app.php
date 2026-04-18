@@ -44,8 +44,11 @@ return Application::configure(basePath: dirname(__DIR__))
             }
 
             if ($response->getStatusCode() === 419) {
+                if (app()->runningUnitTests()) {
+                    throw $exception;
+                }
                 return back()->with([
-                    'message' => 'La página expiró, por favor intenta de nuevo.',
+                    'message' => 'La página expiró, por favor intenta de nuevo. (' . get_class($exception) . ': ' . $exception->getMessage() . ')',
                 ]);
             }
 
