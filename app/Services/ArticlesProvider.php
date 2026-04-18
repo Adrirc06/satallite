@@ -21,6 +21,7 @@ class ArticlesProvider
                         'id' => $article['id'] ?? null,
                         'title' => $article['title'] ?? null,
                         'banner_url' => $article['banner_url'] ?? null,
+                        'date' => $article['date'] ?? null,
                     ];
                 }, $articles);
             }
@@ -29,6 +30,36 @@ class ArticlesProvider
         }
 
         return [];
+    }
+
+    public function getPaginatedArticles(?int $page = 1, int $limit = 6): array
+    {
+        try {
+            $request = Request::create('/api/v1/articles', 'GET', ['page' => $page, 'limit' => $limit]);
+            $response = app()->handle($request);
+
+            if ($response->isSuccessful()) {
+                $data = json_decode($response->getContent(), true);
+
+                // Map the data items like in getLatestArticles but keep the meta/links intact
+                if (isset($data['data'])) {
+                    $data['data'] = array_map(function ($article) {
+                        return [
+                            'id' => $article['id'] ?? null,
+                            'title' => $article['title'] ?? null,
+                            'banner_url' => $article['banner_url'] ?? null,
+                            'date' => $article['date'] ?? null,
+                        ];
+                    }, $data['data']);
+                }
+
+                return $data; // Now returns [ 'data' => [...], 'links' => [...], 'meta' => [...] ]
+            }
+        } catch (\Exception $e) {
+            \Log::error('Error fetching paginated articles: '.$e->getMessage());
+        }
+
+        return ['data' => [], 'meta' => []];
     }
 
     public function getArticle(int $id): ?array

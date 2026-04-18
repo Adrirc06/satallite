@@ -13,13 +13,10 @@ class ArticleController extends Controller
     public function index(Request $request): AnonymousResourceCollection
     {
         $limit = $request->query('limit', 15);
-        $offset = $request->query('offset', 0);
 
         $articles = Article::with('authorRelation')
             ->latest()
-            ->offset($offset)
-            ->limit($limit)
-            ->get();
+            ->paginate($limit);
 
         return ArticleResource::collection($articles);
     }

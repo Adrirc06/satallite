@@ -15,9 +15,14 @@ class IndexController extends Controller
         ]);
     }
 
-    public function articles()
+    public function articles(ArticlesProvider $articlesProvider)
     {
-        return inertia('Index/Articles');
+        $page = request('page', 1);
+        $articles = $articlesProvider->getPaginatedArticles($page, 4);
+
+        return inertia('Index/Articles', [
+            'articles' => $articles,
+        ]);
     }
 
     public function builder()
