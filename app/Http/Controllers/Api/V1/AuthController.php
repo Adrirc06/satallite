@@ -11,6 +11,17 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
+    public function checkUser(Request $request)
+    {
+        $usernameExists = User::where('name', $request->username)->exists();
+        $emailExists = User::where('email', $request->email)->exists();
+
+        return response()->json([
+            'usernameExists' => $usernameExists,
+            'emailExists' => $emailExists,
+        ]);
+    }
+
     public function register(Request $request)
     {
         $validated = $request->validate([
@@ -56,6 +67,6 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json(['message' => 'Sesión cerrada correctamente']);
+        return response()->json(['message' => 'SesiÃ³n cerrada correctamente']);
     }
 }

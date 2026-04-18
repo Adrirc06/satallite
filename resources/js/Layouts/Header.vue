@@ -18,7 +18,10 @@
                     <li class="nav-item">
                         <Link class="nav-link white navbar-hover tw:bg-indigo-500 tw:hover:bg-indigo-500" href="/builder">Configurador de PCs</Link>
                     </li>
-                    <li class="nav-item dropdown tw:bg-indigo-500">
+                    <li v-if="$page.props.auth.user" class="nav-item">
+                        <Link class="nav-link white navbar-hover tw:bg-indigo-500 tw:hover:bg-indigo-500" href="/profile">{{ $page.props.auth.user.name }}</Link>
+                    </li>
+                    <li v-else class="nav-item dropdown tw:bg-indigo-500">
                         <Link class="nav-link dropdown-toggle white navbar-hover tw:bg-indigo-500 tw:hover:bg-indigo-500" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Usuario</Link>
                         <ul class="dropdown-menu tw:bg-indigo-500 p-0">
                             <li class="tw:bg-indigo-500 dropdown-option-top">
@@ -72,6 +75,7 @@ onMounted(() => {
     const navbar = document.querySelector("nav.navbar");
     if (navbar) {
         document.body.style.paddingTop = navbar.offsetHeight + "px";
+        document.documentElement.style.setProperty('--navbar-height', navbar.offsetHeight + 'px');
     }
 
     let lastScroll = window.scrollY;
