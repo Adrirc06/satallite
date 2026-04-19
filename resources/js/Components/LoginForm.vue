@@ -19,16 +19,26 @@
                 </div>
                 <div class="mb-3 w-100 text-start">
                     <label for="password" class="form-label">Contraseña</label>
-                    <input 
-                        type="password" 
-                        class="form-control pb-2 w-100 keyboard-safe-area border-2" 
-                        :class="[formErrors.password ? 'tw:!border-red-500' : 'tw:!border-gray-500']"
-                        id="password" 
-                        autocomplete="current-password"
-                        v-model="form.password"
-                        @focus="clearError('password')"
-                        @click="clearError('password')"
-                    >
+                    <div class="position-relative">
+                        <input 
+                            :type="showPassword ? 'text' : 'password'" 
+                            class="form-control pb-2 w-100 keyboard-safe-area border-2" 
+                            :class="[formErrors.password ? 'tw:!border-red-500' : 'tw:!border-gray-500']"
+                            id="password" 
+                            autocomplete="current-password"
+                            v-model="form.password"
+                            @focus="clearError('password'); passwordFocused = true"
+                            @blur="passwordFocused = false"
+                            @click="clearError('password')"
+                        >
+                        <i 
+                            v-show="passwordFocused || form.password.length > 0"
+                            :class="['bi', showPassword ? 'bi-eye-slash-fill' : 'bi-eye-fill', 'position-absolute tw:cursor-pointer tw:text-gray-500 tw:hover:text-gray-700']" 
+                            style="right: 15px; top: 50%; transform: translateY(-50%); font-size: 1.2rem;"
+                            @mousedown.prevent
+                            @click="showPassword = !showPassword"
+                        ></i>
+                    </div>
                     <div v-if="formErrors.password" class="tw:text-red-500 small mt-1">{{ formErrors.password }}</div>
                 </div>
                 <div class="mb-3 w-100 text-start d-flex align-items-center">
@@ -48,6 +58,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { Link, useForm } from '@inertiajs/vue3';
+
+const showPassword = ref(false);
+const passwordFocused = ref(false);
 
 const form = useForm({
     email: '',

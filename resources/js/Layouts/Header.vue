@@ -8,7 +8,7 @@
                 <span class="navbar-toggler-icon tw:text-white"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-end h5" id="navbar">
-                <ul class="navbar-nav">
+                <ul class="navbar-nav align-items-lg-center">
                     <li class="nav-item">
                         <Link class="nav-link white navbar-hover tw:bg-indigo-500 tw:hover:bg-indigo-500" aria-current="page" href="/">Inicio</Link>
                     </li>
@@ -18,11 +18,14 @@
                     <li class="nav-item">
                         <Link class="nav-link white navbar-hover tw:bg-indigo-500 tw:hover:bg-indigo-500" href="/builder">Configurador de PCs</Link>
                     </li>
-                    <li v-if="$page.props.auth.user" class="nav-item">
-                        <Link class="nav-link white navbar-hover tw:bg-indigo-500 tw:hover:bg-indigo-500" href="/profile">{{ $page.props.auth.user.name }}</Link>
+                    <li v-if="$page.props.auth.user" class="nav-item d-flex align-items-center">
+                        <Link class="nav-link white navbar-hover tw:bg-indigo-500 tw:hover:bg-indigo-500 d-flex align-items-center gap-2 py-lg-1 w-100" href="/profile">
+                            <span class="m-0">{{ $page.props.auth.user.name.length > 15 ? $page.props.auth.user.name.substring(0, 12) + '...' : $page.props.auth.user.name }}</span>
+                            <img :src="$page.props.auth.user.profile_url" alt="Foto de perfil" class="rounded-circle" style="width: 31px; height: 31px; object-fit: cover;">
+                        </Link>
                     </li>
                     <li v-else class="nav-item dropdown tw:bg-indigo-500">
-                        <Link class="nav-link dropdown-toggle white navbar-hover tw:bg-indigo-500 tw:hover:bg-indigo-500" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Usuario</Link>
+                        <a class="nav-link dropdown-toggle white navbar-hover tw:bg-indigo-500 tw:hover:bg-indigo-500" href="#" role="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">Usuario</a>
                         <ul class="dropdown-menu tw:bg-indigo-500 p-0">
                             <li class="tw:bg-indigo-500 dropdown-option-top">
                                 <Link class="dropdown-item white dropdown-option tw:bg-indigo-500 py-2 tw:border-0 tw:rounded-t-2xl" href="/login">Iniciar Sesión</Link>

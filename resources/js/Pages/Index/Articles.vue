@@ -21,7 +21,6 @@
         >
             <nav v-if="articles.meta && articles.meta.last_page > 1" class="mt-4 d-flex justify-content-center">
                 <div class="d-inline-flex tw:border-2 border-2 tw:border-gray-400 tw:dark:border-gray-500 rounded-4 rounded-bottom-right-none overflow-hidden custom-pagination">
-                    <!-- Botón Primera Página -->
                     <button
                         @click="getResults(1)"
                         :disabled="articles.meta.current_page === 1"
@@ -30,7 +29,6 @@
                         <i class="bi bi-chevron-double-left page-icon"></i>
                     </button>
                     
-                    <!-- Botón Anterior -->
                     <button
                         v-on="prevButtonEvents"
                         :disabled="articles.meta.current_page === 1"
@@ -39,7 +37,6 @@
                         <i class="bi bi-chevron-left page-icon"></i>
                     </button>
 
-                    <!-- Números de Página -->
                     <button
                         v-for="page in computed.pageRange"
                         :key="page"
@@ -49,7 +46,6 @@
                         <span class="fw-bold fs-5" :class="page === articles.meta.current_page ? 'page-icon-active' : 'page-icon'">{{ page }}</span>
                     </button>
 
-                    <!-- Botón Siguiente -->
                     <button
                         v-on="nextButtonEvents"
                         :disabled="articles.meta.current_page === articles.meta.last_page"
@@ -58,7 +54,6 @@
                         <i class="bi bi-chevron-right page-icon"></i>
                     </button>
 
-                    <!-- Botón Última Página -->
                     <button
                         @click="getResults(articles.meta.last_page)"
                         :disabled="articles.meta.current_page === articles.meta.last_page"
@@ -99,16 +94,15 @@ const getResults = (page = 1) => {
 
 <style>
 .page-icon {
-    color: #9ca3af !important; /* tw-gray-400 */
+    color: #9ca3af !important;
 }
 .page-icon-active {
-    color: #6366f1 !important; /* tw-indigo-500 */
+    color: #6366f1 !important;
 }
 
-/* Compatibilidad con Dark Mode, ya sea por media query nativa o por atributo de Bootstrap */
 @media (prefers-color-scheme: dark) {
     .page-icon {
-        color: #6b7280 !important; /* tw-gray-500 */
+        color: #6b7280 !important;
     }
 }
 [data-bs-theme="dark"] .page-icon {

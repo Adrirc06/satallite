@@ -57,4 +57,17 @@ class IndexController extends Controller
             'article' => $article,
         ]);
     }
+
+    public function createArticle(\Illuminate\Http\Request $request)
+    {
+        if (! $request->user()) {
+            return redirect()->route('login');
+        }
+
+        if (! $request->user()->is_admin) {
+            abort(403, 'No tienes permisos para realizar esta acción.');
+        }
+
+        return inertia('Index/CreateArticle');
+    }
 }

@@ -92,5 +92,75 @@ it('validates empty inputs properly when creating article', function () {
 
     // Unprocessable Entity validation error
     $response->assertUnprocessable()
-        ->assertJsonValidationErrors(['title', 'content', 'subtitle', 'banner_url']);
+        ->assertJsonValidationErrors(['title', 'content', 'subtitle']);
+});
+it('redirects guests to login when accessing create article page', function () {
+    $this->get('/articles/create')
+        ->assertRedirect('/login');
+});
+
+it('denies non-admins from viewing create article page', function () {
+    $user = User::factory()->create(['is_admin' => false]);
+    
+    $this->actingAs($user)
+        ->get('/articles/create')
+        ->assertForbidden();
+});
+
+it('allows admins to view create article page', function () {
+    $admin = User::factory()->create(['is_admin' => true]);
+    
+    $this->actingAs($admin)
+        ->get('/articles/create')
+        ->assertSuccessful()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Index/CreateArticle')
+        );
+});
+
+it('allows admins to delete articles', function () {
+    $admin = User::factory()->create(['is_admin' => true]);
+    $article = Article::factory()->create();
+
+    $response = $this->actingAs($admin)->deleteJson('/api/v1/articles/' . $article->id);
+
+    $response->assertSuccessful()
+        ->assertJsonPath('message', 'Artículo eliminado correctamente');
+
+    $this->assertDatabaseMissing('articles', [
+        'id' => $article->id,
+    ]);
+});
+
+it('denies non-admins from deleting articles', function () {
+    $user = User::factory()->create(['is_admin' => false]);
+    $article = Article::factory()->create();
+
+    $response = $this->actingAs($user)->deleteJson('/api/v1/articles/' . $article->id);
+
+    $response->assertForbidden();
+
+    $this->assertDatabaseHas('articles', [
+        'id' => $article->id,
+    ]);
+});
+
+it('denies unauthenticated users from deleting articles', function () {
+    $article = Article::factory()->create();
+
+    $response = $this->deleteJson('/api/v1/articles/' . $article->id);
+
+    $response->assertUnauthorized();
+
+    $this->assertDatabaseHas('articles', [
+        'id' => $article->id,
+    ]);
+});
+
+it('returns 404 when deleting a non-existing article', function () {
+    $admin = User::factory()->create(['is_admin' => true]);
+
+    $response = $this->actingAs($admin)->deleteJson('/api/v1/articles/99999');
+
+    $response->assertNotFound();
 });

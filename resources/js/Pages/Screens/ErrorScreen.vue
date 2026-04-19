@@ -37,7 +37,6 @@
   </div>
 </template>
 <script setup>
-import { Link } from '@inertiajs/vue3';
 import { onMounted, onUnmounted } from 'vue';
 
 const props = defineProps({
@@ -46,20 +45,22 @@ const props = defineProps({
 });
 
 let originalPaddingTop = '';
+let originalNavbarHeight = '';
 
 onMounted(() => {
     originalPaddingTop = document.body.style.getPropertyValue('padding-top');
     document.body.style.setProperty('padding-top', '0px', 'important');
+    
+    originalNavbarHeight = document.documentElement.style.getPropertyValue('--navbar-height');
+    document.documentElement.style.setProperty('--navbar-height', '0px', 'important');
 
     const html = document.documentElement;
     let theme = localStorage.getItem("theme");
 
-    // Si no está en localStorage, intentamos leerlo del HTML actual (en caso de navegación SPA pura)
     if (!theme) {
         theme = html.getAttribute("data-bs-theme") || document.body.getAttribute("data-bs-theme");
     }
 
-    // Si sigue sin haber tema, usamos la preferencia del sistema operativo o claro por defecto
     if (!theme) {
         theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
@@ -83,6 +84,12 @@ onUnmounted(() => {
         document.body.style.setProperty('padding-top', originalPaddingTop);
     } else {
         document.body.style.removeProperty('padding-top');
+    }
+    
+    if (originalNavbarHeight) {
+        document.documentElement.style.setProperty('--navbar-height', originalNavbarHeight);
+    } else {
+        document.documentElement.style.removeProperty('--navbar-height');
     }
 });
 </script>

@@ -91,11 +91,11 @@
 
                     <div class="btn-group tw:box-shadow-lg">
                         <Link type="button" href="/articles"
-                            class="tw:border tw:border-gray-400 tw:!text-gray-400 tw:bg-indigo-900/35 tw:hover:border-indigo-500 tw:hover:bg-indigo-500 tw:hover:!text-white fs-4 tw:text-shadow-lg py-1 px-3 left-btn text-decoration-none">
+                            class="tw:border tw:border-gray-400 tw:!text-gray-400 tw:bg-indigo-900/35 tw:hover:border-indigo-500 tw:hover:bg-indigo-500 tw:hover:!text-white fs-4 tw:text-shadow-lg py-1 px-3 left-btn text-decoration-none align-content-center">
                             Noticias
                         </Link>
                         <Link type="button" href="/builder"
-                            class="tw:border tw:border-gray-400 tw:!text-gray-400 tw:bg-indigo-900/35 tw:hover:border-indigo-500 tw:hover:bg-indigo-500 tw:hover:!text-white fs-4 tw:text-shadow-lg py-1 px-3 right-btn text-decoration-none">
+                            class="tw:border tw:border-gray-400 tw:!text-gray-400 tw:bg-indigo-900/35 tw:hover:border-indigo-500 tw:hover:bg-indigo-500 tw:hover:!text-white fs-4 tw:text-shadow-lg py-1 px-3 right-btn text-decoration-none align-content-center">
                             Configurador de PCs
                         </Link>
                     </div>

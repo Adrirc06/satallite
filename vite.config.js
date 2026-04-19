@@ -30,6 +30,8 @@ export default defineConfig({
         tailwindcss(),
     ],
     server: {
+        host: '0.0.0.0', // Escucha en todas las interfaces de red
+        cors: true,      // Permite peticiones de distintos orígenes
         watch: {
             ignored: ['**/storage/framework/views/**'],
         },

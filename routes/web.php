@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [IndexController::class, 'home']);
 Route::get('/articles', [IndexController::class, 'articles']);
+Route::get('/articles/create', [IndexController::class, 'createArticle']);
 Route::get('/builder', [IndexController::class, 'builder']);
 Route::get('/login', [IndexController::class, 'login'])->name('login');
 Route::post('/login', [LoginController::class, 'authenticate']);

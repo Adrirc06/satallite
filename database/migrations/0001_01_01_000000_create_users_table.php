@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('profile_url')->nullable();
+            $table->string('profile_url')->default('/img/default.jpg');
             $table->string('public_profile_url')->nullable();
             $table->boolean('is_admin')->default(false);
             $table->rememberToken();

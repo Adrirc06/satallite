@@ -34,7 +34,7 @@ class ArticleController extends Controller
             'title' => 'required|string|max:255',
             'subtitle' => 'required|string|max:255',
             'content' => 'required|string',
-            'banner_url' => 'required|url',
+            'banner_url' => 'nullable|string',
         ]);
 
         $validated['date'] = now();
@@ -42,5 +42,17 @@ class ArticleController extends Controller
         $article = $request->user()->articles()->create($validated);
 
         return new ArticleResource($article);
+    }
+
+    public function destroy(Request $request, $id)
+    {
+        if (! $request->user()->is_admin) {
+            abort(403, 'No tienes permisos para realizar esta acción.');
+        }
+
+        $article = Article::findOrFail($id);
+        $article->delete();
+
+        return response()->json(['message' => 'Artículo eliminado correctamente']);
     }
 }
