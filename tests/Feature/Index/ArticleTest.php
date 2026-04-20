@@ -73,6 +73,70 @@ it('allows authenticated users to create articles', function () {
     ]);
 });
 
+it('uploads and stores a banner image when creating an article', function () {
+    $user = User::factory()->create();
+    $image = \Illuminate\Http\UploadedFile::fake()->create('banner.jpg', 1024, 'image/jpeg');
+
+    $payload = [
+        'title' => 'Article with real banner Upload',
+        'subtitle' => 'Testing file uploads.',
+    
+        'content' => 'Content here',
+        'banner' => $image,
+    ];
+
+    $response = $this->actingAs($user)->postJson('/api/v1/articles', $payload);
+
+    $response->assertCreated();
+
+    $this->assertDatabaseHas('articles', [
+        'title' => 'Article with real banner Upload',
+    ]);
+    
+    $bannerUrl = $response->json('data.banner_url');
+    expect($bannerUrl)->toStartWith('/delete/banner_');
+    
+    // Clean up
+    $fileName = basename($bannerUrl);
+    if (file_exists(public_path('delete/'.$fileName))) {
+        unlink(public_path('delete/'.$fileName));
+    }
+});
+
+it('validates banner image size when creating an article (exceeds 5MB)', function () {
+    $user = User::factory()->create();
+    $image = \Illuminate\Http\UploadedFile::fake()->create('massive.jpg', 6000, 'image/jpeg'); // 6MB
+
+    $payload = [
+        'title' => 'Article with huge banner',
+        'subtitle' => 'Testing file uploads.',
+        'content' => 'Content here',
+        'banner' => $image,
+    ];
+
+    $response = $this->actingAs($user)->postJson('/api/v1/articles', $payload);
+
+    $response->assertUnprocessable()
+        ->assertJsonValidationErrors(['banner']);
+});
+
+it('validates banner image type when creating an article', function () {
+    $user = User::factory()->create();
+    $file = \Illuminate\Http\UploadedFile::fake()->create('document.pdf', 1024, 'application/pdf');
+
+    $payload = [
+        'title' => 'Article with PDF banner',
+        'subtitle' => 'Testing file uploads.',
+        'content' => 'Content here',
+        'banner' => $file,
+    ];
+
+    $response = $this->actingAs($user)->postJson('/api/v1/articles', $payload);
+
+    $response->assertUnprocessable()
+        ->assertJsonValidationErrors(['banner']);
+});
+
 it('denies unauthenticated users from creating articles', function () {
     $payload = [
         'title' => 'A New PC Build Guide',

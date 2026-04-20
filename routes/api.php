@@ -53,7 +53,7 @@ Route::prefix('v1')->group(function () {
 
         Route::post('/articles', [ArticleController::class, 'store']);
         Route::delete('/articles/{id}', [ArticleController::class, 'destroy']);
-        
+
         Route::post('/builds', [BuildController::class, 'store']);
         Route::post('/builds/{build}/ratings', [RatingController::class, 'store']);
     });

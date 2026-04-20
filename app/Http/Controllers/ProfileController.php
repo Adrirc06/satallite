@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\DeleteImageFromCloudinary;
+use App\Actions\UploadImageToCloudinary;
+use App\Http\Requests\UpdateProfileImageRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -71,5 +74,45 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+    public function updateImage(UpdateProfileImageRequest $request, UploadImageToCloudinary $uploader, DeleteImageFromCloudinary $deleter)
+    {
+        $user = $request->user();
+
+        // 1. Subir la nueva imagen a Cloudinary
+        $uploadInfo = $uploader->execute($request->file('image'), 'profiles');
+
+        // 2. Si ya hay una imagen previa en Cloudinary asociada a este usuario, la borramos
+        if ($user->profile_image_public_id) {
+            $deleter->execute($user->profile_image_public_id);
+        }
+
+        // 3. Actualizamos la base de datos con la nueva URL y el nuevo Public ID
+        $user->update([
+            'profile_url' => $uploadInfo['url'],
+            'profile_image_public_id' => $uploadInfo['public_id'],
+        ]);
+
+        return redirect('/profile')->with('success', 'Imagen subida correctamente.');
+    }
+
+    public function updateImageTemp(UpdateProfileImageRequest $request)
+    {
+        $file = $request->file('image');
+        $fileName = 'test_avatar_'.time().'.jpg';
+        $destinationPath = public_path('delete');
+
+        if (! file_exists($destinationPath)) {
+            mkdir($destinationPath, 0755, true);
+        }
+
+        $file->move($destinationPath, $fileName);
+
+        $request->user()->update([
+            'profile_url' => '/delete/'.$fileName,
+        ]);
+
+        return redirect()->back();
     }
 }

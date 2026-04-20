@@ -16,9 +16,9 @@ it('authenticates the user with correct credentials', function () {
     $response = $this->post('/login', [
         'email' => 'test@example.com',
         'password' => 'password123',
-    ]);    
+    ]);
     // Dump for debugging
-    if (!$this->isAuthenticated()) {
+    if (! $this->isAuthenticated()) {
         $response->dumpSession();
     }
     $this->assertAuthenticatedAs($user);

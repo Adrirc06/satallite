@@ -2,6 +2,7 @@
 
 use App\Models\Article;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -9,12 +10,12 @@ uses(TestCase::class, RefreshDatabase::class);
 
 it('belongs to a user (author)', function () {
     $user = User::factory()->create();
-    
+
     $article = Article::factory()->create([
         'user_id' => $user->id,
     ]);
 
-    expect($article->authorRelation())->toBeInstanceOf(\Illuminate\Database\Eloquent\Relations\BelongsTo::class)
+    expect($article->authorRelation())->toBeInstanceOf(BelongsTo::class)
         ->and($article->author()->id)->toBe($user->id)
         ->and($article->author()->name)->toBe($user->name);
 });

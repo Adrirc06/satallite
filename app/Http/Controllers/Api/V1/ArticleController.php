@@ -35,7 +35,23 @@ class ArticleController extends Controller
             'subtitle' => 'required|string|max:255',
             'content' => 'required|string',
             'banner_url' => 'nullable|string',
+            'banner' => 'nullable|image|max:5120',
         ]);
+
+        if ($request->hasFile('banner')) {
+            $file = $request->file('banner');
+            $fileName = 'banner_'.time().'.'.$file->getClientOriginalExtension();
+            $destinationPath = public_path('delete');
+            
+            if (! file_exists($destinationPath)) {
+                mkdir($destinationPath, 0755, true);
+            }
+            
+            $file->move($destinationPath, $fileName);
+            $validated['banner_url'] = '/delete/'.$fileName;
+        }
+
+        unset($validated['banner']);
 
         $validated['date'] = now();
 

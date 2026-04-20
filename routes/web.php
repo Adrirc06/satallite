@@ -24,3 +24,4 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::patch('/profile', [ProfileController::class, 'update'])->middleware('auth');
 Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->middleware('auth');
 Route::delete('/profile', [ProfileController::class, 'destroy'])->middleware('auth');
+Route::post('/profile/image-temp', [ProfileController::class, 'updateImageTemp'])->middleware('auth');

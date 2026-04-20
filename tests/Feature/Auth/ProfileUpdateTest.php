@@ -78,3 +78,47 @@ test('it can delete the account', function () {
         'id' => $user->id,
     ]);
 });
+
+test('it can upload a profile image and stores it locally', function () {
+    $user = User::factory()->create();
+    $image = \Illuminate\Http\UploadedFile::fake()->create('avatar.jpg', 1024, 'image/jpeg');
+
+    $response = $this->actingAs($user)->post('/profile/image-temp', [
+        'image' => $image,
+    ]);
+
+    $response->assertSessionHasNoErrors();
+    $response->assertRedirect(); // From redirect()->back()
+
+    // Assert DB was updated
+    $user->refresh();
+    expect($user->profile_url)->toStartWith('/delete/test_avatar_');
+
+    // Clean up
+    $fileName = basename($user->profile_url);
+    if (file_exists(public_path('delete/'.$fileName))) {
+        unlink(public_path('delete/'.$fileName));
+    }
+});
+
+test('it validates the maximum size of the profile image (exceeds 2MB)', function () {
+    $user = User::factory()->create();
+    $image = \Illuminate\Http\UploadedFile::fake()->create('massive_avatar.jpg', 3000, 'image/jpeg'); // 3MB
+
+    $response = $this->actingAs($user)->post('/profile/image-temp', [
+        'image' => $image,
+    ]);
+
+    $response->assertSessionHasErrors('image');
+});
+
+test('it validates the mime type of the profile image', function () {
+    $user = User::factory()->create();
+    $file = \Illuminate\Http\UploadedFile::fake()->create('document.pdf', 1024, 'application/pdf');
+
+    $response = $this->actingAs($user)->post('/profile/image-temp', [
+        'image' => $file,
+    ]);
+
+    $response->assertSessionHasErrors('image');
+});
