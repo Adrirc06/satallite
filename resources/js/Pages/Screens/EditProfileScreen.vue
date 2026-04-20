@@ -94,16 +94,28 @@
                     </button>
                 </div>
                 
-                <div v-if="!imageSrc" class="tw:border-2 tw:border-dashed tw:border-gray-500 tw:rounded-lg tw:p-8 tw:text-center tw:cursor-pointer hover:tw:bg-gray-800/10 tw:transition-colors" @click="triggerFileInput">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="tw:h-12 tw:w-12 tw:mx-auto tw:text-gray-400 tw:mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                    </svg>
-                    <p class="tw:text-sm tw:font-medium">Haz clic para seleccionar una imagen</p>
-                      <p class="tw:text-xs text-body-secondary tw:mt-1">Máx. 2MB (JPG, PNG, WEBP)</p>
+                <div v-if="!imageSrc" class="tw:flex tw:flex-col tw:gap-4">
+                    <div class="tw:border-2 tw:border-dashed tw:border-gray-500 tw:rounded-lg tw:p-8 tw:text-center tw:cursor-pointer hover:tw:bg-gray-800/10 tw:transition-colors" @click="triggerFileInput">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="tw:h-12 tw:w-12 tw:mx-auto tw:text-gray-400 tw:mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                        </svg>
+                        <p class="tw:text-sm tw:font-medium">Haz clic para seleccionar una imagen</p>
+                        <p class="tw:text-xs text-body-secondary tw:mt-1">Máx. 2MB (JPG, PNG, WEBP)</p>
 
-                      <p v-if="photoError" class="tw:text-red-500 tw:text-sm tw:text-center tw:mt-4">{{ photoError }}</p>
+                        <p v-if="photoError" class="tw:text-red-500 tw:text-sm tw:text-center tw:mt-4">{{ photoError }}</p>
 
-                    <input ref="fileInputRef" type="file" class="tw:hidden" accept="image/png, image/jpeg, image/webp" @change="onImageSelected" />
+                        <input ref="fileInputRef" type="file" class="tw:hidden" accept="image/png, image/jpeg, image/webp" @change="onImageSelected" />
+                    </div>
+                    
+                    <button 
+                        v-if="user.public_profile_url"
+                        @click="deleteImageProfile"
+                        type="button"
+                        class="custom-btn rounded-2 tw:!text-white rounded-bottom-right-none tw:bg-red-500 tw:hover:bg-red-400 tw:w-full tw:flex tw:justify-center tw:items-center tw:gap-2 tw:py-3"
+                        :disabled="isDeletingPhoto"
+                    >
+                        <span class="tw:font-medium">{{ isDeletingPhoto ? 'Eliminando...' : 'Eliminar foto' }}</span>
+                    </button>
                 </div>
                 
                 <div v-else class="tw:flex tw:flex-col tw:gap-4">
@@ -280,6 +292,7 @@ const fileInputRef = ref(null);
 const cropperRef = ref(null);
 const imageSrc = ref(null);
 const isUploadingPhoto = ref(false);
+const isDeletingPhoto = ref(false);
 const photoError = ref('');
 
 const triggerFileInput = () => {
@@ -367,7 +380,7 @@ const uploadCroppedImage = () => {
         const formData = new FormData();
         formData.append('image', file);
 
-        router.post('/profile/image-temp', formData, {
+        router.post('/profile/image', formData, {
             preserveState: true,
             preserveScroll: true,
             forceFormData: true,
@@ -382,6 +395,23 @@ const uploadCroppedImage = () => {
             }
         });
     }, 'image/jpeg', 0.95);
+};
+
+const deleteImageProfile = () => {
+    isDeletingPhoto.value = true;
+    router.delete('/profile/image', {
+        preserveState: true,
+        preserveScroll: true,
+        onSuccess: () => {
+            closePhotoDialog();
+        },
+        onError: () => {
+            photoError.value = 'Error al eliminar la imagen';
+        },
+        onFinish: () => {
+            isDeletingPhoto.value = false;
+        }
+    });
 };
 
 const showPasswordDialog = ref(false);const showDeleteDialog = ref(false);

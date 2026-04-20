@@ -1,6 +1,11 @@
 <?php
 
+use App\Actions\DeleteImageFromCloudinary;
+use App\Actions\UploadImageToCloudinary;
+use App\Models\Article;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
+use Mockery\MockInterface;
 
 test('it can update the user name', function () {
     $user = User::factory()->create([
@@ -66,8 +71,21 @@ test('it validates that the username is unique', function () {
 
     $response->assertSessionHasErrors('name');
 });
-test('it can delete the account', function () {
-    $user = User::factory()->create();
+test('it can delete the account and associated cloudinary images', function () {
+    $user = User::factory()->create([
+        'public_profile_url' => 'profiles/abcde_profile',
+    ]);
+
+    Article::factory()->create([
+        'user_id' => $user->id,
+        'public_banner_url' => 'articles/abcde_banner',
+    ]);
+
+    $mockDeleter = Mockery::mock(DeleteImageFromCloudinary::class);
+    $mockDeleter->shouldReceive('execute')->with('articles/abcde_banner')->once();
+    $mockDeleter->shouldReceive('execute')->with('profiles/abcde_profile')->once();
+
+    app()->instance(DeleteImageFromCloudinary::class, $mockDeleter);
 
     $response = $this->actingAs($user)->delete('/profile');
 
@@ -79,11 +97,20 @@ test('it can delete the account', function () {
     ]);
 });
 
-test('it can upload a profile image and stores it locally', function () {
+test('it can upload a profile image and stores it in cloudinary', function () {
     $user = User::factory()->create();
-    $image = \Illuminate\Http\UploadedFile::fake()->create('avatar.jpg', 1024, 'image/jpeg');
+    $image = UploadedFile::fake()->create('avatar.jpg', 1024, 'image/jpeg');
 
-    $response = $this->actingAs($user)->post('/profile/image-temp', [
+    $this->mock(UploadImageToCloudinary::class, function (MockInterface $mock) {
+        $mock->shouldReceive('execute')
+            ->once()
+            ->andReturn([
+                'url' => 'https://res.cloudinary.com/demo/image/upload/v12345/profiles/abcde.jpg',
+                'public_id' => 'profiles/abcde',
+            ]);
+    });
+
+    $response = $this->actingAs($user)->post('/profile/image', [
         'image' => $image,
     ]);
 
@@ -92,20 +119,35 @@ test('it can upload a profile image and stores it locally', function () {
 
     // Assert DB was updated
     $user->refresh();
-    expect($user->profile_url)->toStartWith('/delete/test_avatar_');
-
-    // Clean up
-    $fileName = basename($user->profile_url);
-    if (file_exists(public_path('delete/'.$fileName))) {
-        unlink(public_path('delete/'.$fileName));
-    }
+    expect($user->profile_url)->toBe('https://res.cloudinary.com/demo/image/upload/v12345/profiles/abcde.jpg');
+    expect($user->public_profile_url)->toBe('profiles/abcde');
 });
+test('it can delete the profile image and revert to default', function () {
+    $user = User::factory()->create([
+        'profile_url' => 'https://res.cloudinary.com/old/url.jpg',
+        'public_profile_url' => 'profiles/old',
+    ]);
 
+    $this->mock(DeleteImageFromCloudinary::class, function (MockInterface $mock) {
+        $mock->shouldReceive('execute')
+            ->once()
+            ->with('profiles/old');
+    });
+
+    $response = $this->actingAs($user)->delete('/profile/image');
+
+    $response->assertSessionHasNoErrors();
+    $response->assertRedirect();
+
+    $user->refresh();
+    expect($user->profile_url)->toBe('/img/default.jpg');
+    expect($user->public_profile_url)->toBeNull();
+});
 test('it validates the maximum size of the profile image (exceeds 2MB)', function () {
     $user = User::factory()->create();
-    $image = \Illuminate\Http\UploadedFile::fake()->create('massive_avatar.jpg', 3000, 'image/jpeg'); // 3MB
+    $image = UploadedFile::fake()->create('massive_avatar.jpg', 3000, 'image/jpeg'); // 3MB
 
-    $response = $this->actingAs($user)->post('/profile/image-temp', [
+    $response = $this->actingAs($user)->post('/profile/image', [
         'image' => $image,
     ]);
 
@@ -114,9 +156,9 @@ test('it validates the maximum size of the profile image (exceeds 2MB)', functio
 
 test('it validates the mime type of the profile image', function () {
     $user = User::factory()->create();
-    $file = \Illuminate\Http\UploadedFile::fake()->create('document.pdf', 1024, 'application/pdf');
+    $file = UploadedFile::fake()->create('document.pdf', 1024, 'application/pdf');
 
-    $response = $this->actingAs($user)->post('/profile/image-temp', [
+    $response = $this->actingAs($user)->post('/profile/image', [
         'image' => $file,
     ]);
 

@@ -22,6 +22,7 @@ class Article extends Model
         'subtitle',
         'content',
         'banner_url',
+        'public_banner_url',
         'date',
         'user_id',
     ];

@@ -1,8 +1,11 @@
 <?php
 
+use App\Actions\UploadImageToCloudinary;
 use App\Models\Article;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
 use Inertia\Testing\AssertableInertia as Assert;
+use Mockery\MockInterface;
 
 it('shows the index page with articles via Inertia', function () {
     Article::factory()->count(10)->create();
@@ -75,12 +78,21 @@ it('allows authenticated users to create articles', function () {
 
 it('uploads and stores a banner image when creating an article', function () {
     $user = User::factory()->create();
-    $image = \Illuminate\Http\UploadedFile::fake()->create('banner.jpg', 1024, 'image/jpeg');
+    $image = UploadedFile::fake()->create('banner.jpg', 1024, 'image/jpeg');
+
+    $this->mock(UploadImageToCloudinary::class, function (MockInterface $mock) {
+        $mock->shouldReceive('execute')
+            ->once()
+            ->andReturn([
+                'url' => 'https://res.cloudinary.com/demo/image/upload/v12345/articles/abcde.jpg',
+                'public_id' => 'articles/abcde',
+            ]);
+    });
 
     $payload = [
         'title' => 'Article with real banner Upload',
         'subtitle' => 'Testing file uploads.',
-    
+
         'content' => 'Content here',
         'banner' => $image,
     ];
@@ -91,21 +103,14 @@ it('uploads and stores a banner image when creating an article', function () {
 
     $this->assertDatabaseHas('articles', [
         'title' => 'Article with real banner Upload',
+        'banner_url' => 'https://res.cloudinary.com/demo/image/upload/v12345/articles/abcde.jpg',
+        'public_banner_url' => 'articles/abcde',
     ]);
-    
-    $bannerUrl = $response->json('data.banner_url');
-    expect($bannerUrl)->toStartWith('/delete/banner_');
-    
-    // Clean up
-    $fileName = basename($bannerUrl);
-    if (file_exists(public_path('delete/'.$fileName))) {
-        unlink(public_path('delete/'.$fileName));
-    }
 });
 
 it('validates banner image size when creating an article (exceeds 5MB)', function () {
     $user = User::factory()->create();
-    $image = \Illuminate\Http\UploadedFile::fake()->create('massive.jpg', 6000, 'image/jpeg'); // 6MB
+    $image = UploadedFile::fake()->create('massive.jpg', 6000, 'image/jpeg'); // 6MB
 
     $payload = [
         'title' => 'Article with huge banner',
@@ -122,7 +127,7 @@ it('validates banner image size when creating an article (exceeds 5MB)', functio
 
 it('validates banner image type when creating an article', function () {
     $user = User::factory()->create();
-    $file = \Illuminate\Http\UploadedFile::fake()->create('document.pdf', 1024, 'application/pdf');
+    $file = UploadedFile::fake()->create('document.pdf', 1024, 'application/pdf');
 
     $payload = [
         'title' => 'Article with PDF banner',

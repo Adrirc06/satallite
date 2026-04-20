@@ -62,9 +62,25 @@ class ProfileController extends Controller
         return redirect('/profile');
     }
 
-    public function destroy(Request $request)
+    public function destroy(Request $request, DeleteImageFromCloudinary $deleter)
     {
         $user = $request->user();
+
+        $user->articles()->whereNotNull('public_banner_url')->pluck('public_banner_url')->each(function ($publicId) use ($deleter) {
+            try {
+                $deleter->execute($publicId);
+            } catch (\Exception $e) {
+                // Ignore failure               
+            }
+        });
+
+        if ($user->public_profile_url) {
+            try {
+                $deleter->execute($user->public_profile_url);
+            } catch (\Exception $e) {
+                // Ignore failure
+            }
+        }
 
         Auth::logout();
 
@@ -80,39 +96,33 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
-        // 1. Subir la nueva imagen a Cloudinary
         $uploadInfo = $uploader->execute($request->file('image'), 'profiles');
 
-        // 2. Si ya hay una imagen previa en Cloudinary asociada a este usuario, la borramos
-        if ($user->profile_image_public_id) {
-            $deleter->execute($user->profile_image_public_id);
+        if ($user->public_profile_url) {
+            $deleter->execute($user->public_profile_url);
         }
 
-        // 3. Actualizamos la base de datos con la nueva URL y el nuevo Public ID
         $user->update([
             'profile_url' => $uploadInfo['url'],
-            'profile_image_public_id' => $uploadInfo['public_id'],
+            'public_profile_url' => $uploadInfo['public_id'],
         ]);
 
-        return redirect('/profile')->with('success', 'Imagen subida correctamente.');
+        return redirect()->back()->with('success', 'Imagen subida correctamente.');
     }
 
-    public function updateImageTemp(UpdateProfileImageRequest $request)
+    public function destroyImage(Request $request, DeleteImageFromCloudinary $deleter)
     {
-        $file = $request->file('image');
-        $fileName = 'test_avatar_'.time().'.jpg';
-        $destinationPath = public_path('delete');
+        $user = $request->user();
 
-        if (! file_exists($destinationPath)) {
-            mkdir($destinationPath, 0755, true);
+        if ($user->public_profile_url) {
+            $deleter->execute($user->public_profile_url);
         }
 
-        $file->move($destinationPath, $fileName);
-
-        $request->user()->update([
-            'profile_url' => '/delete/'.$fileName,
+        $user->update([
+            'profile_url' => '/img/default.jpg',
+            'public_profile_url' => null,
         ]);
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Imagen eliminada correctamente.');
     }
 }

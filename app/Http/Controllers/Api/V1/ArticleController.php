@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Actions\DeleteImageFromCloudinary;
+use App\Actions\UploadImageToCloudinary;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\V1\ArticleResource;
 use App\Models\Article;
@@ -28,7 +30,7 @@ class ArticleController extends Controller
         return new ArticleResource($article);
     }
 
-    public function store(Request $request)
+    public function store(Request $request, UploadImageToCloudinary $uploader)
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
@@ -39,16 +41,9 @@ class ArticleController extends Controller
         ]);
 
         if ($request->hasFile('banner')) {
-            $file = $request->file('banner');
-            $fileName = 'banner_'.time().'.'.$file->getClientOriginalExtension();
-            $destinationPath = public_path('delete');
-            
-            if (! file_exists($destinationPath)) {
-                mkdir($destinationPath, 0755, true);
-            }
-            
-            $file->move($destinationPath, $fileName);
-            $validated['banner_url'] = '/delete/'.$fileName;
+            $uploadInfo = $uploader->execute($request->file('banner'), 'articles');
+            $validated['banner_url'] = $uploadInfo['url'];
+            $validated['public_banner_url'] = $uploadInfo['public_id'];
         }
 
         unset($validated['banner']);
@@ -60,13 +55,18 @@ class ArticleController extends Controller
         return new ArticleResource($article);
     }
 
-    public function destroy(Request $request, $id)
+    public function destroy(Request $request, $id, DeleteImageFromCloudinary $deleter)
     {
         if (! $request->user()->is_admin) {
             abort(403, 'No tienes permisos para realizar esta acción.');
         }
 
         $article = Article::findOrFail($id);
+
+        if ($article->public_banner_url) {
+            $deleter->execute($article->public_banner_url);
+        }
+
         $article->delete();
 
         return response()->json(['message' => 'Artículo eliminado correctamente']);
