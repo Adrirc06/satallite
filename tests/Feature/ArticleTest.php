@@ -20,7 +20,7 @@ it('shows a single article via Inertia', function () {
         'title' => 'Unique Testing Title',
     ]);
 
-    $this->get('/article/' . $article->id)
+    $this->get('/article/'.$article->id)
         ->assertSuccessful()
         ->assertInertia(fn (Assert $page) => $page
             ->component('Screens/ArticleScreen')
@@ -43,10 +43,10 @@ it('fetches paginated articles via API endpoint', function () {
 
 it('fetches a single article details from API', function () {
     $article = Article::factory()->create([
-        'title' => 'API Article Details Testing'
+        'title' => 'API Article Details Testing',
     ]);
 
-    $response = $this->getJson('/api/v1/articles/' . $article->id);
+    $response = $this->getJson('/api/v1/articles/'.$article->id);
 
     $response->assertSuccessful()
         ->assertJsonPath('data.title', 'API Article Details Testing');
@@ -87,7 +87,7 @@ it('denies unauthenticated users from creating articles', function () {
 
 it('validates empty inputs properly when creating article', function () {
     $user = User::factory()->create();
-    
+
     $response = $this->actingAs($user)->postJson('/api/v1/articles', []);
 
     // Unprocessable Entity validation error
@@ -101,7 +101,7 @@ it('redirects guests to login when accessing create article page', function () {
 
 it('denies non-admins from viewing create article page', function () {
     $user = User::factory()->create(['is_admin' => false]);
-    
+
     $this->actingAs($user)
         ->get('/articles/create')
         ->assertForbidden();
@@ -109,12 +109,12 @@ it('denies non-admins from viewing create article page', function () {
 
 it('allows admins to view create article page', function () {
     $admin = User::factory()->create(['is_admin' => true]);
-    
+
     $this->actingAs($admin)
         ->get('/articles/create')
         ->assertSuccessful()
         ->assertInertia(fn (Assert $page) => $page
-            ->component('Index/CreateArticle')
+            ->component('Screens/CreateArticleScreen')
         );
 });
 
@@ -122,7 +122,7 @@ it('allows admins to delete articles', function () {
     $admin = User::factory()->create(['is_admin' => true]);
     $article = Article::factory()->create();
 
-    $response = $this->actingAs($admin)->deleteJson('/api/v1/articles/' . $article->id);
+    $response = $this->actingAs($admin)->deleteJson('/api/v1/articles/'.$article->id);
 
     $response->assertSuccessful()
         ->assertJsonPath('message', 'Artículo eliminado correctamente');
@@ -136,7 +136,7 @@ it('denies non-admins from deleting articles', function () {
     $user = User::factory()->create(['is_admin' => false]);
     $article = Article::factory()->create();
 
-    $response = $this->actingAs($user)->deleteJson('/api/v1/articles/' . $article->id);
+    $response = $this->actingAs($user)->deleteJson('/api/v1/articles/'.$article->id);
 
     $response->assertForbidden();
 
@@ -148,7 +148,7 @@ it('denies non-admins from deleting articles', function () {
 it('denies unauthenticated users from deleting articles', function () {
     $article = Article::factory()->create();
 
-    $response = $this->deleteJson('/api/v1/articles/' . $article->id);
+    $response = $this->deleteJson('/api/v1/articles/'.$article->id);
 
     $response->assertUnauthorized();
 

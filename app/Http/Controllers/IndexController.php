@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\ArticlesProvider;
+use Illuminate\Http\Request;
 
 class IndexController extends Controller
 {
@@ -58,7 +59,7 @@ class IndexController extends Controller
         ]);
     }
 
-    public function createArticle(\Illuminate\Http\Request $request)
+    public function createArticle(Request $request)
     {
         if (! $request->user()) {
             return redirect()->route('login');
@@ -68,6 +69,11 @@ class IndexController extends Controller
             abort(403, 'No tienes permisos para realizar esta acción.');
         }
 
-        return inertia('Index/CreateArticle');
+        return inertia('Screens/CreateArticleScreen');
+    }
+
+    public function editProfile()
+    {
+        return inertia('Screens/EditProfileScreen');
     }
 }

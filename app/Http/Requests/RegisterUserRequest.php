@@ -23,7 +23,7 @@ class RegisterUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'username' => ['required', 'string', 'regex:/^[a-zA-Z0-9_\-]+$/', 'max:255', 'unique:users,name'],
+            'username' => ['required', 'string', 'regex:/^[a-zA-Z0-9_\-]+$/', 'max:20', 'unique:users,name'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'same:confirmPassword'],
         ];
@@ -31,8 +31,7 @@ class RegisterUserRequest extends FormRequest
 
     public function messages(): array
     {
-        return [
-            'username.regex' => 'El nombre de usuario solo puede contener letras, números, guiones y guiones bajos.',
+        return ['username.max' => 'El nombre de usuario no puede exceder los 20 caracteres.',            'username.regex' => 'El nombre de usuario solo puede contener letras, números, guiones y guiones bajos.',
             'username.unique' => 'Este nombre de usuario ya está en uso.',
             'email.email' => 'Formato de correo incorrecto.',
             'email.unique' => 'Este correo electrónico ya está registrado.',
