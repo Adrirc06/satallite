@@ -78,7 +78,7 @@ const props = defineProps({
 
 const paragraphs = computed(() => {
     if (!props.article?.content) return [];
-    return props.article.content.split('^').filter(p => p.trim() !== '');
+    return props.article.content.split(/\n+/).filter(p => p.trim() !== '');
 });
 
 const getCookie = (name) => {
