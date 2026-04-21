@@ -5,9 +5,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         @vite('resources/js/app.js')
         @inertiaHead
-        <link
-            href="https://fonts.googleapis.com/css2?family=Chiron+GoRound+TC:wght@200..900&family=Quantico:ital,wght@0,400;0,700;1,400;1,700&display=swap"
-            rel="stylesheet" />
         <link rel="icon" type="image/x-icon" href="/img/favicon.ico"/>
         <title>{{ config('app.name', 'Laravel') }}</title>
     </head>

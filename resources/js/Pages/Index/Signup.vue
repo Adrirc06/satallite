@@ -1,7 +1,9 @@
 <template>
     <div class="d-flex flex-column" style="min-height: calc(100vh - var(--navbar-height, 0px));">
         <Header/>
-        <SignupForm/>
+        <main>
+            <SignupForm/>
+        </main>
         <Footer/>
     </div>
 </template>

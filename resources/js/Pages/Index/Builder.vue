@@ -1,6 +1,6 @@
 <template>
     <Header/>
-    <div class="tw:h-400">Prueba Scroll en Builder</div>
+    <main class="tw:h-400">Prueba Scroll en Builder</main>
     <Footer/>
 </template>
 

@@ -1,7 +1,9 @@
 <template>
     <Header/>
-    <InfiniteCarousel/>
-    <ArticlesSection :articles="articles" />
+    <main>
+        <InfiniteCarousel/>
+        <ArticlesSection :articles="articles" />
+    </main>
     <Footer/>
 </template>
 

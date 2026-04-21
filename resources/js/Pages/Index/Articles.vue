@@ -1,7 +1,7 @@
 <template>
     <div class="tw:min-h-screen tw:flex tw:flex-col">
         <Header/>
-        <div class="container my-5 tw:flex-1 tw:flex tw:flex-col tw:justify-center">
+        <main class="container my-5 tw:flex-1 tw:flex tw:flex-col tw:justify-center">
             <div class="tw:w-full">
                 <p class="tw:text-6xl mb-4 quantico-bold text-center tw:border-2 border-2 border-bottom border-0 pb-2 tw:border-black tw:dark:border-white">Todas las noticias</p>
                 <div class="d-flex flex-column gap-4">
@@ -18,7 +18,7 @@
             :limit="2"
             @pagination-change-page="getResults"
             v-slot="{ computed, prevButtonEvents, nextButtonEvents, pageButtonEvents }"
-        >
+            >
             <nav v-if="articles.meta && articles.meta.last_page > 1" class="mt-4 d-flex justify-content-center">
                 <div class="d-inline-flex tw:border-2 border-2 tw:border-gray-400 tw:dark:border-gray-500 rounded-4 rounded-bottom-right-none overflow-hidden custom-pagination">
                     <button
@@ -64,7 +64,7 @@
                 </div>
             </nav>
         </RenderlessPagination>
-        </div>
+        </main>
         <Footer class="tw:mt-auto"/>
     </div>
 </template>
