@@ -3,6 +3,7 @@ name: Deploy to Oracle Cloud
 on:
   push:
     branches: ["main"] # Se activa al hacer push a main
+  workflow_dispatch: 
 
 jobs:
   deploy:
