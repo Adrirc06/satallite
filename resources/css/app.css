@@ -4,6 +4,18 @@
 
 @config "../../tailwind.config.js";
 
+/* Make the app container min height of screen and flex so footer can be sticky at bottom */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - var(--navbar-height, 0px));
+}
+
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
