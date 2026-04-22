@@ -35,4 +35,4 @@ jobs:
             docker exec satallite_app php artisan view:clear
 
             # 5. Ajustar permisos (por si acaso)
-            sudo chown -R www-data:www-data src/storage src/bootstrap/cache
+            sudo chown -R www-data:www-data storage bootstrap/cache
