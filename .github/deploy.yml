@@ -1,0 +1,37 @@
+name: Deploy to Oracle Cloud
+
+on:
+  push:
+    branches: ["main"] # Se activa al hacer push a main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy using SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /var/www/satallite.app
+
+            # 1. Actualizar el código
+            git pull origin main
+
+            # 2. Instalar dependencias de PHP
+            docker exec satallite_app composer install --no-dev --optimize-autoloader
+
+            # 3. Compilar el Front-end (Vue/Inertia)
+            docker exec satallite_app npm install
+            docker exec satallite_app npm run build
+
+            # 4. Migraciones y Caché
+            docker exec satallite_app php artisan migrate --force
+            docker exec satallite_app php artisan config:cache
+            docker exec satallite_app php artisan view:clear
+
+            # 5. Ajustar permisos (por si acaso)
+            sudo chown -R www-data:www-data src/storage src/bootstrap/cache
