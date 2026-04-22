@@ -30,6 +30,7 @@ jobs:
 
             # 3. Compilar el Front-end (Vue/Inertia)
             docker exec satallite_app npm install
+            docker exec satallite_app chmod -R +x node_modules/.bin
             docker exec satallite_app npm run build
 
             # 4. Migraciones y Caché
