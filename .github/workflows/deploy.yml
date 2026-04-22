@@ -17,6 +17,8 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            git config --global --add safe.directory /var/www/satallite.app/src
+            
             cd /var/www/satallite.app/src
 
             # 1. Actualizar el código
