@@ -18,6 +18,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             git config --global --add safe.directory /var/www/satallite.app/src
+            docker exec satallite_app git config --global --add safe.directory /var/www/html
             
             cd /var/www/satallite.app/src
 
