@@ -3,77 +3,77 @@
         <div class="carousel-infinite">
             <div class="group">
                 <div class="infinite-carousel-card">
-                    <img src="../../img/carousel/carousel1.jpg" alt="Primera imagen del carrusel"
+                    <img src="/img/carousel/carousel1.webp" alt="Primera imagen del carrusel"
                         class="infinite-carousel-image" />
                 </div>
                 <div class="infinite-carousel-card">
-                    <img src="../../img/carousel/carousel2.jpg" alt="Segunda imagen del carrusel"
+                    <img src="/img/carousel/carousel2.webp" alt="Segunda imagen del carrusel"
                         class="infinite-carousel-image" />
                 </div>
                 <div class="infinite-carousel-card">
-                    <img src="../../img/carousel/carousel3.jpg" alt="Tercera imagen del carrusel"
+                    <img src="/img/carousel/carousel3.webp" alt="Tercera imagen del carrusel"
                         class="infinite-carousel-image" />
                 </div>
                 <div class="infinite-carousel-card">
-                    <img src="../../img/carousel/carousel4.jpg" alt="Cuarta imagen del carrusel"
+                    <img src="/img/carousel/carousel4.webp" alt="Cuarta imagen del carrusel"
                         class="infinite-carousel-image" />
                 </div>
                 <div class="infinite-carousel-card">
-                    <img src="../../img/carousel/carousel5.jpg" alt="Quinta imagen del carrusel"
+                    <img src="/img/carousel/carousel5.webp" alt="Quinta imagen del carrusel"
                         class="infinite-carousel-image" />
                 </div>
                 <div class="infinite-carousel-card">
-                    <img src="../../img/carousel/carousel6.jpg" alt="Sexta imagen del carrusel"
+                    <img src="/img/carousel/carousel6.webp" alt="Sexta imagen del carrusel"
                         class="infinite-carousel-image" />
                 </div>
                 <div class="infinite-carousel-card">
-                    <img src="../../img/carousel/carousel7.jpg" alt="Séptima imagen del carrusel"
+                    <img src="/img/carousel/carousel7.webp" alt="Séptima imagen del carrusel"
                         class="infinite-carousel-image" />
                 </div>
                 <div class="infinite-carousel-card">
-                    <img src="../../img/carousel/carousel8.jpg" alt="Octava imagen del carrusel"
+                    <img src="/img/carousel/carousel8.webp" alt="Octava imagen del carrusel"
                         class="infinite-carousel-image" />
                 </div>
                 <div class="infinite-carousel-card">
-                    <img src="../../img/carousel/carousel9.jpg" alt="Novena imagen del carrusel"
+                    <img src="/img/carousel/carousel9.webp" alt="Novena imagen del carrusel"
                         class="infinite-carousel-image" />
                 </div>
             </div>
             <div class="group" aria-hidden="true">
                 <div class="infinite-carousel-card">
-                    <img src="../../img/carousel/carousel1.jpg" alt="Primera imagen del carrusel oculta"
+                    <img src="/img/carousel/carousel1.webp" alt="Primera imagen del carrusel oculta"
                         class="infinite-carousel-image" />
                 </div>
                 <div class="infinite-carousel-card">
-                    <img src="../../img/carousel/carousel2.jpg" alt="Segunda imagen del carrusel oculta"
+                    <img src="/img/carousel/carousel2.webp" alt="Segunda imagen del carrusel oculta"
                         class="infinite-carousel-image" />
                 </div>
                 <div class="infinite-carousel-card">
-                    <img src="../../img/carousel/carousel3.jpg" alt="Tercera imagen del carrusel oculta"
+                    <img src="/img/carousel/carousel3.webp" alt="Tercera imagen del carrusel oculta"
                         class="infinite-carousel-image" />
                 </div>
                 <div class="infinite-carousel-card">
-                    <img src="../../img/carousel/carousel4.jpg" alt="Cuarta imagen del carrusel oculta"
+                    <img src="/img/carousel/carousel4.webp" alt="Cuarta imagen del carrusel oculta"
                         class="infinite-carousel-image" />
                 </div>
                 <div class="infinite-carousel-card">
-                    <img src="../../img/carousel/carousel5.jpg" alt="Quinta imagen del carrusel oculta"
+                    <img src="/img/carousel/carousel5.webp" alt="Quinta imagen del carrusel oculta"
                         class="infinite-carousel-image" />
                 </div>
                 <div class="infinite-carousel-card">
-                    <img src="../../img/carousel/carousel6.jpg" alt="Sexta imagen del carrusel oculta"
+                    <img src="/img/carousel/carousel6.webp" alt="Sexta imagen del carrusel oculta"
                         class="infinite-carousel-image" />
                 </div>
                 <div class="infinite-carousel-card">
-                    <img src="../../img/carousel/carousel7.jpg" alt="Séptima imagen del carrusel oculta"
+                    <img src="/img/carousel/carousel7.webp" alt="Séptima imagen del carrusel oculta"
                         class="infinite-carousel-image" />
                 </div>
                 <div class="infinite-carousel-card">
-                    <img src="../../img/carousel/carousel8.jpg" alt="Octava imagen del carrusel oculta"
+                    <img src="/img/carousel/carousel8.webp" alt="Octava imagen del carrusel oculta"
                         class="infinite-carousel-image" />
                 </div>
                 <div class="infinite-carousel-card">
-                    <img src="../../img/carousel/carousel9.jpg" alt="Novena imagen del carrusel oculta"
+                    <img src="/img/carousel/carousel9.webp" alt="Novena imagen del carrusel oculta"
                         class="infinite-carousel-image" />
                 </div>
             </div>
