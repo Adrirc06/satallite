@@ -376,7 +376,7 @@ const uploadCroppedImage = () => {
             return;
         }
 
-        const file = new File([blob], 'profile.jpg', { type: 'image/jpeg' });
+        const file = new File([blob], 'profile.webp', { type: 'image/webp' });
         const formData = new FormData();
         formData.append('image', file);
 
@@ -394,7 +394,7 @@ const uploadCroppedImage = () => {
                 isUploadingPhoto.value = false;
             }
         });
-    }, 'image/jpeg', 0.95);
+    }, 'image/webp', 0.75);
 };
 
 const deleteImageProfile = () => {
