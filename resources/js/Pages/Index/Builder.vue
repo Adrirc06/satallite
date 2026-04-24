@@ -1,10 +1,146 @@
 <template>
-    <Header/>
-    <main class="tw:h-400">Prueba Scroll en Builder</main>
-    <Footer/>
+    <Header />
+    <main class="container tw:mx-auto tw:px-4 tw:py-8 tw:relative">
+        <p class="tw:text-6xl quantico-bold tw:border-2 border-start-0 border-end-0 border-top-0 tw:border-gray-500 pb-3 text-center">Configurador de PC</p>
+        
+        <div class="my-2">
+            <!-- Component Dropdowns -->
+            <ComponentDropdown 
+                v-for="type in componentTypes" 
+                :key="type.key"
+                :type="type"
+                :selected="selections[type.key]"
+                :isOpen="openDropdown === type.key"
+                @toggle="toggleDropdown(type.key)"
+                @select="selectComponent(type.key, $event)"
+                @remove="selectComponent(type.key, null)"
+                :disabled="!isSelectable(type.key)"
+                :warningMsg="getWarningMsg(type.key)"
+            />
+        </div>
+
+        <div class="mt-4 p-4 rounded-4 rounded-bottom-right-none tw:shadow-sm tw:border tw:dark:border-gray-700">
+            <div class="tw:flex tw:flex-row tw:items-end tw:gap-6 tw:mb-4 tw:flex-nowrap">
+                <div class="tw:flex-1 tw:min-w-0">
+                    <label class="tw:block tw:text-lg tw:font-bold tw:text-gray-700 tw:dark:text-gray-300 tw:mb-2">Nombre de la Build</label>
+                    <input v-model="buildName" type="text" class="tw:w-full tw:text-lg tw:py-2 border-bottom tw:border-gray-500 tw:bg-transparent tw:border-t-0 tw:border-l-0 tw:border-r-0 tw:focus:ring-0 tw:focus:outline-none tw:focus:border-gray-500 tw:dark:text-white" placeholder="Ej. Mi PC de ensueño">
+                </div>
+                <div class="tw:shrink-0 tw:pb-0.5">
+                    <label class="tw:cursor-pointer tw:select-none d-flex align-items-center">
+                        <p class="tw:text-lg tw:font-medium tw:me-5 mb-0">Guardar como pública</p>
+                        <input type="checkbox" v-model="isPublic" class="tw:sr-only">
+                        <i class="bi tw:text-3xl tw:leading-none tw:transition-colors" :class="isPublic ? 'bi-toggle-on tw:text-indigo-600' : 'bi-toggle-off tw:text-gray-400'"></i>
+                    </label>
+                </div>
+            </div>
+
+            <div class="tw:flex tw:gap-4 tw:mt-4">
+                <button @click="saveBuild" class="tw:flex-1 tw:bg-indigo-500 tw:hover:bg-indigo-400 tw:text-white tw:font-bold tw:py-3 tw:px-4 rounded-3 rounded-bottom-right-none tw:transition tw:duration-150">Guardar</button>
+                <button @click="exportPdf" class="tw:flex-1 tw:bg-red-600 tw:hover:bg-red-500 tw:text-white tw:font-bold tw:py-3 tw:px-4 rounded-3 rounded-bottom-right-none tw:transition tw:duration-150">Exportar PDF</button>
+                <button @click="showAIPrompt = true" class="tw:flex-1 tw:bg-linear-to-r tw:from-purple-500 tw:to-pink-500 tw:hover:from-purple-600 tw:hover:to-pink-600 text-white tw:py-3 tw:px-4 rounded-3 rounded-bottom-right-none tw:transition tw:duration-150">Resumen IA</button>
+            </div>
+        </div>
+
+        <!-- AI Dialog -->
+        <div v-if="showAIPrompt" class="tw:fixed tw:inset-0 tw:z-50 tw:flex tw:items-center tw:justify-center tw:bg-black tw:bg-opacity-50">
+            <div class="tw:bg-white tw:dark:bg-gray-800 tw:p-6 tw:rounded-lg tw:shadow-xl tw:max-w-sm tw:w-full">
+                <h3 class="tw:text-lg tw:font-bold tw:mb-2">Resumen IA</h3>
+                <p class="tw:text-gray-600 tw:dark:text-gray-300 tw:mb-4">Esta es una funcionalidad en desarrollo.</p>
+                <button @click="showAIPrompt = false" class="tw:w-full tw:bg-gray-200 tw:hover:bg-gray-300 tw:text-gray-800 tw:font-bold tw:py-2 tw:px-4 tw:rounded">Cerrar</button>
+            </div>
+        </div>
+    </main>
+    <Footer />
 </template>
 
 <script setup>
+import { ref, reactive, computed } from 'vue';
 import Footer from '@/Layouts/Footer.vue';
 import Header from '@/Layouts/Header.vue';
+import ComponentDropdown from '@/Components/Builder/ComponentDropdown.vue';
+import { useForm } from '@inertiajs/vue3';
+
+// Mock component types. Icons etc would be defined here.
+const componentTypes = [
+    { key: 'motherboard', name: 'Placa base', icon: 'motherboard' },
+    { key: 'cpu', name: 'Procesador', icon: 'cpu' },
+    { key: 'ram', name: 'RAM', icon: 'memory' },
+    { key: 'drive', name: 'Disco duro', icon: 'device-ssd' },
+    { key: 'gpu', name: 'Tarjeta gráfica', icon: 'gpu-card' },
+    { key: 'psu', name: 'Fuente de alimentación', icon: 'plug-fill' },
+    { key: 'chassis', name: 'Caja', icon: 'pc-display' }
+];
+
+const openDropdown = ref(null);
+const buildName = ref('');
+const isPublic = ref(false);
+const showAIPrompt = ref(false);
+
+const selections = reactive({
+    motherboard: null,
+    cpu: null,
+    ram: null,
+    drive: null,
+    gpu: null,
+    psu: null,
+    chassis: null
+});
+
+const toggleDropdown = (key) => {
+    if (openDropdown.value === key) {
+        openDropdown.value = null;
+    } else {
+        openDropdown.value = key;
+    }
+};
+
+const selectComponent = (key, component) => {
+    selections[key] = component;
+    openDropdown.value = null;
+};
+
+// Validations and restrictions logic mapped as required
+const isSelectable = (key) => {
+    if (key === 'cpu') {
+        const socketName = selections.motherboard?.socket?.name || '';
+        if (socketName.toLowerCase().includes('integrated')) return false;
+    }
+    return true;
+};
+
+const getWarningMsg = (key) => {
+    if (key === 'cpu') {
+       const socketName = selections.motherboard?.socket?.name || '';
+       if (socketName.toLowerCase().includes('integrated')) {
+           return 'La placa base tiene procesador integrado.';
+       }
+    }
+    
+    // Check combined TDP against PSU
+    if (key === 'psu' && selections.cpu && selections.gpu && selections.psu) {
+        const combinedTDP = selections.cpu.tdp + selections.gpu.tdp;
+        if (combinedTDP > selections.psu.power) {
+             return 'La TDP combinada supera la capacidad de la fuente.';
+        } else if (selections.psu.power < (combinedTDP * 1.1)) {
+             return 'La fuente de alimentación puede no ser lo suficiente potente.';
+        }
+    }
+    
+    // Check form factor
+    if (key === 'chassis' && selections.motherboard && selections.chassis) {
+        if(selections.motherboard.form_factor_id !== selections.chassis.form_factor_id) {
+            return 'La placa base puede no ser compatible con la caja elegida.';
+        }
+    }
+    return null;
+};
+
+const saveBuild = () => {
+    // In complete implementation, post via Inertia useForm to backend
+    console.log('Saved', { name: buildName.value, public: isPublic.value, build: selections });
+};
+
+const exportPdf = () => {
+    console.log('Exporting PDF');
+};
 </script>
