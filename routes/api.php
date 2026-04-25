@@ -24,10 +24,14 @@ Route::prefix('v1')->group(function () {
     // Public Routes
     Route::get('/users/{user}', [UserController::class, 'show']);
 
+    // Articles
     Route::get('/articles', [ArticleController::class, 'index']);
     Route::get('/articles/{id}', [ArticleController::class, 'show']);
 
-    Route::get('/builds', [BuildController::class, 'index']);
+    // PC Builder Dynamic Components endpoint
+    Route::get('/components/{type}', [\App\Http\Controllers\Api\V1\ComponentController::class, 'index']);
+
+    // Component Specific Routes (if needed later)
     Route::get('/users/{user}/builds', [BuildController::class, 'userBuilds']);
 
     Route::get('/builds/{build}/ratings', [RatingController::class, 'index']);

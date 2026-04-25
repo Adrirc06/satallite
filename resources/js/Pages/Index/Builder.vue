@@ -56,11 +56,10 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive } from 'vue';
 import Footer from '@/Layouts/Footer.vue';
 import Header from '@/Layouts/Header.vue';
 import ComponentDropdown from '@/Components/Builder/ComponentDropdown.vue';
-import { useForm } from '@inertiajs/vue3';
 
 // Mock component types. Icons etc would be defined here.
 const componentTypes = [

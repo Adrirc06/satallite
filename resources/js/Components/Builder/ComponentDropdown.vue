@@ -18,13 +18,13 @@
                      <p class="tw:text-lg tw:font-bold tw:text-gray-900 tw:dark:text-white tw:mt-1">{{ selected.name }}</p>
                      
                      <div class="tw:flex tw:gap-4 tw:mt-2 tw:text-sm tw:text-gray-600 tw:dark:text-gray-400">
-                         <span v-if="type.key === 'motherboard'">{{ selected.socket?.name }} | {{ selected.ram_type?.name }} | {{ selected.form_factor?.name }}</span>
-                         <span v-if="type.key === 'cpu'">{{ selected.socket?.name }} | {{ selected.tdp }}W</span>
-                         <span v-if="type.key === 'ram'">{{ selected.ram_type?.name }} | {{ selected.size }}GB | {{ selected.speed }}MHz | {{ selected.modules }}</span>
-                         <span v-if="type.key === 'drive'">{{ selected.drive_type?.name }} | {{ selected.size }}GB <span v-if="selected.rpm">| {{ selected.rpm }}RPM</span></span>
-                         <span v-if="type.key === 'gpu'">{{ selected.tdp }}W | {{ selected.vram }}GB</span>
-                         <span v-if="type.key === 'psu'">{{ selected.psu_type?.name }} | {{ selected.power }}W</span>
-                         <span v-if="type.key === 'chassis'">{{ selected.chassis_type?.name }}</span>
+                         <span v-if="type.key === 'motherboard'">Socket: {{ selected.socket?.name }}<template v-if="selected.max_memory"> | Memoria máxima: {{ selected.max_memory }}GB</template><template v-if="selected.form_factor"> | Factor de forma: {{ selected.form_factor.name }}</template><template v-if="selected.ram_type"> | Tipo de RAM: {{ selected.ram_type.name }}</template></span>
+                         <span v-else-if="type.key === 'cpu'">Socket: {{ selected.socket?.name }}<template v-if="selected.cores"> | {{ selected.cores }} Núcleos / {{ selected.cores * 2 }} Hilos</template><template v-if="selected.frequency"> | {{ selected.frequency }}GHz - {{ selected.max_frequency || selected.frequency }}GHz</template><template v-if="selected.tdp"> | TDP: {{ selected.tdp }}W</template><template v-if="selected.igpu"> | Gráficos Integrados: {{ selected.igpu.name || 'No' }}</template><template v-else> | Gráficos Integrados: No</template></span>
+                         <span v-else-if="type.key === 'ram'">{{ selected.size * selected.modules }}GB ({{ selected.size }}GB x {{ selected.modules }})<template v-if="selected.ram_type"> | {{ selected.ram_type.name }}</template><template v-if="selected.cas_latency"> | Latencia: CL{{ selected.cas_latency }}</template><template v-if="selected.speed"> | Velocidad: {{ selected.speed }}MHz</template></span>
+                         <span v-else-if="type.key === 'drive'"><template v-if="selected.size >= 1000">{{ selected.size / 1000 }}TB</template><template v-else>{{ selected.size }}GB</template><template v-if="selected.drive_type"> | <template v-if="selected.drive_type.id != 1">HDD, {{ selected.drive_type.name }} RPM</template><template v-else>{{ selected.drive_type.name }}</template></template></span>
+                         <span v-else-if="type.key === 'gpu'">{{ selected.vram }}GB VRAM<template v-if="selected.tdp"> | {{ selected.tdp }}W</template></span>
+                         <span v-else-if="type.key === 'psu'">Tipo: {{ selected.psu_type?.name }}<template v-if="selected.power"> | Potencia: {{ selected.power }}W</template><template v-if="selected.modularity"> | Modularidad: {{ selected.modularity.name }}</template><template v-if="selected.efficiency"> | Eficiencia: {{ selected.efficiency.name }}</template></span>
+                         <span v-else-if="type.key === 'chassis'">{{ selected.chassis_type?.name }}</span>
                      </div>
                  </template>
             </div>
@@ -51,7 +51,7 @@
             <div v-else>
                 <!-- Search bar -->
                 <div class="tw:mb-4">
-                     <input v-model="searchQuery" @input="fetchComponents" type="text" placeholder="Buscar por nombre" class="tw:w-full border-bottom tw:border-gray-500 tw:border-t-0 tw:border-l-0 tw:border-r-0 tw:focus:ring-0 tw:focus:outline-none tw:focus:border-gray-500 tw:bg-transparent tw:dark:text-white">
+                     <input v-model="searchQuery" @input="onSearchInput" type="text" placeholder="Buscar por nombre" class="tw:w-full border-bottom tw:border-gray-500 tw:border-t-0 tw:border-l-0 tw:border-r-0 tw:focus:ring-0 tw:focus:outline-none tw:focus:border-gray-500 tw:bg-transparent tw:dark:text-white">
                 </div>
                 
                 <div v-if="components.length === 0" class="tw:text-center tw:py-4 tw:text-gray-500">
@@ -68,13 +68,13 @@
                           <div>
                               <p class="tw:font-medium">{{ item.name }}</p>
                               <p class="tw:text-xs tw:text-gray-500 tw:mt-1">
-                                  <span v-if="type.key === 'motherboard'">{{ item.socket?.name }} | {{ item.ram_type?.name }}</span>
-                                  <span v-if="type.key === 'cpu'">Socket: {{ item.socket?.name }} | TDP: {{ item.tdp }}W</span>
-                                  <span v-if="type.key === 'ram'">{{ item.ram_type?.name }} | {{ item.size }}GB | {{ item.speed }}MHz</span>
-                                  <span v-if="type.key === 'drive'">{{ item.drive_type?.name }} | {{ item.size }}GB <span v-if="item.rpm">| {{ item.rpm }}RPM</span></span>
-                                  <span v-if="type.key === 'gpu'">TDP: {{ item.tdp }}W | VRAM: {{ item.vram }}GB</span>
-                                  <span v-if="type.key === 'psu'">{{ item.psu_type?.name }} | {{ item.power }}W</span>
-                                  <span v-if="type.key === 'chassis'">{{ item.chassis_type?.name }}</span>
+                                  <span v-if="type.key === 'motherboard'">Socket: {{ item.socket?.name }}<template v-if="item.max_memory"> | Memoria máxima: {{ item.max_memory }}GB</template><template v-if="item.form_factor"> | Factor de forma: {{ item.form_factor.name }}</template><template v-if="item.ram_type"> | Tipo de RAM: {{ item.ram_type.name }}</template></span>
+                                  <span v-else-if="type.key === 'cpu'">Socket: {{ item.socket?.name }}<template v-if="item.cores"> | {{ item.cores }} Núcleos / {{ item.cores * 2 }} Hilos</template><template v-if="item.frequency"> | {{ item.frequency }}GHz - {{ item.max_frequency || item.frequency }}GHz</template><template v-if="item.tdp"> | TDP: {{ item.tdp }}W</template><template v-if="item.igpu"> | Gráficos Integrados: {{ item.igpu.name || 'No' }}</template><template v-else> | Gráficos Integrados: No</template></span>
+                                  <span v-else-if="type.key === 'ram'">{{ item.size * item.modules }}GB ({{ item.size }}GB x {{ item.modules }})<template v-if="item.ram_type"> | {{ item.ram_type.name }}</template><template v-if="item.cas_latency"> | Latencia: CL{{ item.cas_latency }}</template><template v-if="item.speed"> | Velocidad: {{ item.speed }}MHz</template></span>
+                                  <span v-else-if="type.key === 'drive'"><template v-if="item.size >= 1000">{{ item.size / 1000 }}TB</template><template v-else>{{ item.size }}GB</template><template v-if="item.drive_type"> | <template v-if="item.drive_type.id != 1">HDD, {{ item.drive_type.name }} RPM</template><template v-else>{{ item.drive_type.name }}</template></template></span>
+                                  <span v-else-if="type.key === 'gpu'">{{ item.vram }}GB VRAM<template v-if="item.tdp"> | {{ item.tdp }}W</template></span>
+                                  <span v-else-if="type.key === 'psu'">Tipo: {{ item.psu_type?.name }}<template v-if="item.power"> | Potencia: {{ item.power }}W</template><template v-if="item.modularity"> | Modularidad: {{ item.modularity.name }}</template><template v-if="item.efficiency"> | Eficiencia: {{ item.efficiency.name }}</template></span>
+                                  <span v-else-if="type.key === 'chassis'">{{ item.chassis_type?.name }}</span>
                               </p>
                           </div>
                           <div class="tw:font-bold tw:text-indigo-600 tw:dark:text-indigo-400">
@@ -94,6 +94,7 @@
 
 <script setup>
 import { ref, watch } from 'vue';
+import axios from 'axios';
 
 const props = defineProps({
     type: Object,
@@ -106,20 +107,55 @@ const props = defineProps({
 const emit = defineEmits(['toggle', 'select', 'remove']);
 
 const searchQuery = ref('');
-const components = ref([
-    // Mock implementation for UI demonstration
-    { id: 1, name: 'Ejemplo Componente 1', price: 120.50, tdp: 65, size: 16, speed: 3200 },
-    { id: 2, name: 'Ejemplo Componente 2', price: null, tdp: 105, size: 32, speed: 3600 }
-]);
+const components = ref([]);
 const hasMore = ref(true);
+const page = ref(1);
 
-const fetchComponents = () => {
-    // API call replacement via Axios/Axios-mock
-    // The actual parameters would filter by dependencies and pagination (15 items)
+let searchTimeout = null;
+
+const onSearchInput = () => {
+    if (searchTimeout) {
+        clearTimeout(searchTimeout);
+    }
+    searchTimeout = setTimeout(() => {
+        fetchComponents(false);
+    }, 500);
+};
+
+const fetchComponents = async (isLoadMore = false) => {
+    if (!isLoadMore) {
+        components.value = [];
+        page.value = 1;
+    }
+
+    try {
+        const response = await axios.get(`/api/v1/components/${props.type.key}`, {
+            params: {
+                search: searchQuery.value,
+                page: page.value
+            }
+        });
+
+        const data = response.data.data;
+        const meta = response.data.meta;
+
+        if (isLoadMore) {
+            components.value = [...components.value, ...data];
+        } else {
+            components.value = data;
+        }
+
+        hasMore.value = meta.current_page < meta.last_page;
+    } catch (error) {
+        console.error('Error cargando componentes:', error);
+    }
 };
 
 const loadMore = () => {
-    // Fetch 15 more and push to components array
+    if (hasMore.value) {
+        page.value++;
+        fetchComponents(true);
+    }
 };
 
 watch(() => props.isOpen, (newVal) => {
