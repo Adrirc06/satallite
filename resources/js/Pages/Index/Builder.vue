@@ -1,7 +1,9 @@
 <template>
     <Header />
     <main class="container tw:mx-auto tw:px-4 tw:py-8 tw:relative">
-        <p class="tw:text-6xl quantico-bold tw:border-2 border-start-0 border-end-0 border-top-0 tw:border-gray-500 pb-3 text-center">Configurador de PC</p>
+        <p class="tw:text-6xl quantico-bold tw:border-2 border-start-0 border-end-0 border-top-0 tw:border-gray-500 pb-3 text-center">
+            Configurador de PCs
+        </p>
         
         <div class="my-2">
             <!-- Component Dropdowns -->
