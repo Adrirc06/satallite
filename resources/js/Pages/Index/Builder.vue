@@ -17,8 +17,19 @@
                 @select="selectComponent(type.key, $event)"
                 @remove="selectComponent(type.key, null)"
                 :disabled="!isSelectable(type.key)"
-                :warningMsg="getWarningMsg(type.key)"
+                :warningMsg="getDropdownWarning(type.key)"
             />
+        </div>
+
+        <!-- Preferencias y Advertencias -->
+        <div v-if="warnings.length > 0" class="mt-4 p-4 tw:bg-amber-50 tw:border-l-4 tw:border-amber-500 tw:text-amber-800 tw:rounded-r-lg">
+            <div class="tw:flex tw:items-center tw:mb-2">
+                <i class="bi bi-exclamation-triangle-fill tw:text-xl tw:mr-2"></i>
+                <h3 class="tw:font-bold tw:text-lg tw:m-0">Advertencias de compatibilidad</h3>
+            </div>
+            <ul class="tw:list-disc tw:list-inside tw:space-y-1 tw:ml-1">
+                <li v-for="(warning, index) in warnings" :key="index">{{ warning }}</li>
+            </ul>
         </div>
 
         <div class="mt-4 p-4 rounded-4 rounded-bottom-right-none tw:shadow-sm tw:border tw:dark:border-gray-700">
@@ -56,7 +67,7 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue';
+import { ref, reactive, computed } from 'vue';
 import Footer from '@/Layouts/Footer.vue';
 import Header from '@/Layouts/Header.vue';
 import ComponentDropdown from '@/Components/Builder/ComponentDropdown.vue';
@@ -71,6 +82,63 @@ const componentTypes = [
     { key: 'psu', name: 'Fuente de alimentación', icon: 'plug-fill' },
     { key: 'chassis', name: 'Caja', icon: 'pc-display' }
 ];
+
+const caseCompatibility = {
+  "ATX Full Tower": [
+    "HPTX", "XL ATX", "SSI EEB", "SSI CEB", "ATX", 
+    "Micro ATX", "Flex", "Mini DTX", "Mini ITX", "Thin"
+  ],
+  "ATX Mid Tower": [
+    "SSI CEB", "ATX", "Micro ATX", "Flex", 
+    "Mini DTX", "Mini ITX", "Thin"
+  ],
+  "ATX Desktop": [
+    "ATX", "Micro ATX", "Flex", "Mini DTX", "Mini ITX", "Thin"
+  ],
+  "ATX Mini Tower": [
+    "ATX", "Micro ATX", "Flex", "Mini DTX", "Mini ITX", "Thin"
+  ],
+  "ATX Test Bench": [
+    "HPTX", "XL ATX", "SSI EEB", "SSI CEB", "ATX", 
+    "Micro ATX", "Flex", "Mini DTX", "Mini ITX", "Thin"
+  ],
+  "HTPC": [
+    "Micro ATX", "Flex", "Mini DTX", "Mini ITX", "Thin"
+  ],
+  "MicroATX Mid Tower": [
+    "Micro ATX", "Flex", "Mini DTX", "Mini ITX", "Thin"
+  ],
+  "MicroATX Mini Tower": [
+    "Micro ATX", "Flex", "Mini DTX", "Mini ITX", "Thin"
+  ],
+  "MicroATX Desktop": [
+    "Micro ATX", "Flex", "Mini DTX", "Mini ITX", "Thin"
+  ],
+  "MicroATX Slim": [
+    "Micro ATX", "Flex", "Mini ITX", "Thin"
+  ],
+  "Mini ITX Tower": [
+    "Mini ITX", "Mini DTX", "Thin"
+  ],
+  "Mini ITX Desktop": [
+    "Mini ITX", "Thin"
+  ],
+  "Mini ITX Test Bench": [
+    "Mini ITX", "Mini DTX", "Thin"
+  ],
+  "Rackmount 2U": [
+    "Micro ATX", "Flex", "Mini ITX", "Thin"
+  ],
+  "Rackmount 3U": [
+    "ATX", "Micro ATX", "Flex", "Mini ITX", "Thin"
+  ],
+  "Rackmount 4U": [
+    "SSI EEB", "SSI CEB", "ATX", "Micro ATX", "Flex", "Mini ITX", "Thin"
+  ],
+  "Rackmount 5U": [
+    "SSI EEB", "SSI CEB", "ATX", "Micro ATX", "Flex", "Mini ITX", "Thin"
+  ]
+};
 
 const openDropdown = ref(null);
 const buildName = ref('');
@@ -97,11 +165,22 @@ const toggleDropdown = (key) => {
 
 const selectComponent = (key, component) => {
     selections[key] = component;
+    
+    // Si se elimina la placa base, eliminamos también CPU y RAM
+    if (key === 'motherboard' && !component) {
+        selections.cpu = null;
+        selections.ram = null;
+    }
+    
     openDropdown.value = null;
 };
 
 // Validations and restrictions logic mapped as required
 const isSelectable = (key) => {
+    if ((key === 'cpu' || key === 'ram') && !selections.motherboard) {
+        return false;
+    }
+    
     if (key === 'cpu') {
         const socketName = selections.motherboard?.socket?.name || '';
         if (socketName.toLowerCase().includes('integrated')) return false;
@@ -109,32 +188,43 @@ const isSelectable = (key) => {
     return true;
 };
 
-const getWarningMsg = (key) => {
+const getDropdownWarning = (key) => {
+    if ((key === 'cpu' || key === 'ram') && !selections.motherboard) {
+        return 'Debes elegir primero una placa base para poder elegir este componente';
+    }
+    
     if (key === 'cpu') {
        const socketName = selections.motherboard?.socket?.name || '';
        if (socketName.toLowerCase().includes('integrated')) {
            return 'La placa base tiene procesador integrado.';
        }
     }
+    return null;
+};
+
+const warnings = computed(() => {
+    const msgs = [];
     
     // Check combined TDP against PSU
-    if (key === 'psu' && selections.cpu && selections.gpu && selections.psu) {
-        const combinedTDP = selections.cpu.tdp + selections.gpu.tdp;
-        if (combinedTDP > selections.psu.power) {
-             return 'La TDP combinada supera la capacidad de la fuente.';
-        } else if (selections.psu.power < (combinedTDP * 1.1)) {
-             return 'La fuente de alimentación puede no ser lo suficiente potente.';
+    if (selections.cpu && selections.gpu && selections.psu) {
+        const combinedTDP = (selections.cpu.tdp || 0) + (selections.gpu.tdp || 0);
+        if (combinedTDP > (selections.psu.power || 0)) {
+             msgs.push('La suma del TDP del procesador y la gráfica (' + combinedTDP + 'W) supera la capacidad de la fuente de alimentación (' + selections.psu.power + 'W).');
+        } else if ((selections.psu.power || 0) < (combinedTDP * 1.3)) {
+             msgs.push('La fuente de alimentación puede no ser lo suficientemente potente. Se recomienda dejar un margen razonable.');
         }
     }
     
     // Check form factor
-    if (key === 'chassis' && selections.motherboard && selections.chassis) {
-        if(selections.motherboard.form_factor_id !== selections.chassis.form_factor_id) {
-            return 'La placa base puede no ser compatible con la caja elegida.';
+    if (selections.motherboard && selections.chassis) {
+        const isCompatible = caseCompatibility[selections.chassis.chassis_type.name]?.includes(selections.motherboard.form_factor.name);
+        if (!isCompatible) {
+            msgs.push('La placa base elegida puede no ser compatible con el factor de forma de la caja.');
         }
     }
-    return null;
-};
+
+    return msgs;
+});
 
 const saveBuild = () => {
     // In complete implementation, post via Inertia useForm to backend
