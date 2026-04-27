@@ -1,14 +1,13 @@
 <?php
 
-use App\Models\User;
-use App\Models\Build;
+use App\Models\Chassis;
 use App\Models\Cpu;
+use App\Models\Drive;
 use App\Models\Gpu;
 use App\Models\Motherboard;
 use App\Models\Psu;
 use App\Models\Ram;
-use App\Models\Drive;
-use App\Models\Chassis;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 beforeEach(function () {
@@ -16,7 +15,7 @@ beforeEach(function () {
     // Sockets
     $socketAM4 = DB::table('sockets')->insertGetId(['name' => 'AM4']);
     $socketIntegrated = DB::table('sockets')->insertGetId(['name' => 'Intel Integrated']);
-    
+
     // PSU Types, Form Factors, Ram Types, Drive Types, Chassis Types
     $psuType = DB::table('psu_types')->insertGetId(['name' => 'ATX']);
     $formFactor = DB::table('form_factors')->insertGetId(['name' => 'ATX']);
@@ -55,7 +54,7 @@ beforeEach(function () {
         'socket_id' => $socketAM4,
         'igpu_id' => null,
     ]);
-    
+
     $igpu = DB::table('igpus')->insertGetId(['name' => 'Radeon Graphics']);
     $this->igpuCpu = Cpu::create([
         'name' => 'Ryzen 5G',
@@ -91,7 +90,7 @@ test('it blocks unauthenticated users', function () {
 
 test('it requires basic fields to test validation', function () {
     $user = User::factory()->create();
-    
+
     $this->actingAs($user)
         ->postJson('/api/v1/builds', [])
         ->assertStatus(422)
@@ -100,7 +99,7 @@ test('it requires basic fields to test validation', function () {
 
 test('it requires cpu if motherboard has no integrated cpu', function () {
     $user = User::factory()->create();
-    
+
     $this->actingAs($user)
         ->postJson('/api/v1/builds', [
             'name' => 'Test Build',
@@ -117,7 +116,7 @@ test('it requires cpu if motherboard has no integrated cpu', function () {
 
 test('it allows missing cpu if motherboard has integrated cpu', function () {
     $user = User::factory()->create();
-    
+
     $this->actingAs($user)
         ->postJson('/api/v1/builds', [
             'name' => 'Integrated Build',
@@ -133,7 +132,7 @@ test('it allows missing cpu if motherboard has integrated cpu', function () {
 
 test('it requires gpu if cpu has no integrated graphics', function () {
     $user = User::factory()->create();
-    
+
     $this->actingAs($user)
         ->postJson('/api/v1/builds', [
             'name' => 'Test Build',
@@ -150,7 +149,7 @@ test('it requires gpu if cpu has no integrated graphics', function () {
 
 test('it allows missing gpu if cpu has integrated graphics', function () {
     $user = User::factory()->create();
-    
+
     $this->actingAs($user)
         ->postJson('/api/v1/builds', [
             'name' => 'Test Build',
@@ -166,7 +165,7 @@ test('it allows missing gpu if cpu has integrated graphics', function () {
 
 test('it prevents saving if TDP exceeds PSU power', function () {
     $user = User::factory()->create();
-    
+
     $this->actingAs($user)
         ->postJson('/api/v1/builds', [
             'name' => 'Overpowered Build',
@@ -184,7 +183,7 @@ test('it prevents saving if TDP exceeds PSU power', function () {
 
 test('it creates the build successfully when everything is valid', function () {
     $user = User::factory()->create();
-    
+
     $this->actingAs($user)
         ->postJson('/api/v1/builds', [
             'name' => 'Perfect Build',
@@ -200,7 +199,7 @@ test('it creates the build successfully when everything is valid', function () {
         ->assertSuccessful()
         ->assertJsonPath('data.name', 'Perfect Build')
         ->assertJsonPath('data.components.cpu.id', $this->standardCpu->id);
-        
+
     $this->assertDatabaseHas('builds', [
         'name' => 'Perfect Build',
         'cpu_id' => $this->standardCpu->id,

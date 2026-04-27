@@ -24,6 +24,20 @@ class BuildController extends Controller
     }
 
     /**
+     * Devuelve builds públicas aleatorias.
+     */
+    public function random(): AnonymousResourceCollection
+    {
+        $builds = Build::with(['user', 'cpu', 'gpu', 'ram', 'motherboard', 'psu', 'drive', 'chassis'])
+            ->where('is_public', true)
+            ->inRandomOrder()
+            ->limit(3)
+            ->get();
+
+        return BuildResource::collection($builds);
+    }
+
+    /**
      * Display all builds for a specific user.
      */
     public function userBuilds(User $user): AnonymousResourceCollection
@@ -47,5 +61,19 @@ class BuildController extends Controller
         $build->load(['user', 'cpu', 'gpu', 'ram', 'motherboard', 'psu', 'drive', 'chassis']);
 
         return new BuildResource($build);
+    }
+
+    /**
+     * Remove the specified build from storage.
+     */
+    public function destroy(Build $build)
+    {
+        if (request()->user()->id !== $build->user_id) {
+            abort(403, 'No tienes permiso para eliminar esta configuración.');
+        }
+
+        $build->delete();
+
+        return response()->json(['message' => 'Configuración eliminada correctamente']);
     }
 }

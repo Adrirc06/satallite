@@ -31,10 +31,10 @@
         </div>
 
         <!-- Preferencias y Advertencias -->
-        <div v-if="warnings.length > 0" class="mt-4 p-4 tw:bg-amber-100 tw:border-3 tw:border-amber-500 tw:text-amber-700 rounded-5 rounded-bottom-right-none">
+        <div v-if="compatibilityWarnings.length > 0" class="mt-4 p-4 tw:bg-amber-100 tw:border-3 tw:border-amber-500 tw:text-amber-700 rounded-5 rounded-bottom-right-none">
             <p class="h3 mb-3 mx-3">Advertencias de compatibilidad</p>
             <ul class="tw:list-disc tw:list-inside tw:space-y-1 tw:ml-1">
-                <li v-for="(warning, index) in warnings" :key="index">{{ warning }}</li>
+                <li v-for="(warning, index) in compatibilityWarnings" :key="index">{{ warning }}</li>
             </ul>
         </div>
 
@@ -55,17 +55,6 @@
 
             <div class="tw:flex tw:gap-4 tw:mt-4">
                 <button @click="saveBuild" class="tw:flex-1 tw:bg-indigo-500 tw:hover:bg-indigo-400 tw:text-white tw:font-bold tw:py-3 tw:px-4 rounded-3 rounded-bottom-right-none tw:transition tw:duration-150">Guardar</button>
-                <button @click="exportPdf" class="tw:flex-1 tw:bg-red-600 tw:hover:bg-red-500 tw:text-white tw:font-bold tw:py-3 tw:px-4 rounded-3 rounded-bottom-right-none tw:transition tw:duration-150">Exportar PDF</button>
-                <button @click="showAIPrompt = true" class="tw:flex-1 tw:bg-linear-to-r tw:from-purple-500 tw:to-pink-500 tw:hover:from-purple-600 tw:hover:to-pink-600 text-white tw:py-3 tw:px-4 rounded-3 rounded-bottom-right-none tw:transition tw:duration-150">Resumen IA</button>
-            </div>
-        </div>
-
-        <!-- AI Dialog -->
-        <div v-if="showAIPrompt" class="tw:fixed tw:inset-0 tw:z-50 tw:flex tw:items-center tw:justify-center tw:bg-black tw:bg-opacity-50">
-            <div class="tw:bg-white tw:dark:bg-gray-800 tw:p-6 tw:rounded-lg tw:shadow-xl tw:max-w-sm tw:w-full">
-                <h3 class="tw:text-lg tw:font-bold tw:mb-2">Resumen IA</h3>
-                <p class="tw:text-gray-600 tw:dark:text-gray-300 tw:mb-4">Esta es una funcionalidad en desarrollo.</p>
-                <button @click="showAIPrompt = false" class="tw:w-full tw:bg-gray-200 tw:hover:bg-gray-300 tw:text-gray-800 tw:font-bold tw:py-2 tw:px-4 tw:rounded">Cerrar</button>
             </div>
         </div>
     </main>
@@ -78,9 +67,8 @@ import { router, usePage } from '@inertiajs/vue3';
 import axios from 'axios';
 import Footer from '@/Layouts/Footer.vue';
 import Header from '@/Layouts/Header.vue';
-import ComponentDropdown from '@/Components/Builder/ComponentDropdown.vue';
+import ComponentDropdown from '@/Components/ComponentDropdown.vue';
 
-// Mock component types. Icons etc would be defined here.
 const componentTypes = [
     { key: 'motherboard', name: 'Placa base', icon: 'motherboard' },
     { key: 'cpu', name: 'Procesador', icon: 'cpu' },
@@ -154,7 +142,6 @@ const errorsContainer = ref(null);
 const openDropdown = ref(null);
 const buildName = ref('');
 const isPublic = ref(false);
-const showAIPrompt = ref(false);
 const errors = ref([]);
 
 const selections = reactive({
@@ -176,8 +163,6 @@ const toggleDropdown = (key) => {
 };
 
 const selectComponent = (key, component) => {
-    // Si cambiamos la placa base, debemos invalidar CPU y RAM si sus sockets o tipos de RAM no coinciden, 
-    // o simplemente limpiarlos para evitar incompatibilidades
     if (key === 'motherboard' && selections.motherboard?.id !== component?.id) {
         selections.cpu = null;
         selections.ram = null;
@@ -188,7 +173,6 @@ const selectComponent = (key, component) => {
     openDropdown.value = null;
 };
 
-// Validations and restrictions logic mapped as required
 const isSelectable = (key) => {
     if ((key === 'cpu' || key === 'ram') && !selections.motherboard) {
         return false;
@@ -228,30 +212,27 @@ const getDropdownWarning = (key) => {
     return null;
 };
 
-const warnings = computed(() => {
-    const msgs = [];
+const compatibilityWarnings = computed(() => {
+    const warnings = [];
     
-    // Check combined TDP against PSU
     if (selections.cpu && selections.gpu && selections.psu) {
         const combinedTDP = (selections.cpu.tdp || 0) + (selections.gpu.tdp || 0);
         if ((selections.psu.power || 0) >= combinedTDP && (selections.psu.power || 0) < (combinedTDP * 1.3)) {
-             msgs.push('La fuente de alimentación puede no ser lo suficientemente potente. Se recomienda dejar un margen razonable.');
+             warnings.push('La fuente de alimentación puede no ser lo suficientemente potente. Se recomienda dejar un margen razonable.');
         }
     }
     
-    // Check form factor
     if (selections.motherboard && selections.chassis) {
         const isCompatible = caseCompatibility[selections.chassis.chassis_type.name]?.includes(selections.motherboard.form_factor.name);
         if (!isCompatible) {
-            msgs.push('La placa base elegida puede no ser compatible con el factor de forma de la caja.');
+            warnings.push('La placa base elegida puede no ser compatible con el factor de forma de la caja.');
         }
     }
 
-    return msgs;
+    return warnings;
 });
 
 const saveBuild = () => {
-    // Si el usuario no está logueado, lo redirigimos a la pantalla de login
     if (!page.props.auth?.user) {
         router.visit('/login');
         return;
@@ -290,7 +271,6 @@ const saveBuild = () => {
         return;
     }
 
-    // Petición AJAX (axios) sin enlazar completamente la UI o redirigir (para probar validaciones del controlador)
     axios.post('/api/v1/builds', {
         name: buildName.value,
         is_public: isPublic.value,
@@ -303,8 +283,7 @@ const saveBuild = () => {
         chassis_id: selections.chassis?.id
     })
     .then(response => {       
-        // TODO: cambiar redirección para llevar a la pagina de la build
-        router.visit('/');
+        router.visit('/build/' + response.data.data.id);
     })
     .catch(error => {
         console.error('Error desde el servidor:', error.response?.data);
@@ -320,9 +299,5 @@ const saveBuild = () => {
             });
         }
     });
-};
-
-const exportPdf = () => {
-    console.log('Exporting PDF');
 };
 </script>

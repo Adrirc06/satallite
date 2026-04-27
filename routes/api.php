@@ -33,6 +33,8 @@ Route::prefix('v1')->group(function () {
     Route::get('/components/{type}', [ComponentController::class, 'index']);
 
     // Component Specific Routes (if needed later)
+    Route::get('/builds', [BuildController::class, 'index']);
+    Route::get('/builds/random', [BuildController::class, 'random']);
     Route::get('/users/{user}/builds', [BuildController::class, 'userBuilds']);
 
     Route::get('/builds/{build}/ratings', [RatingController::class, 'index']);
@@ -60,6 +62,7 @@ Route::prefix('v1')->group(function () {
         Route::delete('/articles/{id}', [ArticleController::class, 'destroy']);
 
         Route::post('/builds', [BuildController::class, 'store']);
+        Route::delete('/builds/{build}', [BuildController::class, 'destroy']);
         Route::post('/builds/{build}/ratings', [RatingController::class, 'store']);
     });
 });
