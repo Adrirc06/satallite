@@ -101,7 +101,11 @@ const props = defineProps({
     selected: Object,
     isOpen: Boolean,
     disabled: Boolean,
-    warningMsg: String
+    warningMsg: String,
+    filters: {
+        type: Object,
+        default: () => ({})
+    }
 });
 
 const emit = defineEmits(['toggle', 'select', 'remove']);
@@ -132,7 +136,8 @@ const fetchComponents = async (isLoadMore = false) => {
         const response = await axios.get(`/api/v1/components/${props.type.key}`, {
             params: {
                 search: searchQuery.value,
-                page: page.value
+                page: page.value,
+                ...props.filters
             }
         });
 
@@ -161,6 +166,17 @@ const loadMore = () => {
 watch(() => props.isOpen, (newVal) => {
     if (newVal && components.value.length === 0) {
         fetchComponents();
+    }
+});
+
+watch(() => JSON.stringify(props.filters), (newVal, oldVal) => {
+    if (newVal !== oldVal) {
+        // Si cambian los filtros reales, reiniciamos la lista de componentes para forzar nueva carga
+        components.value = [];
+        searchQuery.value = '';
+        if (props.isOpen) {
+            fetchComponents();
+        }
     }
 });
 </script>

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\ArticleController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\BuildController;
+use App\Http\Controllers\Api\V1\ComponentController;
 use App\Http\Controllers\Api\V1\Components\ChassisController;
 use App\Http\Controllers\Api\V1\Components\CpuController;
 use App\Http\Controllers\Api\V1\Components\DriveController;
@@ -29,7 +30,7 @@ Route::prefix('v1')->group(function () {
     Route::get('/articles/{id}', [ArticleController::class, 'show']);
 
     // PC Builder Dynamic Components endpoint
-    Route::get('/components/{type}', [\App\Http\Controllers\Api\V1\ComponentController::class, 'index']);
+    Route::get('/components/{type}', [ComponentController::class, 'index']);
 
     // Component Specific Routes (if needed later)
     Route::get('/users/{user}/builds', [BuildController::class, 'userBuilds']);
@@ -37,10 +38,10 @@ Route::prefix('v1')->group(function () {
     Route::get('/builds/{build}/ratings', [RatingController::class, 'index']);
 
     // Components Specific Filters
-    Route::get('/cpus/socket/{socket_id}', [CpuController::class, 'bySocket']);
-    Route::get('/motherboards/socket/{socket_id}', [MotherboardController::class, 'bySocket']);
-    Route::get('/motherboards/ram_type/{ram_type_id}', [MotherboardController::class, 'byRamType']);
-    Route::get('/rams/ram_type/{ram_type_id}', [RamController::class, 'byRamType']);
+    Route::get('/components/cpus/socket/{socket_id}', [CpuController::class, 'bySocket']);
+    Route::get('/components/motherboards/socket/{socket_id}', [MotherboardController::class, 'bySocket']);
+    Route::get('/components/motherboards/ram_type/{ram_type_id}', [MotherboardController::class, 'byRamType']);
+    Route::get('/components/rams/ram_type/{ram_type_id}', [RamController::class, 'byRamType']);
 
     // Components (Public Read-Only)
     Route::apiResource('cpus', CpuController::class)->only(['index', 'show']);

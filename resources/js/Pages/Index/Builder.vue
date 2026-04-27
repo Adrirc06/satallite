@@ -13,6 +13,7 @@
                 :type="type"
                 :selected="selections[type.key]"
                 :isOpen="openDropdown === type.key"
+                :filters="getFiltersFor(type.key)"
                 @toggle="toggleDropdown(type.key)"
                 @select="selectComponent(type.key, $event)"
                 @remove="selectComponent(type.key, null)"
@@ -21,12 +22,17 @@
             />
         </div>
 
+        <!-- Errores de validación al guardar -->
+        <div v-if="errors.length > 0" class="mt-4 p-4 tw:bg-red-100 tw:border-3 tw:border-red-500 tw:text-red-700 rounded-5 rounded-bottom-right-none">
+            <p class="h3 mb-3 mx-3">Errores de validación</p>
+            <ul class="tw:list-disc tw:list-inside tw:space-y-1 tw:ml-1">
+                <li v-for="(error, index) in errors" :key="index">{{ error }}</li>
+            </ul>
+        </div>
+
         <!-- Preferencias y Advertencias -->
-        <div v-if="warnings.length > 0" class="mt-4 p-4 tw:bg-amber-50 tw:border-l-4 tw:border-amber-500 tw:text-amber-800 tw:rounded-r-lg">
-            <div class="tw:flex tw:items-center tw:mb-2">
-                <i class="bi bi-exclamation-triangle-fill tw:text-xl tw:mr-2"></i>
-                <h3 class="tw:font-bold tw:text-lg tw:m-0">Advertencias de compatibilidad</h3>
-            </div>
+        <div v-if="warnings.length > 0" class="mt-4 p-4 tw:bg-amber-100 tw:border-3 tw:border-amber-500 tw:text-amber-700 rounded-5 rounded-bottom-right-none">
+            <p class="h3 mb-3 mx-3">Advertencias de compatibilidad</p>
             <ul class="tw:list-disc tw:list-inside tw:space-y-1 tw:ml-1">
                 <li v-for="(warning, index) in warnings" :key="index">{{ warning }}</li>
             </ul>
@@ -144,6 +150,7 @@ const openDropdown = ref(null);
 const buildName = ref('');
 const isPublic = ref(false);
 const showAIPrompt = ref(false);
+const errors = ref([]);
 
 const selections = reactive({
     motherboard: null,
@@ -164,13 +171,14 @@ const toggleDropdown = (key) => {
 };
 
 const selectComponent = (key, component) => {
-    selections[key] = component;
-    
-    // Si se elimina la placa base, eliminamos también CPU y RAM
-    if (key === 'motherboard' && !component) {
+    // Si cambiamos la placa base, debemos invalidar CPU y RAM si sus sockets o tipos de RAM no coinciden, 
+    // o simplemente limpiarlos para evitar incompatibilidades
+    if (key === 'motherboard' && selections.motherboard?.id !== component?.id) {
         selections.cpu = null;
         selections.ram = null;
     }
+    
+    selections[key] = component;
     
     openDropdown.value = null;
 };
@@ -186,6 +194,19 @@ const isSelectable = (key) => {
         if (socketName.toLowerCase().includes('integrated')) return false;
     }
     return true;
+};
+
+const getFiltersFor = (key) => {
+    const filters = {};
+    if (selections.motherboard) {
+        if (key === 'cpu' && selections.motherboard.socket?.id) {
+            filters.socket_id = selections.motherboard.socket.id;
+        }
+        if (key === 'ram' && selections.motherboard.ram_type?.id) {
+            filters.ram_type_id = selections.motherboard.ram_type.id;
+        }
+    }
+    return filters;
 };
 
 const getDropdownWarning = (key) => {
@@ -208,9 +229,7 @@ const warnings = computed(() => {
     // Check combined TDP against PSU
     if (selections.cpu && selections.gpu && selections.psu) {
         const combinedTDP = (selections.cpu.tdp || 0) + (selections.gpu.tdp || 0);
-        if (combinedTDP > (selections.psu.power || 0)) {
-             msgs.push('La suma del TDP del procesador y la gráfica (' + combinedTDP + 'W) supera la capacidad de la fuente de alimentación (' + selections.psu.power + 'W).');
-        } else if ((selections.psu.power || 0) < (combinedTDP * 1.3)) {
+        if ((selections.psu.power || 0) >= combinedTDP && (selections.psu.power || 0) < (combinedTDP * 1.3)) {
              msgs.push('La fuente de alimentación puede no ser lo suficientemente potente. Se recomienda dejar un margen razonable.');
         }
     }
@@ -227,6 +246,35 @@ const warnings = computed(() => {
 });
 
 const saveBuild = () => {
+    errors.value = [];
+    
+    if (!buildName.value || buildName.value.trim() === '') {
+        errors.value.push('El nombre de la configuración no puede estar vacío.');
+    }
+    
+    const isCpuIntegrated = selections.motherboard?.socket?.name?.toLowerCase().includes('integrated');
+    const hasIgpu = selections.cpu?.igpu != null;
+    
+    componentTypes.forEach(type => {
+        if (!selections[type.key]) {
+            if (type.key === 'cpu' && isCpuIntegrated) return;
+            if (type.key === 'gpu' && hasIgpu) return;
+            errors.value.push(`Aún no has seleccionado ningún componente para: ${type.name}`);
+        }
+    });
+
+    if (selections.cpu && selections.gpu && selections.psu) {
+        const combinedTDP = (selections.cpu.tdp || 0) + (selections.gpu.tdp || 0);
+        if (combinedTDP > (selections.psu.power || 0)) {
+            errors.value.push(`La suma del TDP del procesador y la gráfica (${combinedTDP}W) supera la capacidad de la fuente de alimentación (${selections.psu.power}W).`);
+        }
+    }
+
+    if (errors.value.length > 0) {
+        // En un comportamiento real habría un scroll hacia arriba o foco visual
+        return;
+    }
+
     // In complete implementation, post via Inertia useForm to backend
     console.log('Saved', { name: buildName.value, public: isPublic.value, build: selections });
 };
