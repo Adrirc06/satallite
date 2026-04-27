@@ -23,7 +23,7 @@
         </div>
 
         <!-- Errores de validación al guardar -->
-        <div v-if="errors.length > 0" class="mt-4 p-4 tw:bg-red-100 tw:border-3 tw:border-red-500 tw:text-red-700 rounded-5 rounded-bottom-right-none">
+        <div ref="errorsContainer" v-if="errors.length > 0" class="mt-4 p-4 tw:bg-red-100 tw:border-3 tw:border-red-500 tw:text-red-700 rounded-5 rounded-bottom-right-none">
             <p class="h3 mb-3 mx-3">Errores de validación</p>
             <ul class="tw:list-disc tw:list-inside tw:space-y-1 tw:ml-1">
                 <li v-for="(error, index) in errors" :key="index">{{ error }}</li>
@@ -73,7 +73,9 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive, computed, nextTick } from 'vue';
+import { router, usePage } from '@inertiajs/vue3';
+import axios from 'axios';
 import Footer from '@/Layouts/Footer.vue';
 import Header from '@/Layouts/Header.vue';
 import ComponentDropdown from '@/Components/Builder/ComponentDropdown.vue';
@@ -146,6 +148,9 @@ const caseCompatibility = {
   ]
 };
 
+const page = usePage();
+
+const errorsContainer = ref(null);
 const openDropdown = ref(null);
 const buildName = ref('');
 const isPublic = ref(false);
@@ -246,6 +251,12 @@ const warnings = computed(() => {
 });
 
 const saveBuild = () => {
+    // Si el usuario no está logueado, lo redirigimos a la pantalla de login
+    if (!page.props.auth?.user) {
+        router.visit('/login');
+        return;
+    }
+
     errors.value = [];
     
     if (!buildName.value || buildName.value.trim() === '') {
@@ -271,12 +282,44 @@ const saveBuild = () => {
     }
 
     if (errors.value.length > 0) {
-        // En un comportamiento real habría un scroll hacia arriba o foco visual
+        nextTick(() => {
+            if (errorsContainer.value) {
+                errorsContainer.value.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        });
         return;
     }
 
-    // In complete implementation, post via Inertia useForm to backend
-    console.log('Saved', { name: buildName.value, public: isPublic.value, build: selections });
+    // Petición AJAX (axios) sin enlazar completamente la UI o redirigir (para probar validaciones del controlador)
+    axios.post('/api/v1/builds', {
+        name: buildName.value,
+        is_public: isPublic.value,
+        motherboard_id: selections.motherboard?.id,
+        cpu_id: selections.cpu?.id,
+        ram_id: selections.ram?.id,
+        drive_id: selections.drive?.id,
+        gpu_id: selections.gpu?.id,
+        psu_id: selections.psu?.id,
+        chassis_id: selections.chassis?.id
+    })
+    .then(response => {       
+        // TODO: cambiar redirección para llevar a la pagina de la build
+        router.visit('/');
+    })
+    .catch(error => {
+        console.error('Error desde el servidor:', error.response?.data);
+        if (error.response?.status === 422) {
+            const serverErrors = error.response.data.errors;
+            Object.values(serverErrors).forEach(errArray => {
+                errArray.forEach(err => errors.value.push(err));
+            });
+            nextTick(() => {
+                if (errorsContainer.value) {
+                    errorsContainer.value.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            });
+        }
+    });
 };
 
 const exportPdf = () => {
