@@ -29,7 +29,8 @@ class BuildResource extends JsonResource
                 'chassis' => new ChassisResource($this->whenLoaded('chassis')),
             ],
 
-            'ratings_avg' => $this->whenCounted('ratings', fn () => $this->ratings_avg_score),
+            'ratings_avg_rating' => $this->whenAggregated('ratings', 'rating', 'avg'),
+            'ratings_count' => $this->whenCounted('ratings'),
             'created_at' => $this->created_at,
         ];
     }

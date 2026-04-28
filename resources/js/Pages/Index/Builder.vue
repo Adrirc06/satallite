@@ -22,7 +22,6 @@
             />
         </div>
 
-        <!-- Errores de validación al guardar -->
         <div ref="errorsContainer" v-if="errors.length > 0" class="mt-4 p-4 tw:bg-red-100 tw:border-3 tw:border-red-500 tw:text-red-700 rounded-5 rounded-bottom-right-none">
             <p class="h3 mb-3 mx-3">Errores de validación</p>
             <ul class="tw:list-disc tw:list-inside tw:space-y-1 tw:ml-1">
@@ -42,7 +41,7 @@
             <div class="tw:flex tw:flex-row tw:items-end tw:gap-6 tw:mb-4 tw:flex-nowrap">
                 <div class="tw:flex-1 tw:min-w-0">
                     <label class="tw:block tw:text-lg tw:font-bold tw:text-gray-700 tw:dark:text-gray-300 tw:mb-2">Nombre de la Build</label>
-                    <input v-model="buildName" type="text" class="tw:w-full tw:text-lg tw:py-2 border-bottom tw:border-gray-500 tw:bg-transparent tw:border-t-0 tw:border-l-0 tw:border-r-0 tw:focus:ring-0 tw:focus:outline-none tw:focus:border-gray-500 tw:dark:text-white" placeholder="Ej. Mi PC de ensueño">
+                    <input v-model="buildName" type="text" class="tw:w-full tw:text-lg tw:py-2 border-bottom tw:border-gray-500 tw:bg-transparent tw:border-t-0 tw:border-l-0 tw:border-r-0 tw:focus:ring-0 tw:focus:outline-none tw:focus:border-gray-500 tw:dark:text-white" placeholder="PC gaming para 2026">
                 </div>
                 <div class="tw:shrink-0 tw:pb-0.5">
                     <label class="tw:cursor-pointer tw:select-none d-flex align-items-center">
@@ -136,22 +135,33 @@ const caseCompatibility = {
   ]
 };
 
+const props = defineProps({
+    build: {
+        type: Object,
+        default: null
+    },
+    mode: {
+        type: String,
+        default: 'new'
+    }
+});
+
 const page = usePage();
 
 const errorsContainer = ref(null);
 const openDropdown = ref(null);
-const buildName = ref('');
-const isPublic = ref(false);
+const buildName = ref(props.build && props.mode === 'edit' ? props.build.name : '');
+const isPublic = ref(props.build && props.mode === 'edit' ? Boolean(props.build.is_public) : false);
 const errors = ref([]);
 
 const selections = reactive({
-    motherboard: null,
-    cpu: null,
-    ram: null,
-    drive: null,
-    gpu: null,
-    psu: null,
-    chassis: null
+    motherboard: props.build?.motherboard || null,
+    cpu: props.build?.cpu || null,
+    ram: props.build?.ram || null,
+    drive: props.build?.drive || null,
+    gpu: props.build?.gpu || null,
+    psu: props.build?.psu || null,
+    chassis: props.build?.chassis || null
 });
 
 const toggleDropdown = (key) => {
@@ -271,7 +281,7 @@ const saveBuild = () => {
         return;
     }
 
-    axios.post('/api/v1/builds', {
+    const payload = {
         name: buildName.value,
         is_public: isPublic.value,
         motherboard_id: selections.motherboard?.id,
@@ -281,7 +291,13 @@ const saveBuild = () => {
         gpu_id: selections.gpu?.id,
         psu_id: selections.psu?.id,
         chassis_id: selections.chassis?.id
-    })
+    };
+
+    const request = (props.mode === 'edit' && props.build)
+        ? axios.put('/api/v1/builds/' + props.build.id, payload)
+        : axios.post('/api/v1/builds', payload);
+
+    request
     .then(response => {       
         router.visit('/build/' + response.data.data.id);
     })

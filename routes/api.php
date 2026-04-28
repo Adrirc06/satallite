@@ -62,6 +62,7 @@ Route::prefix('v1')->group(function () {
         Route::delete('/articles/{id}', [ArticleController::class, 'destroy']);
 
         Route::post('/builds', [BuildController::class, 'store']);
+        Route::put('/builds/{build}', [BuildController::class, 'update']);
         Route::delete('/builds/{build}', [BuildController::class, 'destroy']);
         Route::post('/builds/{build}/ratings', [RatingController::class, 'store']);
     });

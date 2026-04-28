@@ -1,9 +1,21 @@
 ﻿<template>
     <div class="carousel-item" :class="{ 'active': isActive }" style="cursor: pointer;" @click="visitBuild">
         <div class="w-100 pb-5 pt-4 d-block d-flex justify-content-center align-items-center flex-column">
-            <h3 class="h1 text-center mb-4">
-                {{ build.name }}
-            </h3>
+            <div class="d-flex flex-row align-items-center justify-content-center gap-4">
+                <p class="h1 text-center">
+                    {{ build.name}}
+                </p>
+                <div class="d-flex flex-row align-items-center justify-content-center gap-2">
+                    <i class="bi bi-star-fill tw:!text-yellow-400 h2 tw:mb-0"></i>
+                    <span class="tw:text-2xl pb-2">
+                        {{ getShortRatings() }}
+                    </span>
+                    <span class="tw:text-gray-400 tw:text-2xl pb-2">
+                        ({{ build.ratings_count }})
+                    </span>
+                </div>
+            </div>
+
             <div class="w-75 row g-3 tw:mb-6">
                 <div class="col-12 col-md-6 col-xl-4">
                     <div class="d-flex flex-column tw:border-2 tw:border-gray-500 tw:h-60 rounded-4 rounded-bottom-right-none p-3">
@@ -93,4 +105,10 @@ const props = defineProps({
 const visitBuild = () => {
     router.visit('/build/' + props.build.id);
 };
+
+const getShortRatings = () => {
+    if (!props.build.ratings_avg_rating) return 0;
+
+    return (props.build.ratings_avg_rating / 20).toFixed(1);
+}
 </script>

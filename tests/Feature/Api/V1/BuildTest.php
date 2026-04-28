@@ -198,7 +198,9 @@ test('it creates the build successfully when everything is valid', function () {
         ])
         ->assertSuccessful()
         ->assertJsonPath('data.name', 'Perfect Build')
-        ->assertJsonPath('data.components.cpu.id', $this->standardCpu->id);
+        ->assertJsonPath('data.components.cpu.id', $this->standardCpu->id)
+        ->assertJsonPath('data.ratings_avg_rating', null)
+        ->assertJsonPath('data.ratings_count', 0);
 
     $this->assertDatabaseHas('builds', [
         'name' => 'Perfect Build',
