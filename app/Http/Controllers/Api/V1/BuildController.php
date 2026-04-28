@@ -46,14 +46,19 @@ class BuildController extends Controller
      */
     public function userBuilds(User $user): AnonymousResourceCollection
     {
-        $builds = $user->builds()
+        $perPage = min((int) request('per_page', 15), 50);
+
+        $query = $user->builds()
             ->with(['cpu', 'gpu', 'ram', 'motherboard', 'psu', 'drive', 'chassis'])
             ->withAvg('ratings', 'rating')
             ->withCount('ratings')
-            ->latest()
-            ->paginate(15);
+            ->latest();
 
-        return BuildResource::collection($builds);
+        if (request()->boolean('is_public')) {
+            $query->where('is_public', true);
+        }
+
+        return BuildResource::collection($query->paginate($perPage));
     }
 
     /**

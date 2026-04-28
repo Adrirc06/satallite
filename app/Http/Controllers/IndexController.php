@@ -10,6 +10,7 @@ use App\Http\Resources\Api\V1\MotherboardResource;
 use App\Http\Resources\Api\V1\PsuResource;
 use App\Http\Resources\Api\V1\RamResource;
 use App\Models\Build;
+use App\Models\User;
 use App\Services\ArticlesProvider;
 use Illuminate\Http\Request;
 
@@ -98,6 +99,23 @@ class IndexController extends Controller
         return inertia('Index/Build', [
             'build' => $buildData,
             'myRating' => $myRating,
+        ]);
+    }
+
+    public function publicProfile(int $id)
+    {
+        if (auth()->id() === $id) {
+            return redirect('/profile');
+        }
+
+        $user = User::findOrFail($id);
+
+        return inertia('Screens/PublicProfile', [
+            'profileUser' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'profile_url' => $user->profile_url,
+            ],
         ]);
     }
 

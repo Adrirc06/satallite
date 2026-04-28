@@ -161,7 +161,7 @@
                 </div>
                 
                 <div class="tw:flex tw:gap-3">
-                    <button @click="showRatingDialog = false" class="tw:flex-1 tw:bg-red-500 tw:hover:bg-red-400 tw:text-white rounded-3 rounded-bottom-right-none tw:font-bold tw:py-2 tw:px-4 tw:rounded tw:transition">Cancelar</button>
+                    <button @click="showRatingDialog = false" class="tw:flex-1 tw:bg-red-600 tw:hover:bg-red-500 tw:text-white rounded-3 rounded-bottom-right-none tw:font-bold tw:py-2 tw:px-4 tw:rounded tw:transition">Cancelar</button>
                     <button @click="submitRating" class="tw:flex-1 tw:bg-indigo-500 tw:hover:bg-indigo-400 rounded-3 rounded-bottom-right-none tw:text-white tw:font-bold tw:py-2 tw:px-4 tw:rounded tw:transition text-nowrap" :disabled="isSubmittingRating">
                         <span v-if="isSubmittingRating" class="spinner-border spinner-border-sm me-2"></span>
                         Publicar

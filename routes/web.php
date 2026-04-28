@@ -11,6 +11,7 @@ Route::get('/articles', [IndexController::class, 'articles']);
 Route::get('/articles/create', [IndexController::class, 'createArticle']);
 Route::get('/builder', [IndexController::class, 'builder']);
 Route::get('/build/{id}', [IndexController::class, 'build'])->name('build.show');
+Route::get('/user/{id}', [IndexController::class, 'publicProfile'])->name('user.show');
 Route::get('/login', [IndexController::class, 'login'])->name('login');
 Route::get('/signup', [IndexController::class, 'signup']);
 Route::get('/article/{id}', [IndexController::class, 'article'])->name('article.show');

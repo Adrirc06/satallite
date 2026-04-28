@@ -34,8 +34,7 @@ pnpm-debug.log
 /coverage/
 .pest/
 .env.*.local
-AGENTS.md
-CLAUDE.md
+*md
 boost.json
 satallite.code-workspace
 mock

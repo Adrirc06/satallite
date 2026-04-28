@@ -12,7 +12,7 @@
         >
           <div class="carousel-inner">
             <template v-if="builds && builds.length > 0">
-                <BuildCard 
+                <BuildSlide 
                     v-for="(build, index) in builds" 
                     :key="build.id" 
                     :build="build" 
@@ -55,7 +55,7 @@
       </section>
 </template>
 <script setup>
-import BuildCard from '@/Components/BuildCard.vue';
+import BuildSlide from '@/Components/BuildSlide.vue';
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
