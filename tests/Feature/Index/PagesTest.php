@@ -34,3 +34,28 @@ it('renders the profile page for authenticated users', function () {
             ->component('Index/Profile')
         );
 });
+
+it('renders the public profile page for any user', function () {
+    $user = User::factory()->create();
+
+    $this->get("/user/{$user->id}")
+        ->assertSuccessful()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Screens/PublicProfile')
+            ->where('profileUser.id', $user->id)
+            ->where('profileUser.name', $user->name)
+        );
+});
+
+it('returns 404 for a non-existent public profile', function () {
+    $this->get('/user/99999')
+        ->assertNotFound();
+});
+
+it('redirects authenticated user to /profile when visiting their own public profile', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)
+        ->get("/user/{$user->id}")
+        ->assertRedirect('/profile');
+});

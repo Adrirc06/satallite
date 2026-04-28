@@ -70,7 +70,7 @@ class ProfileController extends Controller
             try {
                 $deleter->execute($publicId);
             } catch (\Exception $e) {
-                // Ignore failure               
+                // Ignore failure
             }
         });
 
