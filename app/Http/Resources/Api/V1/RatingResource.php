@@ -9,13 +9,15 @@ class RatingResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        $createdAt = $this->created_at;
+
         return [
             'id' => $this->id,
-            'score' => $this->score,
+            'rating' => $this->rating,
             'comment' => $this->comment,
             'user' => new UserResource($this->whenLoaded('user')),
             'build_id' => $this->build_id,
-            'created_at' => $this->created_at->toIso8601String(),
+            'created_at' => is_string($createdAt) ? $createdAt : $createdAt?->toString(),
         ];
     }
 }

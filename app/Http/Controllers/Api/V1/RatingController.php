@@ -19,21 +19,21 @@ class RatingController extends Controller
 
     public function store(Request $request, Build $build): RatingResource
     {
-        $validated = $request->validate([
-            'score' => 'required|integer|min:1|max:5',
-            'comment' => 'nullable|string|max:500',
+        $request->validate([
+            'rating' => 'required|integer|min:0|max:100',
         ]);
 
         if ($build->ratings()->where('user_id', $request->user()->id)->exists()) {
             throw ValidationException::withMessages([
-                'build' => ['Ya has valorado esta build.'],
+                'build' => ['Ya has valorado esta configuración.'],
             ]);
         }
 
-        $rating = new Rating($validated);
+        $rating = new Rating;
+        $rating->rating = $request->input('rating');
         $rating->user_id = $request->user()->id;
         $build->ratings()->save($rating);
 
-        return new RatingResource($rating->load('user'));
+        return new RatingResource($rating->refresh()->load('user'));
     }
 }

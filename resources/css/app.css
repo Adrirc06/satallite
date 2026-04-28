@@ -356,6 +356,34 @@ nav.navbar.navbar-hidden {
     color: white;
 }
 
+.rating-range::-webkit-slider-runnable-track {
+    background-color: #a5b4fc;
+}
+
+.rating-range::-webkit-slider-thumb {
+    background-color: #6366f1;
+}
+
+.rating-range::-moz-range-track {
+    background-color: #a5b4fc;
+}
+
+.rating-range::-moz-range-thumb {
+    background-color: #6366f1;
+    border: 0;
+}
+
+.rating-range::-ms-track {
+    background-color: #a5b4fc;
+    border-color: transparent;
+    color: transparent;
+}
+
+.rating-range::-ms-thumb {
+    background-color: #6366f1;
+    border: 0;
+}
+
 @keyframes scrolling {
   0% {
     transform: translateX(0);

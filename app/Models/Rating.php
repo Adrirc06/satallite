@@ -18,7 +18,7 @@ class Rating extends Model
 
     protected $fillable = [
         'rating',
-        'app_user_id',
+        'user_id',
         'build_id',
     ];
 
@@ -26,14 +26,14 @@ class Rating extends Model
     {
         return [
             'rating' => 'integer',
-            'app_user_id' => 'integer',
+            'user_id' => 'integer',
             'build_id' => 'integer',
         ];
     }
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'app_user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function build(): BelongsTo
