@@ -9,7 +9,8 @@
                         type="text" 
                         class="form-control pb-2 w-100 keyboard-safe-area border-2" 
                         :class="[formErrors.email ? 'tw:!border-red-500' : 'tw:!border-gray-500']"
-                        id="email" 
+                        id="email"
+                        name="email"
                         autocomplete="email"
                         v-model="form.email"
                         @focus="clearError('email')"
@@ -24,7 +25,8 @@
                             :type="showPassword ? 'text' : 'password'" 
                             class="form-control pb-2 w-100 keyboard-safe-area border-2" 
                             :class="[formErrors.password ? 'tw:!border-red-500' : 'tw:!border-gray-500']"
-                            id="password" 
+                            id="password"
+                            name="password"
                             autocomplete="current-password"
                             v-model="form.password"
                             @focus="clearError('password'); passwordFocused = true"
@@ -42,7 +44,7 @@
                     <div v-if="formErrors.password" class="tw:text-red-500 small mt-1">{{ formErrors.password }}</div>
                 </div>
                 <div class="mb-3 w-100 text-start d-flex align-items-center">
-                    <input class="form-check-input me-2 tw:!border-gray-500" type="checkbox" id="remember" v-model="form.remember">
+                    <input class="form-check-input me-2 tw:!border-gray-500" type="checkbox" id="remember" name="remember" v-model="form.remember">
                     <label class="form-check-label" for="remember">
                         Recordarme
                     </label>

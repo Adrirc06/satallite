@@ -75,7 +75,7 @@
             <div v-else>
                 <!-- Search bar -->
                 <div class="tw:mb-4">
-                     <input v-model="searchQuery" @input="onSearchInput" type="text" placeholder="Buscar por nombre" class="tw:w-full border-bottom tw:border-gray-500 tw:border-t-0 tw:border-l-0 tw:border-r-0 tw:focus:ring-0 tw:focus:outline-none tw:focus:border-gray-500 tw:bg-transparent">
+                     <input v-model="searchQuery" @input="onSearchInput" type="text" :id="`search-${type.key}`" :name="`search_${type.key}`" placeholder="Buscar por nombre" class="tw:w-full border-bottom tw:border-gray-500 tw:border-t-0 tw:border-l-0 tw:border-r-0 tw:focus:ring-0 tw:focus:outline-none tw:focus:border-gray-500 tw:bg-transparent">
                 </div>
                 
                 <div v-if="components.length === 0" class="tw:text-center tw:py-4 tw:text-gray-500">
