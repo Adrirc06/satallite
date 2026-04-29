@@ -1,7 +1,7 @@
 <template>
     <Header />
     <main class="container tw:mx-auto tw:px-4 tw:py-8 tw:relative">
-        <p class="tw:text-6xl quantico-bold tw:border-2 border-start-0 border-end-0 border-top-0 tw:border-gray-500 pb-3 text-center">
+        <p class="tw:text-3xl tw:md:text-6xl quantico-bold tw:border-2 border-start-0 border-end-0 border-top-0 tw:border-gray-500 pb-3 text-center">
             Configurador de PCs
         </p>
         
@@ -41,7 +41,7 @@
             <div class="tw:flex tw:flex-col tw:sm:flex-row tw:items-start tw:sm:items-end tw:gap-6 tw:mb-4 tw:flex-nowrap">
                 <div class="tw:flex-1 tw:min-w-0">
                     <label class="tw:block tw:text-lg tw:font-bold tw:mb-2">Nombre de la Build</label>
-                    <input v-model="buildName" type="text" class="tw:w-full tw:text-lg tw:py-2 border-bottom tw:border-gray-500 tw:bg-transparent tw:border-t-0 tw:border-l-0 tw:border-r-0 tw:focus:ring-0 tw:focus:outline-none tw:focus:border-gray-500" placeholder="PC gaming para 2026">
+                    <input v-model="buildName" type="text" maxlength="32" class="tw:w-full tw:text-lg tw:py-2 border-bottom tw:border-gray-500 tw:bg-transparent tw:border-t-0 tw:border-l-0 tw:border-r-0 tw:focus:ring-0 tw:focus:outline-none tw:focus:border-gray-500" placeholder="PC gaming para 2026">
                 </div>
                 <div class="tw:shrink-0 tw:pb-0.5">
                     <label class="tw:cursor-pointer tw:select-none d-flex align-items-center">
@@ -252,6 +252,8 @@ const saveBuild = () => {
     
     if (!buildName.value || buildName.value.trim() === '') {
         errors.value.push('El nombre de la configuración no puede estar vacío.');
+    } else if (buildName.value.length > 32) {
+        errors.value.push('El nombre de la configuración no puede superar los 32 caracteres.');
     }
     
     const isCpuIntegrated = selections.motherboard?.socket?.name?.toLowerCase().includes('integrated');
