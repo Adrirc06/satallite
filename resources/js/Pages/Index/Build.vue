@@ -1,7 +1,7 @@
 <template>
     <Header />
     <main class="container tw:mx-auto tw:px-4 tw:py-8 tw:relative">
-        <p class="tw:text-6xl quantico-bold tw:border-2 border-start-0 border-end-0 border-top-0 tw:border-gray-500 pb-3 text-center">
+        <p class="tw:text-3xl tw:md:text-6xl tw:wrap-break-word quantico-bold tw:border-2 border-start-0 border-end-0 border-top-0 tw:border-gray-500 pb-3 text-center">
             {{ build.name }}
         </p>
 
@@ -144,7 +144,6 @@
                     <p class="tw:text-gray-500 tw:font-bold tw:mb-1">Mi valoración</p>
                     <div class="tw:flex tw:items-center tw:justify-center tw:gap-1 tw:text-yellow-400 tw:text-2xl">
                         <i v-for="star in 5" :key="'my-'+star" class="bi" :class="starClass(localMyRating, star)"></i>
-                        <span class="tw:text-gray-600 tw:text-lg tw:ml-2 tw:align-middle">({{ localMyRating }}/100)</span>
                     </div>
                 </template>
                 <template v-else-if="page.props.auth.user && !isOwner">
@@ -293,7 +292,14 @@ const ratingSliderValue = ref(50);
 const isSubmittingRating = ref(false);
 
 watch(showRatingDialog, (isOpen) => {
-    document.body.style.overflow = isOpen ? 'hidden' : '';
+    if (isOpen) {
+        const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+        document.body.style.paddingRight = scrollbarWidth + 'px';
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+    }
 });
 
 const starClass = (score, position) => {
@@ -332,6 +338,7 @@ const submitRating = async () => {
 
 onUnmounted(() => {
     document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
 });
 
 const isOwner = computed(() => {
