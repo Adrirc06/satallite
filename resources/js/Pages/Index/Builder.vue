@@ -38,10 +38,10 @@
         </div>
 
         <div class="mt-4 p-4 rounded-4 rounded-bottom-right-none tw:shadow-sm tw:border tw:dark:border-gray-700">
-            <div class="tw:flex tw:flex-row tw:items-end tw:gap-6 tw:mb-4 tw:flex-nowrap">
+            <div class="tw:flex tw:flex-col tw:sm:flex-row tw:items-start tw:sm:items-end tw:gap-6 tw:mb-4 tw:flex-nowrap">
                 <div class="tw:flex-1 tw:min-w-0">
-                    <label class="tw:block tw:text-lg tw:font-bold tw:text-gray-700 tw:dark:text-gray-300 tw:mb-2">Nombre de la Build</label>
-                    <input v-model="buildName" type="text" class="tw:w-full tw:text-lg tw:py-2 border-bottom tw:border-gray-500 tw:bg-transparent tw:border-t-0 tw:border-l-0 tw:border-r-0 tw:focus:ring-0 tw:focus:outline-none tw:focus:border-gray-500 tw:dark:text-white" placeholder="PC gaming para 2026">
+                    <label class="tw:block tw:text-lg tw:font-bold tw:mb-2">Nombre de la Build</label>
+                    <input v-model="buildName" type="text" class="tw:w-full tw:text-lg tw:py-2 border-bottom tw:border-gray-500 tw:bg-transparent tw:border-t-0 tw:border-l-0 tw:border-r-0 tw:focus:ring-0 tw:focus:outline-none tw:focus:border-gray-500" placeholder="PC gaming para 2026">
                 </div>
                 <div class="tw:shrink-0 tw:pb-0.5">
                     <label class="tw:cursor-pointer tw:select-none d-flex align-items-center">
