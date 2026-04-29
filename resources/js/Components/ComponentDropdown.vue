@@ -1,47 +1,71 @@
 <template>
     <div class="tw:bg-transparent tw:rounded-2xl tw:rounded-br-none rounded-bottom-right-none tw:shadow-sm tw:mb-3 p-3 tw:overflow-hidden tw:border tw:border-gray-300 tw:dark:border-gray-700 tw:relative">
-        <div 
+        <div
             @click="$emit('toggle')"
-            class="tw:flex tw:items-center tw:p-4 tw:cursor-pointer tw:transition"
+            class="tw:p-4 tw:cursor-pointer tw:transition"
             :class="{'tw:opacity-50 tw:cursor-not-allowed': disabled}"
         >
-            <div class="tw:text-indigo-500 tw:flex tw:items-center tw:justify-center tw:text-3xl tw:mr-4">
-                 <i :class="`bi bi-${type.icon}`"></i>
-            </div>
-            
-            <div class="tw:flex-1 tw:flex tw:flex-col tw:justify-center">
-                 <template v-if="!selected">
-                     <p class="h3 mb-0">{{ type.name }}</p>
-                 </template>
-                 <template v-else>
-                     <p class="tw:text-sm tw:font-medium tw:text-gray-500 tw:dark:text-gray-400 tw:uppercase tw:tracking-wide">{{ type.name }}</p>
-                     <p class="tw:text-lg tw:font-bold tw:text-gray-900 tw:dark:text-white tw:mt-1">{{ selected.name }}</p>
-                     
-                     <div class="tw:flex tw:gap-4 tw:mt-2 tw:text-sm tw:text-gray-600 tw:dark:text-gray-400">
-                         <span v-if="type.key === 'motherboard'">Socket: {{ selected.socket?.name }}<template v-if="selected.max_memory"> | Memoria máxima: {{ selected.max_memory }}GB</template><template v-if="selected.form_factor"> | Factor de forma: {{ selected.form_factor.name }}</template><template v-if="selected.ram_type"> | Tipo de RAM: {{ selected.ram_type.name }}</template></span>
-                         <span v-else-if="type.key === 'cpu'">Socket: {{ selected.socket?.name }}<template v-if="selected.cores"> | {{ selected.cores }} Núcleos / {{ selected.cores * 2 }} Hilos</template><template v-if="selected.frequency"> | {{ selected.frequency }}GHz - {{ selected.max_frequency || selected.frequency }}GHz</template><template v-if="selected.tdp"> | TDP: {{ selected.tdp }}W</template><template v-if="selected.igpu"> | Gráficos Integrados: {{ selected.igpu.name || 'No' }}</template><template v-else> | Gráficos Integrados: No</template></span>
-                         <span v-else-if="type.key === 'ram'">{{ selected.size * selected.modules }}GB ({{ selected.size }}GB x {{ selected.modules }})<template v-if="selected.ram_type"> | {{ selected.ram_type.name }}</template><template v-if="selected.cas_latency"> | Latencia: CL{{ selected.cas_latency }}</template><template v-if="selected.speed"> | Velocidad: {{ selected.speed }}MHz</template></span>
-                         <span v-else-if="type.key === 'drive'"><template v-if="selected.size >= 1000">{{ selected.size / 1000 }}TB</template><template v-else>{{ selected.size }}GB</template><template v-if="selected.drive_type"> | <template v-if="selected.drive_type.id != 1">HDD, {{ selected.drive_type.name }} RPM</template><template v-else>{{ selected.drive_type.name }}</template></template></span>
-                         <span v-else-if="type.key === 'gpu'">{{ selected.vram }}GB VRAM<template v-if="selected.tdp"> | {{ selected.tdp }}W</template></span>
-                         <span v-else-if="type.key === 'psu'">Tipo: {{ selected.psu_type?.name }}<template v-if="selected.power"> | Potencia: {{ selected.power }}W</template><template v-if="selected.modularity"> | Modularidad: {{ selected.modularity.name }}</template><template v-if="selected.efficiency"> | Eficiencia: {{ selected.efficiency.name }}</template></span>
-                         <span v-else-if="type.key === 'chassis'">{{ selected.chassis_type?.name }}</span>
-                     </div>
-                 </template>
-            </div>
-            
-            <div class="tw:flex tw:items-center tw:gap-6 tw:ml-4">
-                <span v-if="selected" class="tw:font-bold tw:text-lg">
-                    {{ selected.price ? selected.price + '€' : 'Sin stock' }}
-                </span>
-                <button 
-                    v-if="selected" 
-                    @click.stop="$emit('remove')" 
-                    title="Eliminar componente"
-                >
-                    <i class="bi bi-x tw:text-xl"></i>
-                </button>
-                <i class="bi bi-caret-down-fill tw:text-gray-500 tw:transition-transform tw:duration-300 tw:text-2xl" :class="{ 'tw:rotate-180': isOpen }"></i>
-            </div>
+            <!-- Sin componente seleccionado: layout único -->
+            <template v-if="!selected">
+                <div class="tw:flex tw:items-center">
+                    <div class="tw:text-indigo-500 tw:flex tw:items-center tw:justify-center tw:text-3xl tw:mr-4">
+                        <i :class="`bi bi-${type.icon}`"></i>
+                    </div>
+                    <p class="h3 mb-0">{{ type.name }}</p>
+                    <div class="tw:flex tw:items-center tw:ml-auto">
+                        <i class="bi bi-caret-down-fill tw:text-gray-500 tw:transition-transform tw:duration-300 tw:text-2xl" :class="{ 'tw:rotate-180': isOpen }"></i>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Con componente seleccionado: layout móvil -->
+            <template v-else>
+                <div class="tw:flex tw:flex-col tw:gap-1 tw:sm:hidden">
+                    <p class="tw:text-sm tw:font-medium tw:text-gray-500 tw:dark:text-gray-400 tw:uppercase tw:tracking-wide">{{ type.name }}</p>
+                    <div class="tw:flex tw:items-center tw:justify-between tw:gap-2">
+                        <p class="tw:text-lg tw:font-bold tw:mb-0">{{ selected.name }}</p>
+                        <div class="tw:flex tw:items-center tw:gap-3 tw:shrink-0">
+                            <span class="tw:font-bold">{{ selected.price ? selected.price + '€' : 'Sin stock' }}</span>
+                            <button @click.stop="$emit('remove')" title="Eliminar componente">
+                                <i class="bi bi-x tw:text-xl"></i>
+                            </button>
+                            <i class="bi bi-caret-down-fill tw:text-gray-500 tw:transition-transform tw:duration-300 tw:text-2xl" :class="{ 'tw:rotate-180': isOpen }"></i>
+                        </div>
+                    </div>
+                    <div class="tw:flex tw:flex-wrap tw:gap-x-4 tw:gap-y-1 tw:mt-1 tw:text-sm">
+                        <span v-for="spec in getSpecs(type.key, selected)" :key="spec.label">
+                            <span class="tw:text-gray-500 tw:dark:text-gray-400">{{ spec.label }}:</span>
+                            <span class="tw:text-indigo-500 tw:font-semibold tw:ml-1">{{ spec.value }}</span>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Con componente seleccionado: layout desktop -->
+                <div class="tw:hidden tw:sm:flex tw:items-center">
+                    <div class="tw:text-indigo-500 tw:flex tw:items-center tw:justify-center tw:text-3xl tw:mr-4">
+                        <i :class="`bi bi-${type.icon}`"></i>
+                    </div>
+                    <div class="tw:flex-1 tw:flex tw:flex-col tw:justify-center">
+                        <p class="tw:text-sm tw:font-medium tw:text-gray-500 tw:dark:text-gray-400 tw:uppercase tw:tracking-wide">{{ type.name }}</p>
+                        <p class="tw:text-lg tw:mt-1">{{ selected.name }}</p>
+                        <div class="tw:flex tw:flex-wrap tw:gap-x-4 tw:gap-y-1 tw:mt-2 tw:text-sm">
+                            <span v-for="spec in getSpecs(type.key, selected)" :key="spec.label">
+                                <span class="tw:text-gray-500 tw:dark:text-gray-400">{{ spec.label }}:</span>
+                                <span class="tw:text-indigo-500 tw:font-semibold tw:ml-1">{{ spec.value }}</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="tw:flex tw:items-center tw:gap-6 tw:ml-4">
+                        <span class="tw:font-bold tw:text-lg">
+                            {{ selected.price ? selected.price + '€' : 'Sin stock' }}
+                        </span>
+                        <button @click.stop="$emit('remove')" title="Eliminar componente">
+                            <i class="bi bi-x tw:text-xl"></i>
+                        </button>
+                        <i class="bi bi-caret-down-fill tw:text-gray-500 tw:transition-transform tw:duration-300 tw:text-2xl" :class="{ 'tw:rotate-180': isOpen }"></i>
+                    </div>
+                </div>
+            </template>
         </div>
 
         <div v-show="isOpen" class="tw:p-4 tw:border-t tw:dark:border-gray-700 tw:bg-transparent tw:dark:bg-transparent">
@@ -51,7 +75,7 @@
             <div v-else>
                 <!-- Search bar -->
                 <div class="tw:mb-4">
-                     <input v-model="searchQuery" @input="onSearchInput" type="text" placeholder="Buscar por nombre" class="tw:w-full border-bottom tw:border-gray-500 tw:border-t-0 tw:border-l-0 tw:border-r-0 tw:focus:ring-0 tw:focus:outline-none tw:focus:border-gray-500 tw:bg-transparent tw:dark:text-white">
+                     <input v-model="searchQuery" @input="onSearchInput" type="text" placeholder="Buscar por nombre" class="tw:w-full border-bottom tw:border-gray-500 tw:border-t-0 tw:border-l-0 tw:border-r-0 tw:focus:ring-0 tw:focus:outline-none tw:focus:border-gray-500 tw:bg-transparent">
                 </div>
                 
                 <div v-if="components.length === 0" class="tw:text-center tw:py-4 tw:text-gray-500">
@@ -67,15 +91,12 @@
                      >
                           <div>
                               <p class="tw:font-medium">{{ item.name }}</p>
-                              <p class="tw:text-xs tw:text-gray-500 tw:mt-1">
-                                  <span v-if="type.key === 'motherboard'">Socket: {{ item.socket?.name }}<template v-if="item.max_memory"> | Memoria máxima: {{ item.max_memory }}GB</template><template v-if="item.form_factor"> | Factor de forma: {{ item.form_factor.name }}</template><template v-if="item.ram_type"> | Tipo de RAM: {{ item.ram_type.name }}</template></span>
-                                  <span v-else-if="type.key === 'cpu'">Socket: {{ item.socket?.name }}<template v-if="item.cores"> | {{ item.cores }} Núcleos / {{ item.cores * 2 }} Hilos</template><template v-if="item.frequency"> | {{ item.frequency }}GHz - {{ item.max_frequency || item.frequency }}GHz</template><template v-if="item.tdp"> | TDP: {{ item.tdp }}W</template><template v-if="item.igpu"> | Gráficos Integrados: {{ item.igpu.name || 'No' }}</template><template v-else> | Gráficos Integrados: No</template></span>
-                                  <span v-else-if="type.key === 'ram'">{{ item.size * item.modules }}GB ({{ item.size }}GB x {{ item.modules }})<template v-if="item.ram_type"> | {{ item.ram_type.name }}</template><template v-if="item.cas_latency"> | Latencia: CL{{ item.cas_latency }}</template><template v-if="item.speed"> | Velocidad: {{ item.speed }}MHz</template></span>
-                                  <span v-else-if="type.key === 'drive'"><template v-if="item.size >= 1000">{{ item.size / 1000 }}TB</template><template v-else>{{ item.size }}GB</template><template v-if="item.drive_type"> | <template v-if="item.drive_type.id != 1">HDD, {{ item.drive_type.name }} RPM</template><template v-else>{{ item.drive_type.name }}</template></template></span>
-                                  <span v-else-if="type.key === 'gpu'">{{ item.vram }}GB VRAM<template v-if="item.tdp"> | {{ item.tdp }}W</template></span>
-                                  <span v-else-if="type.key === 'psu'">Tipo: {{ item.psu_type?.name }}<template v-if="item.power"> | Potencia: {{ item.power }}W</template><template v-if="item.modularity"> | Modularidad: {{ item.modularity.name }}</template><template v-if="item.efficiency"> | Eficiencia: {{ item.efficiency.name }}</template></span>
-                                  <span v-else-if="type.key === 'chassis'">{{ item.chassis_type?.name }}</span>
-                              </p>
+                              <div class="tw:flex tw:flex-wrap tw:gap-x-3 tw:gap-y-1 tw:mt-1 tw:text-xs">
+                                  <span v-for="spec in getSpecs(type.key, item)" :key="spec.label">
+                                      <span class="tw:text-gray-500">{{ spec.label }}:</span>
+                                      <span class="tw:text-indigo-500 tw:font-semibold tw:ml-1">{{ spec.value }}</span>
+                                  </span>
+                              </div>
                           </div>
                           <div class="tw:font-bold tw:text-indigo-600 tw:dark:text-indigo-400">
                               {{ item.price ? item.price + '€' : 'Sin stock' }}
@@ -109,6 +130,45 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['toggle', 'select', 'remove']);
+
+const getSpecs = (typeKey, item) => {
+    if (!item) return [];
+    const specs = [];
+    if (typeKey === 'motherboard') {
+        if (item.socket?.name) specs.push({ label: 'Socket', value: item.socket.name });
+        if (item.max_memory) specs.push({ label: 'Memoria máxima', value: `${item.max_memory}GB` });
+        if (item.form_factor) specs.push({ label: 'Factor de forma', value: item.form_factor.name });
+        if (item.ram_type) specs.push({ label: 'Tipo de RAM', value: item.ram_type.name });
+    } else if (typeKey === 'cpu') {
+        if (item.socket?.name) specs.push({ label: 'Socket', value: item.socket.name });
+        if (item.cores) specs.push({ label: 'Núcleos/Hilos', value: `${item.cores}/${item.cores * 2}` });
+        if (item.frequency) specs.push({ label: 'Frecuencia', value: `${item.frequency}–${item.max_frequency || item.frequency}GHz` });
+        if (item.tdp) specs.push({ label: 'TDP', value: `${item.tdp}W` });
+        specs.push({ label: 'iGPU', value: item.igpu?.name || 'No' });
+    } else if (typeKey === 'ram') {
+        specs.push({ label: 'Capacidad', value: `${item.size * item.modules}GB (${item.size}GB x ${item.modules})` });
+        if (item.ram_type) specs.push({ label: 'Tipo', value: item.ram_type.name });
+        if (item.cas_latency) specs.push({ label: 'Latencia', value: `CL${item.cas_latency}` });
+        if (item.speed) specs.push({ label: 'Velocidad', value: `${item.speed}MHz` });
+    } else if (typeKey === 'drive') {
+        const size = item.size >= 1000 ? `${item.size / 1000}TB` : `${item.size}GB`;
+        specs.push({ label: 'Capacidad', value: size });
+        if (item.drive_type) {
+            specs.push({ label: 'Tipo', value: item.drive_type.id != 1 ? `HDD, ${item.drive_type.name} RPM` : item.drive_type.name });
+        }
+    } else if (typeKey === 'gpu') {
+        specs.push({ label: 'VRAM', value: `${item.vram}GB` });
+        if (item.tdp) specs.push({ label: 'TDP', value: `${item.tdp}W` });
+    } else if (typeKey === 'psu') {
+        if (item.psu_type?.name) specs.push({ label: 'Tipo', value: item.psu_type.name });
+        if (item.power) specs.push({ label: 'Potencia', value: `${item.power}W` });
+        if (item.modularity) specs.push({ label: 'Modularidad', value: item.modularity.name });
+        if (item.efficiency) specs.push({ label: 'Eficiencia', value: item.efficiency.name });
+    } else if (typeKey === 'chassis') {
+        if (item.chassis_type?.name) specs.push({ label: 'Tipo', value: item.chassis_type.name });
+    }
+    return specs;
+};
 
 const searchQuery = ref('');
 const components = ref([]);

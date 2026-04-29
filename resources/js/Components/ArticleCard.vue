@@ -8,7 +8,7 @@
                     {{ article.title }}
                 </p>
             </div>
-            <Link :href="`/article/${article.id}`" class="btn w-100 custom-news-button tw:hover:bg-indigo-400 tw:hover:border-indigo-400 white">Ver más</Link>
+            <Link :href="`/article/${article.id}`" class="btn w-100 custom-news-button tw:hover:bg-indigo-400 tw:hover:border-indigo-400 tw:!text-white">Ver más</Link>
         </div>
     </div>
 </template>

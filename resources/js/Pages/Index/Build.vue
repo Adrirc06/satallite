@@ -15,9 +15,12 @@
                         <p class="tw:text-lg tw:font-bold tw:text-gray-700 tw:dark:text-gray-200 h4 mb-0">Placa base</p>
                     </div>
                     <p class="tw:font-medium">{{ build.motherboard.name }}</p>
-                    <p class="tw:text-sm tw:text-gray-500 tw:mt-1">
-                        Socket: {{ build.motherboard.socket?.name }}<template v-if="build.motherboard.max_memory"> | Memoria máxima: {{ build.motherboard.max_memory }}GB</template><template v-if="build.motherboard.form_factor"> | Factor de forma: {{ build.motherboard.form_factor.name }}</template><template v-if="build.motherboard.ram_type"> | Tipo de RAM: {{ build.motherboard.ram_type.name }}</template>
-                    </p>
+                    <div class="tw:flex tw:flex-wrap tw:gap-x-4 tw:gap-y-1 tw:mt-1 tw:text-sm tw:pb-7">
+                        <span v-for="spec in getSpecs('motherboard', build.motherboard)" :key="spec.label">
+                            <span class="tw:text-gray-500">{{ spec.label }}:</span>
+                            <span class="tw:text-indigo-500 tw:font-semibold tw:ml-1">{{ spec.value }}</span>
+                        </span>
+                    </div>
                     <p class="tw:absolute tw:bottom-1 tw:right-4 tw:text-xl tw:font-bold tw:text-indigo-500">{{ build.motherboard.price + '€' || 'Sin Stock'}}</p>
                 </div>
 
@@ -28,9 +31,12 @@
                         <p class="tw:text-lg tw:font-bold tw:text-gray-700 tw:dark:text-gray-200 h4 mb-0">Procesador</p>
                     </div>
                     <p class="tw:font-medium">{{ build.cpu.name }}</p>
-                    <p class="tw:text-sm tw:text-gray-500 tw:mt-1">
-                        Socket: {{ build.cpu.socket?.name }}<template v-if="build.cpu.cores"> | {{ build.cpu.cores }} Núcleos / {{ build.cpu.cores * 2 }} Hilos</template><template v-if="build.cpu.frequency"> | {{ build.cpu.frequency }}GHz - {{ build.cpu.max_frequency || build.cpu.frequency }}GHz</template><template v-if="build.cpu.tdp"> | TDP: {{ build.cpu.tdp }}W</template><template v-if="build.cpu.igpu"> | Gráficos Integrados: {{ build.cpu.igpu.name || 'No' }}</template><template v-else> | Gráficos Integrados: No</template>
-                    </p>
+                    <div class="tw:flex tw:flex-wrap tw:gap-x-4 tw:gap-y-1 tw:mt-1 tw:text-sm tw:pb-7">
+                        <span v-for="spec in getSpecs('cpu', build.cpu)" :key="spec.label">
+                            <span class="tw:text-gray-500">{{ spec.label }}:</span>
+                            <span class="tw:text-indigo-500 tw:font-semibold tw:ml-1">{{ spec.value }}</span>
+                        </span>
+                    </div>
                     <p class="tw:absolute tw:bottom-1 tw:right-4 tw:text-xl tw:font-bold tw:text-indigo-500">{{ build.cpu.price + '€' || 'Sin Stock'}}</p>
                 </div>
 
@@ -41,9 +47,12 @@
                         <p class="tw:text-lg tw:font-bold tw:text-gray-700 tw:dark:text-gray-200 h4 mb-0">RAM</p>
                     </div>
                     <p class="tw:font-medium">{{ build.ram.name }}</p>
-                    <p class="tw:text-sm tw:text-gray-500 tw:mt-1">
-                        {{ build.ram.size * build.ram.modules }}GB ({{ build.ram.size }}GB x {{ build.ram.modules }})<template v-if="build.ram.ram_type"> | {{ build.ram.ram_type.name }}</template><template v-if="build.ram.cas_latency"> | Latencia: CL{{ build.ram.cas_latency }}</template><template v-if="build.ram.speed"> | Velocidad: {{ build.ram.speed }}MHz</template>
-                    </p>
+                    <div class="tw:flex tw:flex-wrap tw:gap-x-4 tw:gap-y-1 tw:mt-1 tw:text-sm tw:pb-7">
+                        <span v-for="spec in getSpecs('ram', build.ram)" :key="spec.label">
+                            <span class="tw:text-gray-500">{{ spec.label }}:</span>
+                            <span class="tw:text-indigo-500 tw:font-semibold tw:ml-1">{{ spec.value }}</span>
+                        </span>
+                    </div>
                     <p class="tw:absolute tw:bottom-1 tw:right-4 tw:text-xl tw:font-bold tw:text-indigo-500">{{ build.ram.price + '€' || 'Sin Stock'}}</p>
                 </div>
 
@@ -54,9 +63,12 @@
                         <p class="tw:text-lg tw:font-bold tw:text-gray-700 tw:dark:text-gray-200 h4 mb-0">Tarjeta gráfica</p>
                     </div>
                     <p class="tw:font-medium">{{ build.gpu.name }}</p>
-                    <p class="tw:text-sm tw:text-gray-500 tw:mt-1">
-                        {{ build.gpu.vram }}GB VRAM<template v-if="build.gpu.tdp"> | {{ build.gpu.tdp }}W</template>
-                    </p>
+                    <div class="tw:flex tw:flex-wrap tw:gap-x-4 tw:gap-y-1 tw:mt-1 tw:text-sm tw:pb-7">
+                        <span v-for="spec in getSpecs('gpu', build.gpu)" :key="spec.label">
+                            <span class="tw:text-gray-500">{{ spec.label }}:</span>
+                            <span class="tw:text-indigo-500 tw:font-semibold tw:ml-1">{{ spec.value }}</span>
+                        </span>
+                    </div>
                     <p class="tw:absolute tw:bottom-1 tw:right-4 tw:text-xl tw:font-bold tw:text-indigo-500">{{ build.gpu.price + '€' || 'Sin Stock'}}</p>
                 </div>
 
@@ -67,11 +79,12 @@
                         <p class="tw:text-lg tw:font-bold tw:text-gray-700 tw:dark:text-gray-200 h4 mb-0">Almacenamiento</p>
                     </div>
                     <p class="tw:font-medium">{{ build.drive.name }}</p>
-                    <p class="tw:text-sm tw:text-gray-500 tw:mt-1">
-                        <template v-if="build.drive.size >= 1000">{{ build.drive.size / 1000 }}TB</template>
-                        <template v-else>{{ build.drive.size }}GB</template>
-                        <template v-if="build.drive.drive_type"> | <template v-if="build.drive.drive_type.id != 1">HDD, {{ build.drive.drive_type.name }} RPM</template><template v-else>{{ build.drive.drive_type.name }}</template></template>
-                    </p>
+                    <div class="tw:flex tw:flex-wrap tw:gap-x-4 tw:gap-y-1 tw:mt-1 tw:text-sm tw:pb-7">
+                        <span v-for="spec in getSpecs('drive', build.drive)" :key="spec.label">
+                            <span class="tw:text-gray-500">{{ spec.label }}:</span>
+                            <span class="tw:text-indigo-500 tw:font-semibold tw:ml-1">{{ spec.value }}</span>
+                        </span>
+                    </div>
                     <p class="tw:absolute tw:bottom-1 tw:right-4 tw:text-xl tw:font-bold tw:text-indigo-500">{{ build.drive.price + '€' || 'Sin Stock'}}</p>
                 </div>
 
@@ -82,9 +95,12 @@
                         <p class="tw:text-lg tw:font-bold tw:text-gray-700 tw:dark:text-gray-200 h4 mb-0">Fuente de alimentación</p>
                     </div>
                     <p class="tw:font-medium">{{ build.psu.name }}</p>
-                    <p class="tw:text-sm tw:text-gray-500 tw:mt-1">
-                        Tipo: {{ build.psu.psu_type?.name }}<template v-if="build.psu.power"> | Potencia: {{ build.psu.power }}W</template><template v-if="build.psu.modularity"> | Modularidad: {{ build.psu.modularity.name }}</template><template v-if="build.psu.efficiency"> | Eficiencia: {{ build.psu.efficiency.name }}</template>
-                    </p>
+                    <div class="tw:flex tw:flex-wrap tw:gap-x-4 tw:gap-y-1 tw:mt-1 tw:text-sm tw:pb-7">
+                        <span v-for="spec in getSpecs('psu', build.psu)" :key="spec.label">
+                            <span class="tw:text-gray-500">{{ spec.label }}:</span>
+                            <span class="tw:text-indigo-500 tw:font-semibold tw:ml-1">{{ spec.value }}</span>
+                        </span>
+                    </div>
                     <p class="tw:absolute tw:bottom-1 tw:right-4 tw:text-xl tw:font-bold tw:text-indigo-500">{{ build.psu.price + '€' || 'Sin Stock'}}</p>
                 </div>
 
@@ -95,9 +111,12 @@
                         <p class="tw:text-lg tw:font-bold tw:text-gray-700 tw:dark:text-gray-200 h4 mb-0">Caja</p>
                     </div>
                     <p class="tw:font-medium">{{ build.chassis.name }}</p>
-                    <p class="tw:text-sm tw:text-gray-500 tw:mt-1">
-                        {{ build.chassis.chassis_type?.name }}
-                    </p>
+                    <div class="tw:flex tw:flex-wrap tw:gap-x-4 tw:gap-y-1 tw:mt-1 tw:text-sm tw:pb-7">
+                        <span v-for="spec in getSpecs('chassis', build.chassis)" :key="spec.label">
+                            <span class="tw:text-gray-500">{{ spec.label }}:</span>
+                            <span class="tw:text-indigo-500 tw:font-semibold tw:ml-1">{{ spec.value }}</span>
+                        </span>
+                    </div>
                     <p class="tw:absolute tw:bottom-1 tw:right-4 tw:text-xl tw:font-bold tw:text-indigo-500">{{ build.chassis.price + '€' || 'Sin Stock'}}</p>
                 </div>
 
@@ -228,6 +247,45 @@ const props = defineProps({
 
 const page = usePage();
 const showDevDialog = ref(false);
+
+const getSpecs = (typeKey, item) => {
+    if (!item) return [];
+    const specs = [];
+    if (typeKey === 'motherboard') {
+        if (item.socket?.name) specs.push({ label: 'Socket', value: item.socket.name });
+        if (item.max_memory) specs.push({ label: 'Memoria máxima', value: `${item.max_memory}GB` });
+        if (item.form_factor) specs.push({ label: 'Factor de forma', value: item.form_factor.name });
+        if (item.ram_type) specs.push({ label: 'Tipo de RAM', value: item.ram_type.name });
+    } else if (typeKey === 'cpu') {
+        if (item.socket?.name) specs.push({ label: 'Socket', value: item.socket.name });
+        if (item.cores) specs.push({ label: 'Núcleos/Hilos', value: `${item.cores}/${item.cores * 2}` });
+        if (item.frequency) specs.push({ label: 'Frecuencia', value: `${item.frequency}–${item.max_frequency || item.frequency}GHz` });
+        if (item.tdp) specs.push({ label: 'TDP', value: `${item.tdp}W` });
+        specs.push({ label: 'iGPU', value: item.igpu?.name || 'No' });
+    } else if (typeKey === 'ram') {
+        specs.push({ label: 'Capacidad', value: `${item.size * item.modules}GB (${item.size}GB x ${item.modules})` });
+        if (item.ram_type) specs.push({ label: 'Tipo', value: item.ram_type.name });
+        if (item.cas_latency) specs.push({ label: 'Latencia', value: `CL${item.cas_latency}` });
+        if (item.speed) specs.push({ label: 'Velocidad', value: `${item.speed}MHz` });
+    } else if (typeKey === 'drive') {
+        const size = item.size >= 1000 ? `${item.size / 1000}TB` : `${item.size}GB`;
+        specs.push({ label: 'Capacidad', value: size });
+        if (item.drive_type) {
+            specs.push({ label: 'Tipo', value: item.drive_type.id != 1 ? `HDD, ${item.drive_type.name} RPM` : item.drive_type.name });
+        }
+    } else if (typeKey === 'gpu') {
+        specs.push({ label: 'VRAM', value: `${item.vram}GB` });
+        if (item.tdp) specs.push({ label: 'TDP', value: `${item.tdp}W` });
+    } else if (typeKey === 'psu') {
+        if (item.psu_type?.name) specs.push({ label: 'Tipo', value: item.psu_type.name });
+        if (item.power) specs.push({ label: 'Potencia', value: `${item.power}W` });
+        if (item.modularity) specs.push({ label: 'Modularidad', value: item.modularity.name });
+        if (item.efficiency) specs.push({ label: 'Eficiencia', value: item.efficiency.name });
+    } else if (typeKey === 'chassis') {
+        if (item.chassis_type?.name) specs.push({ label: 'Tipo', value: item.chassis_type.name });
+    }
+    return specs;
+};
 
 const localMyRating = ref(props.myRating);
 const showRatingDialog = ref(false);
