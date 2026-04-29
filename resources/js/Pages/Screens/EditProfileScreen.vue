@@ -104,7 +104,7 @@
 
                         <p v-if="photoError" class="tw:text-red-500 tw:text-sm tw:text-center tw:mt-4">{{ photoError }}</p>
 
-                        <input ref="fileInputRef" type="file" class="tw:hidden" accept="image/png, image/jpeg, image/webp" @change="onImageSelected" />
+                        <input ref="fileInputRef" type="file" id="profile-photo" name="profile_photo" aria-label="Foto de perfil" class="tw:hidden" accept="image/png, image/jpeg, image/webp" @change="onImageSelected" />
                     </div>
                     
                     <button 
@@ -182,7 +182,8 @@
                         <input 
                             v-model="passwordForm.current_password" 
                             type="password" 
-                            id="current_password" 
+                            id="current_password"
+                            name="current_password"
                             class="bg-body text-body tw:border tw:border-gray-500 tw:rounded-md rounded-bottom-right-none tw:px-3 tw:py-2 focus:tw:outline-none focus:tw:ring-2 focus:tw:ring-indigo-500"
                             :class="{'tw:border-red-500': passwordErrors.current_password}"
                             required
@@ -195,7 +196,8 @@
                         <input 
                             v-model="passwordForm.password" 
                             type="password" 
-                            id="password" 
+                            id="password"
+                            name="password"
                             class="bg-body text-body tw:border tw:border-gray-500 tw:rounded-md rounded-bottom-right-none tw:px-3 tw:py-2 focus:tw:outline-none focus:tw:ring-2 focus:tw:ring-indigo-500"
                             :class="{'tw:border-red-500': passwordErrors.password}"
                             required
@@ -208,7 +210,8 @@
                         <input 
                             v-model="passwordForm.password_confirmation" 
                             type="password" 
-                            id="password_confirmation" 
+                            id="password_confirmation"
+                            name="password_confirmation"
                             class="bg-body text-body tw:border tw:border-gray-500 tw:rounded-md rounded-bottom-right-none tw:px-3 tw:py-2 focus:tw:outline-none focus:tw:ring-2 focus:tw:ring-indigo-500"
                             :class="{'tw:border-red-500': passwordErrors.password_confirmation}"
                             required

@@ -18,7 +18,7 @@
                         class="tw:relative tw:cursor-pointer tw:rounded-lg tw:overflow-hidden tw:w-full tw:h-64 tw:border-4 tw:border-dashed tw:border-gray-500 hover:tw:border-indigo-500 tw:transition-colors tw:group tw:flex tw:items-center tw:justify-center tw:bg-gray-800/10 banner-hover-container"
                         @click="showPhotoDialog = true"
                     >
-                        <template v-if="form.banner_url && form.banner_url !== '/img/banners/banner1.jpg'">
+                        <template v-if="form.banner_url && form.banner_url !== '/img/banners/banner1.webp'">
                             <img 
                                 :src="form.banner_url" 
                                 alt="Banner del artículo" 
@@ -70,7 +70,7 @@
 
                     <p v-if="photoError" class="tw:text-red-500 tw:text-sm tw:text-center tw:mt-4">{{ photoError }}</p>
 
-                    <input ref="fileInputRef" type="file" class="tw:hidden" accept="image/png, image/jpeg, image/webp" @change="onImageSelected" />
+                    <input ref="fileInputRef" type="file" id="article-banner" name="article_banner" aria-label="Imagen del banner" class="tw:hidden" accept="image/png, image/jpeg, image/webp" @change="onImageSelected" />
                 </div>
                 
                 <div v-else class="tw:flex tw:flex-col tw:gap-4">
@@ -137,7 +137,7 @@ import 'vue-advanced-cropper/dist/style.css';
 const form = ref({
     title: '',
     subtitle: '',
-    banner_url: '/img/banners/banner1.jpg',
+    banner_url: '/img/banners/banner1.webp',
     content: '',
 });
 
