@@ -19,7 +19,7 @@ class StoreBuildRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:32'],
             'is_public' => ['nullable', 'boolean'],
             'motherboard_id' => ['required', 'integer', 'exists:motherboards,id'],
             'cpu_id' => ['nullable', 'integer', 'exists:cpus,id'],

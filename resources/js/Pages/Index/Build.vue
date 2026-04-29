@@ -5,6 +5,11 @@
             {{ build.name }}
         </p>
 
+        <div v-if="build.user" @click="router.visit('/user/' + build.user.id)" class="tw:flex tw:items-center tw:justify-center tw:gap-2 tw:mt-2 tw:mb-4 tw:cursor-pointer tw:w-fit tw:mx-auto tw:group">
+            <span class="tw:text-sm tw:text-gray-500 tw:group-hover:text-indigo-500 tw:transition-colors">Creada por {{ build.user.name }}</span>
+            <img :src="build.user.profile_url || '/img/default-avatar.png'" alt="Foto de perfil" class="tw:w-7 tw:h-7 tw:rounded-full tw:object-cover tw:bg-gray-200">
+        </div>
+
         <div class="tw:my-6 tw:flex tw:flex-col tw:gap-4">            
             <div class="tw:grid tw:grid-cols-1 md:tw:grid-cols-2 lg:tw:grid-cols-3 tw:gap-4">
                 

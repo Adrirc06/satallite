@@ -83,6 +83,24 @@ beforeEach(function () {
     $this->chassis = Chassis::create(['name' => 'NZXT H510', 'price' => 80, 'chassis_type_id' => $chassisType]);
 });
 
+test('it rejects a build name longer than 32 characters', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)
+        ->postJson('/api/v1/builds', [
+            'name' => str_repeat('a', 33),
+            'motherboard_id' => $this->standardMobo->id,
+            'cpu_id' => $this->standardCpu->id,
+            'gpu_id' => $this->gpu->id,
+            'ram_id' => $this->ram->id,
+            'psu_id' => $this->psuGood->id,
+            'drive_id' => $this->drive->id,
+            'chassis_id' => $this->chassis->id,
+        ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors(['name']);
+});
+
 test('it blocks unauthenticated users', function () {
     $this->postJson('/api/v1/builds', [])
         ->assertStatus(401);
