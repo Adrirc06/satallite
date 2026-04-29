@@ -16,7 +16,40 @@
                 </div>
             </div>
 
-            <div class="w-75 row g-3 tw:mb-6">
+            <!-- Card compacta: solo móvil -->
+            <div class="d-md-none tw:w-80 px-3 tw:mb-6">
+                <div class="card tw:border tw:border-gray-500 rounded-4 rounded-bottom-right-none">
+                    <div class="card-body tw:flex tw:flex-col tw:gap-1">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-motherboard tw:text-indigo-500 tw:shrink-0"></i>
+                            <span class="ms-2 tw:truncate tw:min-w-0">{{ build.components?.motherboard?.name || 'No especificada' }}</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-cpu tw:text-indigo-500 tw:shrink-0"></i>
+                            <span class="ms-2 tw:truncate tw:min-w-0">{{ build.components?.cpu?.name || 'Integrado en la placa base' }}</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-memory tw:text-indigo-500 tw:shrink-0"></i>
+                            <span class="ms-2 tw:truncate tw:min-w-0">{{ build.components?.ram?.name || 'No especificada' }}</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-gpu-card tw:text-indigo-500 tw:shrink-0"></i>
+                            <span class="ms-2 tw:truncate tw:min-w-0">{{ build.components?.gpu?.name || (build.components?.cpu?.igpu?.name ? build.components.cpu.igpu.name + ' (Integrados)' : 'No especificada') }}</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-device-ssd tw:text-indigo-500 tw:shrink-0"></i>
+                            <span class="ms-2 tw:truncate tw:min-w-0">{{ build.components?.drive?.name || 'No especificado' }}</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-plug-fill tw:text-indigo-500 tw:shrink-0"></i>
+                            <span class="ms-2 tw:truncate tw:min-w-0">{{ build.components?.psu?.name || 'No especificada' }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cuadrícula de 6 cards: solo sm+ -->
+            <div class="d-none d-md-flex w-75 row g-3 tw:mb-6">
                 <div class="col-12 col-md-6 col-xl-4">
                     <div class="d-flex flex-column tw:border-2 tw:border-gray-500 tw:h-60 rounded-4 rounded-bottom-right-none p-3">
                         <div class="d-flex flex-row align-items-center tw:border-b-2 tw:border-gray-500 tw:h-20 tw:pb-2">
