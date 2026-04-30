@@ -1,11 +1,12 @@
 <template>
     <div class="tw:bg-transparent tw:rounded-2xl tw:rounded-br-none rounded-bottom-right-none tw:shadow-sm tw:mb-3 p-3 tw:overflow-hidden tw:border tw:border-gray-300 tw:dark:border-gray-700 tw:relative">
         <div
+            ref="headerEl"
             @click="$emit('toggle')"
             class="tw:p-4 tw:cursor-pointer tw:transition"
             :class="{'tw:opacity-50 tw:cursor-not-allowed': disabled}"
         >
-            <!-- Sin componente seleccionado: layout único -->
+            <!-- Sin componente seleccionado -->
             <template v-if="!selected">
                 <div class="tw:flex tw:items-center">
                     <div class="tw:text-indigo-500 tw:flex tw:items-center tw:justify-center tw:text-3xl tw:mr-4">
@@ -18,7 +19,7 @@
                 </div>
             </template>
 
-            <!-- Con componente seleccionado: layout móvil -->
+            <!-- Componente seleccionado para móvil -->
             <template v-else>
                 <div class="tw:flex tw:flex-col tw:gap-1 tw:sm:hidden">
                     <p class="tw:text-sm tw:font-medium tw:text-gray-500 tw:dark:text-gray-400 tw:uppercase tw:tracking-wide">{{ type.name }}</p>
@@ -40,7 +41,7 @@
                     </div>
                 </div>
 
-                <!-- Con componente seleccionado: layout desktop -->
+                <!-- Componente seleccionado normal -->
                 <div class="tw:hidden tw:sm:flex tw:items-center">
                     <div class="tw:text-indigo-500 tw:flex tw:items-center tw:justify-center tw:text-3xl tw:mr-4">
                         <i :class="`bi bi-${type.icon}`"></i>
@@ -68,6 +69,7 @@
             </template>
         </div>
 
+        <Transition name="dropdown">
         <div v-show="isOpen" class="tw:p-4 tw:border-t tw:dark:border-gray-700 tw:bg-transparent tw:dark:bg-transparent">
             <div v-if="disabled" class="tw:text-amber-600 tw:dark:text-amber-400 tw:text-sm tw:font-medium tw:p-4 tw:bg-amber-50/50 tw:dark:bg-amber-900/20 tw:rounded">
                  {{ warningMsg || 'Opción no disponible' }}
@@ -83,10 +85,10 @@
                 </div>
                 
                 <div v-else class="tw:space-y-2">
-                     <div 
-                         v-for="item in components" 
-                         :key="item.id" 
-                         @click="$emit('select', item)"
+                     <div
+                         v-for="item in components"
+                         :key="item.id"
+                         @click="selectItem(item)"
                          class="tw:p-3 mb-3 tw:bg-transparent rounded-4 rounded-bottom-right-none tw:border tw:hover:border-indigo-500 tw:cursor-pointer tw:flex tw:justify-between tw:items-center tw:transition"
                      >
                           <div>
@@ -110,11 +112,12 @@
                 </div>
             </div>
         </div>
+        </Transition>
     </div>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, nextTick } from 'vue';
 import axios from 'axios';
 
 const props = defineProps({
@@ -131,6 +134,15 @@ const props = defineProps({
 
 const emit = defineEmits(['toggle', 'select', 'remove']);
 
+const headerEl = ref(null);
+
+const selectItem = (item) => {
+    emit('select', item);
+    nextTick(() => {
+        headerEl.value?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+};
+
 const getSpecs = (typeKey, item) => {
     if (!item) return [];
     const specs = [];
@@ -142,7 +154,7 @@ const getSpecs = (typeKey, item) => {
     } else if (typeKey === 'cpu') {
         if (item.socket?.name) specs.push({ label: 'Socket', value: item.socket.name });
         if (item.cores) specs.push({ label: 'Núcleos/Hilos', value: `${item.cores}/${item.cores * 2}` });
-        if (item.frequency) specs.push({ label: 'Frecuencia', value: `${item.frequency}–${item.max_frequency || item.frequency}GHz` });
+        if (item.frequency) specs.push({ label: 'Frecuencia', value: `${item.frequency}${' - ' + item.max_frequency || ' '}GHz` });
         if (item.tdp) specs.push({ label: 'TDP', value: `${item.tdp}W` });
         specs.push({ label: 'iGPU', value: item.igpu?.name || 'No' });
     } else if (typeKey === 'ram') {
@@ -231,7 +243,6 @@ watch(() => props.isOpen, (newVal) => {
 
 watch(() => JSON.stringify(props.filters), (newVal, oldVal) => {
     if (newVal !== oldVal) {
-        // Si cambian los filtros reales, reiniciamos la lista de componentes para forzar nueva carga
         components.value = [];
         searchQuery.value = '';
         if (props.isOpen) {

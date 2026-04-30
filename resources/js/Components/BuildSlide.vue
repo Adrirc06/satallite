@@ -16,7 +16,7 @@
                 </div>
             </div>
 
-            <!-- Card compacta: solo móvil -->
+            <!-- Card compacta para dispositivos pequeños -->
             <div class="d-md-none tw:w-80 px-3 tw:mb-6">
                 <div class="card tw:border tw:border-gray-500 rounded-4 rounded-bottom-right-none">
                     <div class="card-body tw:flex tw:flex-col tw:gap-1">
@@ -48,7 +48,7 @@
                 </div>
             </div>
 
-            <!-- Cuadrícula de 6 cards: solo sm+ -->
+            <!-- Slide normal -->
             <div class="d-none d-md-flex w-75 row g-3 tw:mb-6">
                 <div class="col-12 col-md-6 col-xl-4">
                     <div class="d-flex flex-column tw:border-2 tw:border-gray-500 tw:h-60 rounded-4 rounded-bottom-right-none p-3">
