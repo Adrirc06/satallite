@@ -17,6 +17,7 @@ Route::prefix('v1')->group(function () {
     Route::get('/components/{type}', [ComponentController::class, 'index']);
 
     Route::get('/builds/random', [BuildController::class, 'random']);
+    Route::middleware('throttle:20,1')->get('/builds/{build}/ai-summary', [BuildController::class, 'aiSummary']);
     Route::get('/users/{user}/builds', [BuildController::class, 'userBuilds']);
 
     Route::middleware('auth:sanctum')->group(function () {

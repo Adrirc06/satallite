@@ -136,7 +136,7 @@
                     <span v-if="isExportingPDF" class="spinner-border spinner-border-sm me-2"></span>
                     Exportar PDF
                 </button>
-                <button @click="showDevDialog = true" class="tw:flex-1 tw:bg-linear-to-r tw:from-purple-500 tw:to-pink-500 tw:hover:from-purple-600 tw:hover:to-pink-600 text-white tw:py-3 tw:px-4 rounded-3 rounded-bottom-right-none tw:transition">Resumen IA</button>
+                <button @click="openAiDialog" class="tw:flex-1 tw:bg-linear-to-r tw:from-purple-500 tw:to-pink-500 tw:hover:from-purple-600 tw:hover:to-pink-600 text-white tw:py-3 tw:px-4 rounded-3 rounded-bottom-right-none tw:transition">Resumen IA</button>
                 <button v-if="isOwner" data-bs-toggle="modal" data-bs-target="#modalDeleteBuild" class="tw:flex-1 tw:bg-red-600 tw:hover:bg-red-500 tw:text-white tw:font-bold tw:py-3 tw:px-4 rounded-3 rounded-bottom-right-none tw:transition">Eliminar</button>
             </div>
         </div>
@@ -195,11 +195,42 @@
             </div>
         </div>
 
-        <div v-if="showDevDialog" class="tw:fixed tw:inset-0 tw:z-50 tw:flex tw:items-center tw:justify-center tw:bg-black tw:bg-opacity-50">
-            <div class="tw:bg-white tw:dark:bg-gray-800 tw:p-6 tw:rounded-lg tw:shadow-xl tw:max-w-sm tw:w-full">
-                <h3 class="tw:text-lg tw:font-bold tw:mb-2">En desarrollo</h3>
-                <p class="tw:text-gray-600 tw:dark:text-gray-300 tw:mb-4">Esta no es una función lista todavía. Pronto estará disponible.</p>
-                <button @click="showDevDialog = false" class="tw:w-full tw:bg-gray-200 tw:hover:bg-gray-300 tw:text-gray-800 tw:font-bold tw:py-2 tw:px-4 tw:rounded">Cerrar</button>
+        <div v-if="showAiDialog" class="tw:fixed tw:inset-0 tw:z-50 tw:flex tw:items-center tw:justify-center tw:bg-black/50 tw:p-3 tw:sm:p-6">
+            <div class="bg-body tw:rounded-2xl rounded-bottom-right-none tw:shadow-2xl tw:w-full tw:max-w-3xl tw:flex tw:flex-col tw:border tw:border-gray-200 tw:dark:border-gray-700" :style="isLoadingAi || aiError ? 'height: 85dvh; max-height: 85dvh;' : 'max-height: 85dvh;'">
+                <!-- Cabecera -->
+                <div class="tw:flex tw:items-center tw:justify-between tw:px-5 tw:py-4 tw:border-b tw:border-gray-200 tw:dark:border-gray-700 tw:flex-shrink-0">
+                    <div class="tw:flex tw:items-center tw:gap-2">
+                        <i class="bi bi-stars tw:text-indigo-500 tw:text-xl"></i>
+                        <h3 class="tw:text-lg tw:font-bold text-body tw:m-0">Resumen IA</h3>
+                    </div>
+                    <button @click="showAiDialog = false" class="tw:text-gray-400 tw:hover:text-gray-500 tw:transition tw:text-xl tw:leading-none">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+
+                <!-- Contenido -->
+                <div class="tw:overflow-y-auto tw:p-5" :class="isLoadingAi || aiError ? 'tw:flex-1' : ''">
+                    <div v-if="isLoadingAi" class="tw:flex tw:flex-col tw:items-center tw:justify-center tw:h-full tw:gap-3 tw:text-gray-500">
+                        <div class="spinner-border tw:text-indigo-500" role="status"></div>
+                        <span class="tw:text-sm">Analizando la build...</span>
+                    </div>
+                    <div v-else-if="aiSummaryText" class="tw:leading-relaxed tw:whitespace-pre-wrap">{{ aiSummaryText }}</div>
+                    <div v-else-if="aiError" class="tw:flex tw:flex-col tw:items-center tw:justify-center tw:h-full tw:gap-3 tw:text-red-500">
+                        <i class="bi bi-exclamation-circle tw:text-3xl"></i>
+                        <p class="tw:text-sm tw:m-0">{{ aiError }}</p>
+                        <button @click="fetchAiSummary" class="tw:text-sm tw:bg-indigo-500 tw:hover:bg-indigo-400 tw:text-white tw:px-4 tw:py-2 rounded-3 rounded-bottom-right-none tw:transition">
+                            Reintentar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Aviso IA -->
+                <div class="tw:px-5 tw:py-3 tw:border-t tw:border-gray-200 tw:dark:border-gray-700 tw:bg-amber-50 tw:dark:bg-amber-900/10 tw:rounded-b-2xl tw:flex-shrink-0">
+                    <p class="tw:text-xs tw:text-gray-500 tw:dark:text-gray-400 tw:text-center tw:m-0">
+                        <i class="bi bi-exclamation-triangle-fill tw:text-amber-500 tw:mr-1"></i>
+                        La información generada por IA puede contener errores. Verifica siempre la compatibilidad antes de realizar una compra.
+                    </p>
+                </div>
             </div>
         </div>
 
@@ -251,7 +282,34 @@ const props = defineProps({
 });
 
 const page = usePage();
-const showDevDialog = ref(false);
+const showAiDialog = ref(false);
+const aiSummaryText = ref('');
+const aiError = ref(false);
+const isLoadingAi = ref(false);
+
+const openAiDialog = () => {
+    showAiDialog.value = true;
+    if (!aiSummaryText.value) {
+        fetchAiSummary();
+    }
+};
+
+const fetchAiSummary = async () => {
+    isLoadingAi.value = true;
+    aiSummaryText.value = '';
+    aiError.value = false;
+    try {
+        const response = await axios.get(`/api/v1/builds/${props.build.id}/ai-summary`);
+        aiSummaryText.value = response.data.summary
+            .replace(/\*\*(.*?)\*\*/g, '$1')
+            .replace(/\*(.*?)\*/g, '$1')
+            .replace(/^#+\s+/gm, '');
+    } catch (e) {
+        aiError.value = e.response?.data?.error || 'No se pudo generar el resumen.';
+    } finally {
+        isLoadingAi.value = false;
+    }
+};
 
 const getSpecs = (typeKey, item) => {
     if (!item) return [];
@@ -296,6 +354,17 @@ const localMyRating = ref(props.myRating);
 const showRatingDialog = ref(false);
 const ratingSliderValue = ref(50);
 const isSubmittingRating = ref(false);
+
+watch(showAiDialog, (isOpen) => {
+    if (isOpen) {
+        const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+        document.body.style.paddingRight = scrollbarWidth + 'px';
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+    }
+});
 
 watch(showRatingDialog, (isOpen) => {
     if (isOpen) {
