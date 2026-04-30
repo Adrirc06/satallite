@@ -400,6 +400,18 @@ nav.navbar.navbar-hidden {
     border: 0;
 }
 
+.dropdown-enter-active,
+.dropdown-leave-active {
+    transition: max-height 0.3s ease, opacity 0.25s ease;
+    overflow: hidden;
+    max-height: 2000px;
+}
+.dropdown-enter-from,
+.dropdown-leave-to {
+    max-height: 0;
+    opacity: 0;
+}
+
 @keyframes scrolling {
   0% {
     transform: translateX(0);
