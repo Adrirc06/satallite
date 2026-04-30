@@ -26,7 +26,7 @@
                             <span class="tw:text-indigo-500 tw:font-semibold tw:ml-1">{{ spec.value }}</span>
                         </span>
                     </div>
-                    <p class="tw:absolute tw:bottom-1 tw:right-4 tw:text-xl tw:font-bold tw:text-indigo-500">{{ build.motherboard.price + '€' || 'Sin Stock'}}</p>
+                    <p class="tw:absolute tw:bottom-1 tw:right-4 tw:text-xl tw:font-bold tw:text-indigo-500">{{ build.motherboard?.price ? build.motherboard.price + '€' : 'Sin Stock' }}</p>
                 </div>
 
                 <!-- CPU -->
@@ -42,7 +42,7 @@
                             <span class="tw:text-indigo-500 tw:font-semibold tw:ml-1">{{ spec.value }}</span>
                         </span>
                     </div>
-                    <p class="tw:absolute tw:bottom-1 tw:right-4 tw:text-xl tw:font-bold tw:text-indigo-500">{{ build.cpu.price + '€' || 'Sin Stock'}}</p>
+                    <p class="tw:absolute tw:bottom-1 tw:right-4 tw:text-xl tw:font-bold tw:text-indigo-500">{{ build.cpu?.price ? build.cpu.price + '€' : 'Sin Stock' }}</p>
                 </div>
 
                 <!-- RAM -->
@@ -58,7 +58,7 @@
                             <span class="tw:text-indigo-500 tw:font-semibold tw:ml-1">{{ spec.value }}</span>
                         </span>
                     </div>
-                    <p class="tw:absolute tw:bottom-1 tw:right-4 tw:text-xl tw:font-bold tw:text-indigo-500">{{ build.ram.price + '€' || 'Sin Stock'}}</p>
+                    <p class="tw:absolute tw:bottom-1 tw:right-4 tw:text-xl tw:font-bold tw:text-indigo-500">{{ build.ram?.price ? build.ram.price + '€' : 'Sin Stock' }}</p>
                 </div>
 
                 <!-- GPU -->
@@ -74,7 +74,7 @@
                             <span class="tw:text-indigo-500 tw:font-semibold tw:ml-1">{{ spec.value }}</span>
                         </span>
                     </div>
-                    <p class="tw:absolute tw:bottom-1 tw:right-4 tw:text-xl tw:font-bold tw:text-indigo-500">{{ build.gpu.price + '€' || 'Sin Stock'}}</p>
+                    <p class="tw:absolute tw:bottom-1 tw:right-4 tw:text-xl tw:font-bold tw:text-indigo-500">{{ build.gpu?.price ? build.gpu.price + '€' : 'Sin Stock' }}</p>
                 </div>
 
                 <!-- Drive -->
@@ -90,7 +90,7 @@
                             <span class="tw:text-indigo-500 tw:font-semibold tw:ml-1">{{ spec.value }}</span>
                         </span>
                     </div>
-                    <p class="tw:absolute tw:bottom-1 tw:right-4 tw:text-xl tw:font-bold tw:text-indigo-500">{{ build.drive.price + '€' || 'Sin Stock'}}</p>
+                    <p class="tw:absolute tw:bottom-1 tw:right-4 tw:text-xl tw:font-bold tw:text-indigo-500">{{ build.drive?.price ? build.drive.price + '€' : 'Sin Stock' }}</p>
                 </div>
 
                 <!-- PSU -->
@@ -106,7 +106,7 @@
                             <span class="tw:text-indigo-500 tw:font-semibold tw:ml-1">{{ spec.value }}</span>
                         </span>
                     </div>
-                    <p class="tw:absolute tw:bottom-1 tw:right-4 tw:text-xl tw:font-bold tw:text-indigo-500">{{ build.psu.price + '€' || 'Sin Stock'}}</p>
+                    <p class="tw:absolute tw:bottom-1 tw:right-4 tw:text-xl tw:font-bold tw:text-indigo-500">{{ build.psu?.price ? build.psu.price + '€' : 'Sin Stock' }}</p>
                 </div>
 
                 <!-- Chassis -->
@@ -122,7 +122,7 @@
                             <span class="tw:text-indigo-500 tw:font-semibold tw:ml-1">{{ spec.value }}</span>
                         </span>
                     </div>
-                    <p class="tw:absolute tw:bottom-1 tw:right-4 tw:text-xl tw:font-bold tw:text-indigo-500">{{ build.chassis.price + '€' || 'Sin Stock'}}</p>
+                    <p class="tw:absolute tw:bottom-1 tw:right-4 tw:text-xl tw:font-bold tw:text-indigo-500">{{ build.chassis?.price ? build.chassis.price + '€' : 'Sin Stock' }}</p>
                 </div>
 
             </div>
@@ -132,7 +132,10 @@
             <div class="tw:flex tw:flex-col tw:sm:flex-row tw:gap-4">
                 <Link v-if="isOwner" :href="`/builder?edit=${build.id}`" class="tw:flex-1 tw:py-3 tw:px-4 tw:bg-indigo-500 tw:hover:bg-indigo-400 tw:!text-white text-decoration-none tw:font-bold rounded-3 rounded-bottom-right-none tw:transition tw:text-center tw:no-underline">Editar</Link>
                 <Link v-else :href="`/builder?base=${build.id}`" class="tw:flex-1 tw:py-3 tw:px-4 tw:bg-indigo-500 tw:hover:bg-indigo-400 tw:!text-white text-decoration-none tw:font-bold rounded-3 rounded-bottom-right-none tw:transition tw:text-center tw:no-underline">Usar como base</Link>
-                <button @click="showDevDialog = true" class="tw:flex-1 tw:bg-red-600 tw:hover:bg-red-500 tw:text-white tw:font-bold tw:py-3 tw:px-4 rounded-3 rounded-bottom-right-none tw:transition">Exportar PDF</button>
+                <button @click="exportPDF" :disabled="isExportingPDF" class="tw:flex-1 tw:bg-red-600 tw:hover:bg-red-500 tw:text-white tw:font-bold tw:py-3 tw:px-4 rounded-3 rounded-bottom-right-none tw:transition tw:disabled:opacity-60">
+                    <span v-if="isExportingPDF" class="spinner-border spinner-border-sm me-2"></span>
+                    Exportar PDF
+                </button>
                 <button @click="showDevDialog = true" class="tw:flex-1 tw:bg-linear-to-r tw:from-purple-500 tw:to-pink-500 tw:hover:from-purple-600 tw:hover:to-pink-600 text-white tw:py-3 tw:px-4 rounded-3 rounded-bottom-right-none tw:transition">Resumen IA</button>
                 <button v-if="isOwner" data-bs-toggle="modal" data-bs-target="#modalDeleteBuild" class="tw:flex-1 tw:bg-red-600 tw:hover:bg-red-500 tw:text-white tw:font-bold tw:py-3 tw:px-4 rounded-3 rounded-bottom-right-none tw:transition">Eliminar</button>
             </div>
@@ -230,6 +233,7 @@
 
 <script setup>
 import { ref, computed, watch, onUnmounted } from 'vue';
+import jsPDF from 'jspdf';
 import { usePage, router, Link } from '@inertiajs/vue3';
 import axios from 'axios';
 import Header from '@/Layouts/Header.vue';
@@ -346,6 +350,242 @@ onUnmounted(() => {
 const isOwner = computed(() => {
     return page.props.auth.user?.id === props.build.user_id;
 });
+
+const isExportingPDF = ref(false);
+
+const exportPDF = async () => {
+    if (isExportingPDF.value) return;
+    isExportingPDF.value = true;
+
+    try {
+        const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+        const W = 210;
+        const H = 297;
+        const margin = 15;
+        const indigo = [99, 102, 241];
+        const darkText = [30, 30, 30];
+        const grayText = [100, 100, 100];
+        const borderColor = [200, 200, 210];
+        const headerH = 28;
+        const footerH = 14;
+
+        const loadAsDataUrl = (path) =>
+            fetch(path).then(r => r.blob()).then(blob => new Promise(resolve => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.readAsDataURL(blob);
+            }));
+
+        const profileUrl = props.build.user?.profile_url || '/img/default.jpg';
+
+        const [logoDataUrl, fontRegularDataUrl, fontBoldDataUrl, profileDataUrl] = await Promise.all([
+            loadAsDataUrl('/img/full_logo.png'),
+            loadAsDataUrl('/fonts/quantico-regular.ttf'),
+            loadAsDataUrl('/fonts/quantico-bold.ttf'),
+            loadAsDataUrl(profileUrl),
+        ]);
+
+        doc.addFileToVFS('Quantico-Regular.ttf', fontRegularDataUrl.split(',')[1]);
+        doc.addFont('Quantico-Regular.ttf', 'Quantico', 'normal');
+        doc.addFileToVFS('Quantico-Bold.ttf', fontBoldDataUrl.split(',')[1]);
+        doc.addFont('Quantico-Bold.ttf', 'Quantico', 'bold');
+
+        const logoImg = await new Promise(resolve => {
+            const img = new Image();
+            img.onload = () => resolve(img);
+            img.src = logoDataUrl;
+        });
+        const logoH = 20;
+        const logoW = logoH * (logoImg.naturalWidth / logoImg.naturalHeight);
+
+        const drawHeader = () => {
+            doc.setFillColor(...indigo);
+            doc.rect(0, 0, W, headerH, 'F');
+            doc.addImage(logoDataUrl, 'PNG', (W - logoW) / 2, 4, logoW, logoH);
+        };
+
+        const drawFooter = () => {
+            doc.setFillColor(...indigo);
+            doc.rect(0, H - footerH, W, footerH, 'F');
+            doc.setFont('Quantico', 'normal');
+            doc.setFontSize(9);
+            doc.setTextColor(255, 255, 255);
+            doc.text('© 2026 SATAllite v1.2', W / 2, H - footerH + 9, { align: 'center' });
+        };
+
+        const types = [
+            { key: 'motherboard', label: 'Placa base' },
+            { key: 'cpu', label: 'Procesador' },
+            { key: 'ram', label: 'RAM' },
+            { key: 'gpu', label: 'Tarjeta gráfica' },
+            { key: 'drive', label: 'Almacenamiento' },
+            { key: 'psu', label: 'Fuente de alimentación' },
+            { key: 'chassis', label: 'Caja' },
+        ];
+        const activeComponents = types.filter(t => props.build[t.key]);
+
+        // Pre-calcular altura total del contenido para centrarlo verticalmente
+        const calcSpecLines = (specs) => {
+            if (!specs.length) return 0;
+            doc.setFontSize(8);
+            let lines = 1;
+            let currentX = 0;
+            for (const spec of specs) {
+                const w = doc.getTextWidth(`${spec.label}: ${spec.value}   `);
+                if (currentX + w > W - margin * 2 - 8 && currentX > 0) {
+                    lines++;
+                    currentX = 0;
+                }
+                currentX += w;
+            }
+            return lines;
+        };
+
+        const avatarSize = 8;
+        const titleFontSize = 30;
+        const titleLineH = 12;
+
+        doc.setFont('Quantico', 'bold');
+        doc.setFontSize(titleFontSize);
+        const titleLines = doc.splitTextToSize(props.build.name, W - margin * 2);
+
+        let totalH = titleLines.length * titleLineH + 7; // título + espacio al subrayado
+        if (props.build.user) totalH += avatarSize + 4;  // avatar + gap
+        totalH += 6;                                      // espacio antes del primer card
+
+        for (const type of activeComponents) {
+            const specs = getSpecs(type.key, props.build[type.key]);
+            const specLines = calcSpecLines(specs);
+            totalH += 4 + 7 + 2 + 7 + (specLines > 0 ? specLines * 4 + 3 : 0) + 5 + 5;
+        }
+
+        const availableH = H - headerH - footerH;
+        const startY = totalH <= availableH
+            ? headerH + Math.max(16, (availableH - totalH) / 2)
+            : headerH + 16;
+
+        // Renderizado
+        drawHeader();
+        let y = startY;
+
+        // Título
+        doc.setFont('Quantico', 'bold');
+        doc.setFontSize(titleFontSize);
+        doc.setTextColor(...darkText);
+        doc.text(titleLines, W / 2, y, { align: 'center' });
+        y += titleLines.length * titleLineH + 1;
+
+        // Subrayado del título
+        doc.setDrawColor(...borderColor);
+        doc.setLineWidth(0.5);
+        doc.line(margin, y, W - margin, y);
+        y += 6;
+
+        // Autor con foto de perfil
+        if (props.build.user) {
+            const authorLabel = `Creada por ${props.build.user.name}`;
+            doc.setFont('Quantico', 'normal');
+            doc.setFontSize(10);
+            const textW = doc.getTextWidth(authorLabel);
+            const groupW = avatarSize + 3 + textW;
+            const groupX = (W - groupW) / 2;
+
+            doc.addImage(profileDataUrl, 'JPEG', groupX, y, avatarSize, avatarSize);
+            doc.setTextColor(...grayText);
+            doc.text(authorLabel, groupX + avatarSize + 3, y + avatarSize * 0.68);
+            y += avatarSize + 4;
+        }
+
+        y += 2;
+
+        // Cards de componentes
+        for (const type of activeComponents) {
+            const component = props.build[type.key];
+            const specs = getSpecs(type.key, component);
+            const specLines = calcSpecLines(specs);
+            const cardH = 4 + 7 + 2 + 7 + (specLines > 0 ? specLines * 4 + 3 : 0) + 5;
+
+            if (y + cardH > H - footerH - 5) {
+                drawFooter();
+                doc.addPage();
+                drawHeader();
+                y = headerH + 10;
+            }
+
+            const cardStartY = y;
+            y += 4;
+
+            // Nombre del tipo (label en indigo, bold)
+            doc.setFont('Quantico', 'bold');
+            doc.setFontSize(11);
+            doc.setTextColor(...indigo);
+            doc.text(type.label, margin + 4, y);
+            y += 3;
+
+            // Separador interno
+            doc.setDrawColor(...borderColor);
+            doc.setLineWidth(0.2);
+            doc.line(margin + 4, y, W - margin - 4, y);
+            y += 4;
+
+            // Nombre del componente y precio
+            doc.setFont('Quantico', 'normal');
+            doc.setFontSize(10);
+            doc.setTextColor(...darkText);
+            doc.text(component.name, margin + 4, y);
+            doc.setFont('Quantico', 'bold');
+            doc.setTextColor(...indigo);
+            doc.text(component.price ? `${component.price}€` : 'Sin stock', W - margin - 2, y, { align: 'right' });
+            doc.setFont('Quantico', 'normal');
+            y += 6;
+
+            // Specs con label en indigo y valor en gris
+            if (specs.length > 0) {
+                y += 1;
+                doc.setFontSize(8);
+                let currentX = margin + 4;
+                let currentY = y;
+
+                for (const spec of specs) {
+                    const labelText = `${spec.label}: `;
+                    const valueText = `${spec.value}   `;
+                    const labelW = doc.getTextWidth(labelText);
+                    const valueW = doc.getTextWidth(valueText);
+
+                    if (currentX + labelW + valueW > W - margin - 4 && currentX > margin + 4) {
+                        currentX = margin + 4;
+                        currentY += 4;
+                    }
+
+                    doc.setTextColor(...indigo);
+                    doc.text(labelText, currentX, currentY);
+                    doc.setTextColor(...grayText);
+                    doc.text(valueText.trimEnd(), currentX + labelW, currentY);
+                    currentX += labelW + valueW;
+                }
+
+                y = currentY + 5;
+            }
+
+            y += 1;
+
+            // Borde del card
+            doc.setDrawColor(...borderColor);
+            doc.setLineWidth(0.3);
+            doc.roundedRect(margin, cardStartY, W - margin * 2, y - cardStartY, 2, 2, 'S');
+
+            y += 4;
+        }
+
+        drawFooter();
+        doc.save(`${props.build.name}.pdf`);
+    } catch (error) {
+        console.error('Error al generar el PDF:', error);
+        alert('Ha ocurrido un error al generar el PDF.');
+    } finally {
+        isExportingPDF.value = false;
+    }
+};
 
 function getCookie(name) {
     const value = `; ${document.cookie}`;
