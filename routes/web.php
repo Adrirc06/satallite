@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [IndexController::class, 'home']);
 Route::get('/articles', [IndexController::class, 'articles']);
+Route::get('/builds', [IndexController::class, 'builds'])->name('builds.index');
 Route::get('/articles/create', [IndexController::class, 'createArticle']);
 Route::get('/builder', [IndexController::class, 'builder']);
 Route::get('/build/{id}', [IndexController::class, 'build'])->name('build.show');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Api\V1\BuildResource;
 use App\Http\Resources\Api\V1\ChassisResource;
 use App\Http\Resources\Api\V1\CpuResource;
 use App\Http\Resources\Api\V1\DriveResource;
@@ -32,6 +33,20 @@ class IndexController extends Controller
 
         return inertia('Index/Articles', [
             'articles' => $articles,
+        ]);
+    }
+
+    public function builds()
+    {
+        $builds = Build::with(['cpu', 'gpu', 'ram', 'motherboard', 'psu', 'drive', 'chassis'])
+            ->withAvg('ratings', 'rating')
+            ->withCount('ratings')
+            ->where('is_public', true)
+            ->latest('created_at')
+            ->paginate(9);
+
+        return inertia('Index/Builds', [
+            'builds' => BuildResource::collection($builds),
         ]);
     }
 
