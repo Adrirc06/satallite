@@ -6,7 +6,6 @@
         </p>
         
         <div class="my-2">
-            <!-- Component Dropdowns -->
             <ComponentDropdown 
                 v-for="type in componentTypes" 
                 :key="type.key"
@@ -29,7 +28,6 @@
             </ul>
         </div>
 
-        <!-- Preferencias y Advertencias -->
         <div v-if="compatibilityWarnings.length > 0" class="mt-4 p-4 tw:bg-amber-100 tw:border-3 tw:border-amber-500 tw:text-amber-700 rounded-5 rounded-bottom-right-none">
             <p class="h3 mb-3 mx-3">Advertencias de compatibilidad</p>
             <ul class="tw:list-disc tw:list-inside tw:space-y-1 tw:ml-1">

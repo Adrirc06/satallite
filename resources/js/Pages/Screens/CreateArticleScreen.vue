@@ -13,7 +13,7 @@
                     <input v-model="form.subtitle" type="text" id="subtitle" name="subtitle" class="tw:border tw:border-gray-500 tw:rounded-md rounded-bottom-right-none tw:px-3 tw:py-2 focus:tw:outline-none focus:tw:ring-2 focus:tw:ring-indigo-500 focus:tw:border-transparent" required>
                 </div>
                 <div class="tw:flex tw:flex-col tw:gap-2">
-                    <label class="tw:text-lg tw:font-medium">Imagen del banner (Opcional)</label>
+                    <label class="tw:text-lg tw:font-medium">Banner del artículo</label>
                     <div 
                         class="tw:relative tw:cursor-pointer tw:rounded-lg tw:overflow-hidden tw:w-full tw:h-64 tw:border-4 tw:border-dashed tw:border-gray-500 hover:tw:border-indigo-500 tw:transition-colors tw:group tw:flex tw:items-center tw:justify-center tw:bg-gray-800/10 banner-hover-container"
                         @click="showPhotoDialog = true"

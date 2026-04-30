@@ -142,7 +142,7 @@ const submit = async () => {
     let isValid = true;
 
     if (!isValidUsername(form.username)) {
-        formErrors.value.username = 'El nombre de usuario solo puede contener letras, nÃºmeros, guiones y guiones bajos.';
+        formErrors.value.username = 'El nombre de usuario solo puede contener letras, números, guiones y guiones bajos.';
         isValid = false;
     }
 
@@ -152,7 +152,7 @@ const submit = async () => {
     }
 
     if (form.password.length < 8) {
-        formErrors.value.password = 'La contrasena debe ser mayor a 8 caracteres.';
+        formErrors.value.password = 'La contraseña debe ser mayor a 8 caracteres.';
         isValid = false;
     }
 
@@ -165,19 +165,18 @@ const submit = async () => {
         const { usernameExists, emailExists } = await checkUserExists(form.username, form.email);
         
         if (usernameExists) {
-            formErrors.value.username = 'Este nombre de usuario ya estÃ¡ en uso.';
+            formErrors.value.username = 'Este nombre de usuario ya está en uso.';
             isValid = false;
         }
 
         if (emailExists) {
-            formErrors.value.email = 'Este correo electrÃ³nico ya estÃ¡ registrado.';
+            formErrors.value.email = 'Este correo electrónico ya está registrado.';
             isValid = false;
         }
     }
 
     if (isValid) {
         form.post('/signup', {
-            // Si falla se vuelve a rellenar el formulario con los datos introducidos
             onError: (errors) => {
                 if (errors.username) formErrors.value.username = errors.username;
                 if (errors.email) formErrors.value.email = errors.email;

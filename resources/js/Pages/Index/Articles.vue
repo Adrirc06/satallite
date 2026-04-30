@@ -91,21 +91,3 @@ const getResults = (page = 1) => {
     );
 };
 </script>
-
-<style>
-.page-icon {
-    color: #9ca3af !important;
-}
-.page-icon-active {
-    color: #6366f1 !important;
-}
-
-@media (prefers-color-scheme: dark) {
-    .page-icon {
-        color: #6b7280 !important;
-    }
-}
-[data-bs-theme="dark"] .page-icon {
-    color: #6b7280 !important;
-}
-</style>

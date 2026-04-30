@@ -334,6 +334,22 @@ nav.navbar.navbar-hidden {
   display: none;
 }
 
+.page-icon {
+    color: #9ca3af !important;
+}
+.page-icon-active {
+    color: #6366f1 !important;
+}
+
+@media (prefers-color-scheme: dark) {
+    .page-icon {
+        color: #6b7280 !important;
+    }
+}
+[data-bs-theme="dark"] .page-icon {
+    color: #6b7280 !important;
+}
+
 .profile-hover-container {
     position: relative;
 }
@@ -382,6 +398,18 @@ nav.navbar.navbar-hidden {
 .rating-range::-ms-thumb {
     background-color: #6366f1;
     border: 0;
+}
+
+.dropdown-enter-active,
+.dropdown-leave-active {
+    transition: max-height 0.3s ease, opacity 0.25s ease;
+    overflow: hidden;
+    max-height: 2000px;
+}
+.dropdown-enter-from,
+.dropdown-leave-to {
+    max-height: 0;
+    opacity: 0;
 }
 
 @keyframes scrolling {

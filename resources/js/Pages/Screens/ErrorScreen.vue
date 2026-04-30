@@ -65,7 +65,6 @@ onMounted(() => {
         theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
 
-    // Forzamos el tema en el HTML para que Bootstrap active fondos y textos
     html.setAttribute("data-bs-theme", theme);
 
     const isDark = theme === 'dark';

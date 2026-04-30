@@ -32,7 +32,7 @@
     </div>
 </template>
 <script setup>
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 import axios from 'axios';
 import Footer from '@/Layouts/Footer.vue';

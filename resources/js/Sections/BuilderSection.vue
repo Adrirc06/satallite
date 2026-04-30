@@ -64,7 +64,7 @@ const builds = ref([]);
 onMounted(async () => {
     try {
         const response = await axios.get('/api/v1/builds/random');
-        builds.value = response.data.data; // assuming API returns paginated-like resource structure {"data": [...]}
+        builds.value = response.data.data;
     } catch (error) {
         console.error("Error loading random builds:", error);
     }
