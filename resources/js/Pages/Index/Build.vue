@@ -447,12 +447,31 @@ const exportPDF = async () => {
 
         const profileUrl = props.build.user?.profile_url || '/img/default.jpg';
 
-        const [logoDataUrl, fontRegularDataUrl, fontBoldDataUrl, profileDataUrl] = await Promise.all([
+        const circularCrop = (dataUrl) => new Promise(resolve => {
+            const img = new Image();
+            img.onload = () => {
+                const size = Math.min(img.width, img.height);
+                const canvas = document.createElement('canvas');
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+                ctx.beginPath();
+                ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+                ctx.clip();
+                ctx.drawImage(img, (img.width - size) / 2, (img.height - size) / 2, size, size, 0, 0, size, size);
+                resolve(canvas.toDataURL('image/png'));
+            };
+            img.src = dataUrl;
+        });
+
+        const [logoDataUrl, fontRegularDataUrl, fontBoldDataUrl, rawProfileDataUrl] = await Promise.all([
             loadAsDataUrl('/img/full_logo.png'),
             loadAsDataUrl('/fonts/quantico-regular.ttf'),
             loadAsDataUrl('/fonts/quantico-bold.ttf'),
             loadAsDataUrl(profileUrl),
         ]);
+
+        const profileDataUrl = await circularCrop(rawProfileDataUrl);
 
         doc.addFileToVFS('Quantico-Regular.ttf', fontRegularDataUrl.split(',')[1]);
         doc.addFont('Quantico-Regular.ttf', 'Quantico', 'normal');
@@ -559,7 +578,7 @@ const exportPDF = async () => {
             const groupW = avatarSize + 3 + textW;
             const groupX = (W - groupW) / 2;
 
-            doc.addImage(profileDataUrl, 'JPEG', groupX, y, avatarSize, avatarSize);
+            doc.addImage(profileDataUrl, 'PNG', groupX, y, avatarSize, avatarSize);
             doc.setTextColor(...grayText);
             doc.text(authorLabel, groupX + avatarSize + 3, y + avatarSize * 0.68);
             y += avatarSize + 4;
