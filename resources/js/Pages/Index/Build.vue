@@ -163,7 +163,6 @@
             </div>
         </div>
 
-        <!-- Rating Modal -->
         <div v-if="showRatingDialog" class="tw:fixed tw:inset-0 tw:z-50 tw:flex tw:items-center tw:justify-center tw:bg-black/40">
             <div class="bg-body tw:p-6 rounded-5 rounded-bottom-right-none tw:shadow-xl tw:max-w-sm tw:w-full tw:text-center text-body tw:border-2 tw:border-gray-400">
                 <h3 class="tw:text-2xl tw:font-bold tw:mb-4">Valora la compatibilidad</h3>
@@ -193,7 +192,6 @@
             </div>
         </div>
 
-        <!-- En Desarrollo Dialog -->
         <div v-if="showDevDialog" class="tw:fixed tw:inset-0 tw:z-50 tw:flex tw:items-center tw:justify-center tw:bg-black tw:bg-opacity-50">
             <div class="tw:bg-white tw:dark:bg-gray-800 tw:p-6 tw:rounded-lg tw:shadow-xl tw:max-w-sm tw:w-full">
                 <h3 class="tw:text-lg tw:font-bold tw:mb-2">En desarrollo</h3>
@@ -202,7 +200,6 @@
             </div>
         </div>
 
-        <!-- Eliminar Build Dialog -->
         <div class="modal fade" id="modalDeleteBuild" tabindex="-1" aria-labelledby="modalDeleteBuildLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content rounded-5 border rounded-bottom-right-none text-start">

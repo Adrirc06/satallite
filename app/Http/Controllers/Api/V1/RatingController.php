@@ -7,16 +7,10 @@ use App\Http\Resources\Api\V1\RatingResource;
 use App\Models\Build;
 use App\Models\Rating;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Validation\ValidationException;
 
 class RatingController extends Controller
 {
-    public function index(Build $build): AnonymousResourceCollection
-    {
-        return RatingResource::collection($build->ratings()->with('user')->latest()->paginate(15));
-    }
-
     public function store(Request $request, Build $build): RatingResource
     {
         $request->validate([

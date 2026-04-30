@@ -245,7 +245,6 @@ import 'vue-advanced-cropper/dist/style.css';
 const page = usePage();
 const user = computed(() => page.props.auth?.user || { name: 'Usuario', email: 'correo@ejemplo.com', profile_photo_url: null });
 
-// Formulario de perfil
 const form = useForm({
     name: user.value.name,
     email: user.value.email,
@@ -318,10 +317,6 @@ const onImageSelected = (e) => {
 
     photoError.value = '';
     imageSrc.value = URL.createObjectURL(file);
-};
-
-const onCropperChange = ({ coordinates, image }) => {
-    // Evento de cropper si es necesario
 };
 
 const getStencilSize = ({ imageSize }) => {

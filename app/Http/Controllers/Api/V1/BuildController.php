@@ -11,22 +11,9 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class BuildController extends Controller
 {
-    /**
-     * Display a listing of the most recent builds.
-     */
-    public function index(): AnonymousResourceCollection
-    {
-        $builds = Build::with(['user', 'cpu', 'gpu', 'ram', 'motherboard', 'psu', 'drive', 'chassis'])
-            ->withAvg('ratings', 'rating')
-            ->withCount('ratings')
-            ->latest()
-            ->paginate(15);
-
-        return BuildResource::collection($builds);
-    }
 
     /**
-     * Devuelve builds pÃºblicas aleatorias.
+     * Devuelve builds públicas aleatorias.
      */
     public function random(): AnonymousResourceCollection
     {
@@ -101,11 +88,11 @@ class BuildController extends Controller
     public function destroy(Build $build)
     {
         if (request()->user()->id !== $build->user_id) {
-            abort(403, 'No tienes permiso para eliminar esta configuraciÃ³n.');
+            abort(403, 'No tienes permiso para eliminar esta configuración.');
         }
 
         $build->delete();
 
-        return response()->json(['message' => 'ConfiguraciÃ³n eliminada correctamente']);
+        return response()->json(['message' => 'Configuración eliminada correctamente']);
     }
 }

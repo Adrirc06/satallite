@@ -5,7 +5,7 @@
             class="tw:p-4 tw:cursor-pointer tw:transition"
             :class="{'tw:opacity-50 tw:cursor-not-allowed': disabled}"
         >
-            <!-- Sin componente seleccionado: layout único -->
+            <!-- Sin componente seleccionado -->
             <template v-if="!selected">
                 <div class="tw:flex tw:items-center">
                     <div class="tw:text-indigo-500 tw:flex tw:items-center tw:justify-center tw:text-3xl tw:mr-4">
@@ -18,7 +18,7 @@
                 </div>
             </template>
 
-            <!-- Con componente seleccionado: layout móvil -->
+            <!-- Componente seleccionado para móvil -->
             <template v-else>
                 <div class="tw:flex tw:flex-col tw:gap-1 tw:sm:hidden">
                     <p class="tw:text-sm tw:font-medium tw:text-gray-500 tw:dark:text-gray-400 tw:uppercase tw:tracking-wide">{{ type.name }}</p>
@@ -40,7 +40,7 @@
                     </div>
                 </div>
 
-                <!-- Con componente seleccionado: layout desktop -->
+                <!-- Componente seleccionado normal -->
                 <div class="tw:hidden tw:sm:flex tw:items-center">
                     <div class="tw:text-indigo-500 tw:flex tw:items-center tw:justify-center tw:text-3xl tw:mr-4">
                         <i :class="`bi bi-${type.icon}`"></i>
@@ -142,7 +142,7 @@ const getSpecs = (typeKey, item) => {
     } else if (typeKey === 'cpu') {
         if (item.socket?.name) specs.push({ label: 'Socket', value: item.socket.name });
         if (item.cores) specs.push({ label: 'Núcleos/Hilos', value: `${item.cores}/${item.cores * 2}` });
-        if (item.frequency) specs.push({ label: 'Frecuencia', value: `${item.frequency}–${item.max_frequency || item.frequency}GHz` });
+        if (item.frequency) specs.push({ label: 'Frecuencia', value: `${item.frequency}${' - ' + item.max_frequency || ' '}GHz` });
         if (item.tdp) specs.push({ label: 'TDP', value: `${item.tdp}W` });
         specs.push({ label: 'iGPU', value: item.igpu?.name || 'No' });
     } else if (typeKey === 'ram') {
@@ -231,7 +231,6 @@ watch(() => props.isOpen, (newVal) => {
 
 watch(() => JSON.stringify(props.filters), (newVal, oldVal) => {
     if (newVal !== oldVal) {
-        // Si cambian los filtros reales, reiniciamos la lista de componentes para forzar nueva carga
         components.value = [];
         searchQuery.value = '';
         if (props.isOpen) {
