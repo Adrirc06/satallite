@@ -14,6 +14,7 @@ Route::prefix('v1')->group(function () {
     Route::get('/articles', [ArticleController::class, 'index']);
     Route::get('/articles/{id}', [ArticleController::class, 'show']);
 
+    Route::get('/components/{type}/filters', [ComponentController::class, 'filters']);
     Route::get('/components/{type}', [ComponentController::class, 'index']);
 
     Route::get('/builds/random', [BuildController::class, 'random']);
