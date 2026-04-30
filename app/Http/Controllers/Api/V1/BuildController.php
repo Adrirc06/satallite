@@ -165,33 +165,45 @@ class BuildController extends Controller
         $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='.config('services.gemini.key');
         $payload = json_encode(['contents' => [['parts' => [['text' => $prompt]]]]]);
 
-        $ch = curl_init($url);
-        curl_setopt_array($ch, [
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => $payload,
-            CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_SSL_VERIFYHOST => 0,
-            CURLOPT_TIMEOUT => 30,
-        ]);
+        $data = null;
 
-        $result = curl_exec($ch);
-        $curlError = curl_error($ch);
+        for ($attempt = 1; $attempt <= 3; $attempt++) {
+            $ch = curl_init($url);
+            curl_setopt_array($ch, [
+                CURLOPT_POST => true,
+                CURLOPT_POSTFIELDS => $payload,
+                CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_SSL_VERIFYPEER => false,
+                CURLOPT_SSL_VERIFYHOST => 0,
+                CURLOPT_TIMEOUT => 30,
+            ]);
 
-        if ($curlError) {
-            return response()->json(['error' => 'Sin conexión con la IA'], 503);
+            $result = curl_exec($ch);
+            $curlError = curl_error($ch);
+
+            if ($curlError) {
+                return response()->json(['error' => 'Sin conexión con la IA'], 503);
+            }
+
+            $data = json_decode($result, true);
+            $status = $data['error']['status'] ?? null;
+
+            if ($status !== 'UNAVAILABLE' || $attempt === 3) {
+                break;
+            }
+
+            sleep(2);
         }
-
-        $data = json_decode($result, true);
 
         if (isset($data['error'])) {
             $status = $data['error']['status'] ?? '';
             $message = match ($status) {
                 'RESOURCE_EXHAUSTED' => 'La cuota de la IA está agotada. Inténtalo más tarde.',
+                'UNAVAILABLE' => 'La IA no está disponible en este momento. Inténtalo de nuevo.',
                 'INVALID_ARGUMENT' => 'Solicitud inválida a la IA.',
                 'UNAUTHENTICATED' => 'Clave de la IA no válida.',
-                default => 'Error de la IA: '.$status,
+                default => 'La IA no está disponible ahora mismo. Inténtalo de nuevo.',
             };
 
             return response()->json(['error' => $message], 503);
