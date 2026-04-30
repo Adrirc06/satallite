@@ -3,7 +3,7 @@ name: Deploy to Oracle Cloud
 on:
   push:
     branches: ["main"] # Se activa al hacer push a main
-  workflow_dispatch: 
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -19,7 +19,7 @@ jobs:
           script: |
             git config --global --add safe.directory /var/www/satallite.app/src
             docker exec satallite_app git config --global --add safe.directory /var/www/html
-            
+
             cd /var/www/satallite.app/src
 
             # 1. Actualizar el código
@@ -35,6 +35,7 @@ jobs:
 
             # 4. Migraciones y Caché
             docker exec satallite_app php artisan migrate --force
+            docker exec satallite_app php artisan config:clear
             docker exec satallite_app php artisan config:cache
             docker exec satallite_app php artisan view:clear
 
