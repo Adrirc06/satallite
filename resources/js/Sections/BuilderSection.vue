@@ -52,10 +52,16 @@
             <span class="visually-hidden">Next</span>
           </button>
         </div>
+        <div class="d-flex justify-content-center">
+            <Link href="/builds" class="btn tw:!bg-indigo-500 tw:hover:!bg-indigo-400 rounded-3 rounded-bottom-right-none px-4">
+                Ver todas las builds
+            </Link>
+        </div>
       </section>
 </template>
 <script setup>
 import BuildSlide from '@/Components/BuildSlide.vue';
+import { Link } from '@inertiajs/vue3';
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 

@@ -34,17 +34,41 @@
                 <span class="ms-2 tw:truncate tw:min-w-0">{{ build.components?.chassis?.name || 'No especificada' }}</span>
             </div>
         </div>
+        <div v-if="showRating" class="tw:border-t tw:border-gray-500 tw:px-4 tw:py-2 tw:flex tw:items-center justify-content-center tw:gap-1">
+            <i v-for="star in 5" :key="star" class="bi tw:!text-yellow-400" :class="starClass(build.ratings_avg_rating || 0, star)"></i>
+            <span class="tw:ml-1">{{ ratingAvg }}</span>
+            <span class="tw:text-gray-500 tw:ml-1">({{ build.ratings_count ?? 0 }})</span>
+        </div>
         <i v-if="!build.is_public" class="bi bi-lock-fill tw:absolute tw:bottom-3 tw:right-3 tw:text-indigo-500 tw:text-lg"></i>
     </div>
 </template>
 
 <script setup>
 import { router } from '@inertiajs/vue3';
+import { computed } from 'vue';
 
-defineProps({
+const props = defineProps({
     build: {
         type: Object,
         required: true,
     },
+    showRating: {
+        type: Boolean,
+        default: false,
+    },
 });
+
+const starClass = (score, position) => {
+    const starValue = position * 20;
+    const previousStarValue = (position - 1) * 20;
+    if (score >= starValue) return 'bi-star-fill';
+    if (score > previousStarValue + 5) return 'bi-star-half';
+    return 'bi-star';
+};
+
+const ratingAvg = computed(() => {
+    if (!props.build.ratings_avg_rating) return '0.0';
+    return (props.build.ratings_avg_rating / 20).toFixed(1);
+});
+
 </script>
