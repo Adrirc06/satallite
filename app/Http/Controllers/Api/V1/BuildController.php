@@ -162,12 +162,15 @@ class BuildController extends Controller
         $componentList = implode("\n", $lines);
         $prompt = "Eres un experto en hardware de PC. Analiza la siguiente configuración y escribe una reseña en español sobre sus capacidades: ¿Para qué usos es ideal (gaming, trabajo, edición de vídeo, streaming, uso cotidiano)? ¿Qué rendimiento se puede esperar? ¿Cuáles son sus puntos fuertes y sus limitaciones? Escribe en párrafos, sin listas, de forma directa y concisa (máximo 350 palabras).\n\n{$componentList}";
 
-        $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='.config('services.gemini.key');
+        $models = ['gemini-2.5-flash', 'gemini-2.0-flash-001', 'gemini-flash-latest'];
         $payload = json_encode(['contents' => [['parts' => [['text' => $prompt]]]]]);
+        $apiKey = config('services.gemini.key');
 
         $data = null;
 
-        for ($attempt = 1; $attempt <= 3; $attempt++) {
+        foreach ($models as $model) {
+            $url = "https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent?key={$apiKey}";
+
             $ch = curl_init($url);
             curl_setopt_array($ch, [
                 CURLOPT_POST => true,
@@ -187,13 +190,10 @@ class BuildController extends Controller
             }
 
             $data = json_decode($result, true);
-            $status = $data['error']['status'] ?? null;
 
-            if ($status !== 'UNAVAILABLE' || $attempt === 3) {
+            if (! isset($data['error'])) {
                 break;
             }
-
-            sleep(2);
         }
 
         if (isset($data['error'])) {
