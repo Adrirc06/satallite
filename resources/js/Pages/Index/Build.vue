@@ -166,7 +166,8 @@
             </div>
         </div>
 
-        <div v-if="showRatingDialog" class="tw:fixed tw:inset-0 tw:z-50 tw:flex tw:items-center tw:justify-center tw:bg-black/40">
+        <Teleport to="body">
+        <div v-if="showRatingDialog" class="tw:fixed tw:inset-0 tw:z-1060 tw:flex tw:items-center tw:justify-center tw:bg-black/40">
             <div class="bg-body tw:p-6 rounded-5 rounded-bottom-right-none tw:shadow-xl tw:max-w-sm tw:w-full tw:text-center text-body tw:border-2 tw:border-gray-400">
                 <h3 class="tw:text-2xl tw:font-bold tw:mb-4">Valora la compatibilidad</h3>
                 
@@ -195,7 +196,7 @@
             </div>
         </div>
 
-        <div v-if="showAiDialog" class="tw:fixed tw:inset-0 tw:z-50 tw:flex tw:items-center tw:justify-center tw:bg-black/50 tw:p-3 tw:sm:p-6">
+        <div v-if="showAiDialog" class="tw:fixed tw:inset-0 tw:z-1060 tw:flex tw:items-center tw:justify-center tw:bg-black/50 tw:p-3 tw:sm:p-6">
             <div class="bg-body tw:rounded-2xl rounded-bottom-right-none tw:shadow-2xl tw:w-full tw:max-w-3xl tw:flex tw:flex-col tw:border tw:border-gray-200 tw:dark:border-gray-700" :style="isLoadingAi || aiError ? 'height: 85dvh; max-height: 85dvh;' : 'max-height: 85dvh;'">
                 <!-- Cabecera -->
                 <div class="tw:flex tw:items-center tw:justify-between tw:px-5 tw:py-4 tw:border-b tw:border-gray-200 tw:dark:border-gray-700 tw:flex-shrink-0">
@@ -233,6 +234,7 @@
                 </div>
             </div>
         </div>
+        </Teleport>
 
         <div class="modal fade" id="modalDeleteBuild" tabindex="-1" aria-labelledby="modalDeleteBuildLabel" aria-hidden="true">
             <div class="modal-dialog">

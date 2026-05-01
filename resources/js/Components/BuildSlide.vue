@@ -1,6 +1,6 @@
 ﻿<template>
     <div class="carousel-item" :class="{ 'active': isActive }" style="cursor: pointer;" @click="visitBuild">
-        <div class="w-100 pb-5 pt-4 d-block d-flex justify-content-center align-items-center flex-column">
+        <div class="w-100 pb-1 pt-4 d-block d-flex justify-content-center align-items-center flex-column">
             <div class="d-flex flex-row align-items-center justify-content-center gap-4">
                 <p class="h1 text-center">
                     {{ build.name}}

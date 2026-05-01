@@ -20,7 +20,7 @@
                 />
             </template>
             <div v-else class="carousel-item active">
-                <div class="w-100 pb-5 d-block d-flex justify-content-center align-items-center flex-column" style="min-height: 300px;">
+                <div class="w-100 pb-1 d-block d-flex justify-content-center align-items-center flex-column" style="min-height: 300px;">
                     <div class="spinner-border text-indigo-500" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
@@ -52,8 +52,8 @@
             <span class="visually-hidden">Next</span>
           </button>
         </div>
-        <div class="d-flex justify-content-center">
-            <Link href="/builds" class="btn tw:!bg-indigo-500 tw:hover:!bg-indigo-400 rounded-3 rounded-bottom-right-none px-4">
+        <div class="d-flex justify-content-center my-3">
+            <Link href="/builds" class="btn tw:!bg-indigo-500 tw:hover:!bg-indigo-400 tw:!text-white rounded-3 rounded-bottom-right-none px-4">
                 Ver todas las builds
             </Link>
         </div>
