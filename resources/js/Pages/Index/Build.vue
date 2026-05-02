@@ -234,6 +234,21 @@
                 </div>
             </div>
         </div>
+        <div v-if="showLoginRequiredDialog" class="tw:fixed tw:inset-0 tw:z-1060 tw:flex tw:items-center tw:justify-center tw:bg-black/40">
+            <div class="bg-body tw:p-6 rounded-5 rounded-bottom-right-none tw:shadow-xl tw:max-w-sm tw:w-full tw:text-center text-body tw:border-2 tw:border-gray-400">
+                <h3 class="tw:text-2xl tw:font-bold tw:mb-4">Inicia sesión requerida</h3>
+                <p class="tw:text-gray-600 tw:mb-6">Necesitas iniciar sesión para acceder a esta funcionalidad.</p>
+
+                <div class="tw:flex tw:gap-3">
+                    <button @click="showLoginRequiredDialog = false" class="tw:flex-1 tw:bg-gray-300 tw:hover:bg-gray-200 tw:text-gray-700 rounded-3 rounded-bottom-right-none tw:font-bold tw:py-2 tw:px-4 tw:transition">
+                        Cancelar
+                    </button>
+                    <Link href="/login" class="tw:flex-1 btn tw:bg-indigo-500! tw:hover:bg-indigo-400! tw:text-white! rounded-3 rounded-bottom-right-none tw:font-bold tw:py-2 tw:px-4 tw:transition text-decoration-none tw:flex tw:items-center tw:justify-center">
+                        Iniciar sesión
+                    </Link>
+                </div>
+            </div>
+        </div>
         </Teleport>
 
         <div class="modal fade" id="modalDeleteBuild" tabindex="-1" aria-labelledby="modalDeleteBuildLabel" aria-hidden="true">
@@ -285,11 +300,17 @@ const props = defineProps({
 
 const page = usePage();
 const showAiDialog = ref(false);
+const showLoginRequiredDialog = ref(false);
 const aiSummaryText = ref('');
 const aiError = ref(false);
 const isLoadingAi = ref(false);
 
 const openAiDialog = () => {
+    if (!page.props.auth.user) {
+        showLoginRequiredDialog.value = true;
+        return;
+    }
+
     showAiDialog.value = true;
     if (!aiSummaryText.value) {
         fetchAiSummary();
