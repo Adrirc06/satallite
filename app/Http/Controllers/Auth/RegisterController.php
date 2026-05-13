@@ -10,9 +10,6 @@ use Illuminate\Support\Facades\Hash;
 
 class RegisterController extends Controller
 {
-    /**
-     * Handle an incoming registration request.
-     */
     public function store(RegisterUserRequest $request)
     {
         $user = User::create([

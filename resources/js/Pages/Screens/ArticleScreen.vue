@@ -8,7 +8,7 @@
                     :alt="article.title"
                     class="top-article rounded-top-5 w-100 object-fit-cover"
                 />
-                <div class="m-5 text-center flex-grow-1 d-flex flex-column">
+                <div class="px-3 md:px-5 py-5 text-center flex-grow-1 d-flex flex-column">
                     <div class="flex-grow-1">
                         <p class="quantico-bold py-2 article-title">
                             {{ article.title }}
