@@ -50,7 +50,6 @@ class StoreBuildRequest extends FormRequest
             $gpu = Gpu::find($gpuId);
             $psu = Psu::find($psuId);
 
-            // 1. CPU Validation: Required unless Motherboard has integrated CPU
             $isCpuIntegrated = false;
             if ($motherboard && $motherboard->socket_id) {
                 $socket = DB::table('sockets')->where('id', $motherboard->socket_id)->first();
@@ -63,21 +62,20 @@ class StoreBuildRequest extends FormRequest
                 $validator->errors()->add('cpu_id', 'Aún no has seleccionado ningún componente para: Procesador');
             }
 
-            // 2. GPU Validation: Required unless CPU has integrated GPU
             $hasIgpu = $cpu && $cpu->igpu_id !== null;
 
             if (! $gpu && ! $hasIgpu) {
                 $validator->errors()->add('gpu_id', 'Aún no has seleccionado ningún componente para: Tarjeta gráfica');
             }
 
-            // 3. PSU Power validation
             if ($psu) {
                 $cpuTdp = $cpu ? ($cpu->tdp ?? 0) : 0;
                 $gpuTdp = $gpu ? ($gpu->tdp ?? 0) : 0;
                 $combinedTdp = $cpuTdp + $gpuTdp;
 
                 if ($combinedTdp > ($psu->power ?? 0)) {
-                    $validator->errors()->add('psu_id', "La suma del TDP del procesador y la gráfica ({$combinedTdp}W) supera la capacidad de la fuente de alimentación ({$psu->power}W).");
+                    $validator->errors()->add('psu_id', "La suma del TDP del procesador y la gráfica ({$combinedTdp}W) supera la capacidad 
+                    de la fuente de alimentación ({$psu->power}W).");
                 }
             }
         });

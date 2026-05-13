@@ -70,145 +70,147 @@
         </div>
 
         <Transition name="dropdown">
-        <div v-show="isOpen" class="tw:p-4 tw:border-t tw:dark:border-gray-700 tw:bg-transparent tw:dark:bg-transparent">
-            <div v-if="disabled" class="tw:text-amber-600 tw:dark:text-amber-400 tw:text-sm tw:font-medium tw:p-4 tw:bg-amber-50/50 tw:dark:bg-amber-900/20 tw:rounded">
-                 {{ warningMsg || 'Opción no disponible' }}
-            </div>
-            <div v-else>
-                <!-- Search bar -->
-                <div class="tw:mb-4">
-                     <input v-model="searchQuery" @input="onSearchInput" type="text" :id="`search-${type.key}`" :name="`search_${type.key}`" placeholder="Buscar por nombre" class="tw:w-full border-bottom tw:border-gray-500 tw:border-t-0 tw:border-l-0 tw:border-r-0 tw:focus:ring-0 tw:focus:outline-none tw:focus:border-gray-500 tw:bg-transparent">
+            <div v-show="isOpen" class="tw:p-4 tw:border-t tw:dark:border-gray-700 tw:bg-transparent tw:dark:bg-transparent">
+                <div v-if="disabled" class="tw:text-amber-600 tw:dark:text-amber-400 tw:text-sm tw:font-medium tw:p-4 tw:bg-amber-50/50 tw:dark:bg-amber-900/20 tw:rounded">
+                    {{ warningMsg || 'Opción no disponible' }}
                 </div>
-
-                <!-- Advanced search toggle -->
-                <div v-if="filterDefs.length > 0" class="tw:mb-4">
-                    <button
-                        @click="toggleAdvancedFilters"
-                        class="tw:text-sm tw:text-indigo-500 tw:hover:text-indigo-400 tw:flex tw:items-center tw:gap-1 tw:transition-colors"
-                        type="button"
-                    >
-                        <i class="bi" :class="showAdvancedFilters ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
-                        Búsqueda avanzada
-                    </button>
-
-                    <Transition name="advanced-filters">
-                    <div v-show="showAdvancedFilters" class="tw:mt-3 tw:p-4 tw:rounded-xl tw:border tw:border-gray-200 tw:dark:border-gray-700 tw:space-y-4">
-                        <div v-if="filterOptionsLoading" class="tw:text-sm tw:text-gray-500 tw:text-center tw:py-2">
-                            Cargando filtros...
-                        </div>
-                        <template v-else>
-                            <div
-                                v-for="filterDef in filterDefs"
-                                :key="filterDef.key"
-                                class="tw:flex tw:flex-col tw:gap-1"
-                            >
-                                <label class="tw:text-xs tw:font-semibold tw:text-gray-500 tw:dark:text-gray-400 tw:uppercase tw:tracking-wide">
-                                    {{ filterDef.label }}
-                                </label>
-
-                                <!-- Dropdown filter -->
-                                <template v-if="filterDef.type === 'dropdown'">
-                                    <select
-                                        v-model="draftFilters[filterDef.key]"
-                                        class="tw:w-full bg-body tw:border tw:border-gray-300 tw:dark:border-gray-600 tw:rounded-lg tw:px-3 tw:py-2 tw:text-sm tw:focus:ring-1 tw:focus:ring-indigo-500 tw:focus:outline-none"
-                                    >
-                                        <option value="">Todos</option>
-                                        <option
-                                            v-for="option in getDropdownOptions(filterDef)"
-                                            :key="option.id"
-                                            :value="option.id"
-                                        >
-                                            {{ option.name }}
-                                        </option>
-                                    </select>
-                                </template>
-
-                                <!-- Range filter -->
-                                <template v-else-if="filterDef.type === 'range'">
-                                    <div class="tw:flex tw:items-center tw:gap-2">
-                                        <div class="tw:flex tw:flex-col tw:gap-1 tw:flex-1">
-                                            <span class="tw:text-xs tw:text-gray-400">Mínimo{{ filterDef.unit ? ' (' + filterDef.unit + ')' : '' }}</span>
-                                            <input
-                                                type="number"
-                                                v-model.number="draftFilters[filterDef.key + '_min']"
-                                                :min="filterOptions[filterDef.rangeKey]?.min ?? 0"
-                                                :max="draftFilters[filterDef.key + '_max'] - 1"
-                                                class="tw:w-fullbg-body tw:border tw:border-gray-300 tw:dark:border-gray-600 tw:rounded-lg tw:px-3 tw:py-2 tw:text-sm tw:focus:ring-1 tw:focus:ring-indigo-500 tw:focus:outline-none"
-                                                :class="{ 'tw:border-red-500': rangeErrors[filterDef.key] }"
-                                            />
-                                        </div>
-                                        <span class="tw:text-gray-400 tw:mt-5">—</span>
-                                        <div class="tw:flex tw:flex-col tw:gap-1 tw:flex-1">
-                                            <span class="tw:text-xs tw:text-gray-400">Máximo{{ filterDef.unit ? ' (' + filterDef.unit + ')' : '' }}</span>
-                                            <input
-                                                type="number"
-                                                v-model.number="draftFilters[filterDef.key + '_max']"
-                                                :min="draftFilters[filterDef.key + '_min'] + 1"
-                                                :max="filterOptions[filterDef.rangeKey]?.max ?? 999999"
-                                                class="tw:w-fullbg-body tw:border tw:border-gray-300 tw:dark:border-gray-600 tw:rounded-lg tw:px-3 tw:py-2 tw:text-sm tw:focus:ring-1 tw:focus:ring-indigo-500 tw:focus:outline-none"
-                                                :class="{ 'tw:border-red-500': rangeErrors[filterDef.key] }"
-                                            />
-                                        </div>
-                                    </div>
-                                    <p v-if="rangeErrors[filterDef.key]" class="tw:text-xs tw:text-red-500">
-                                        {{ rangeErrors[filterDef.key] }}
-                                    </p>
-                                </template>
-                            </div>
-
-                            <div class="tw:flex tw:items-center tw:justify-between tw:pt-2 tw:border-t tw:border-gray-200 tw:dark:border-gray-700">
-                                <button
-                                    @click="resetAdvancedFilters"
-                                    type="button"
-                                    class="tw:text-sm tw:text-gray-500 tw:hover:text-gray-400 tw:transition-colors"
-                                >
-                                    Restablecer
-                                </button>
-                                <button
-                                    @click="applyAdvancedFilters"
-                                    type="button"
-                                    class="tw:px-4 tw:py-1.5 tw:bg-indigo-500 tw:hover:bg-indigo-400 tw:text-white tw:text-sm rounded rounded-bottom-right-none tw:transition-colors"
-                                >
-                                    Buscar
-                                </button>
-                            </div>
-                        </template>
+                <div v-else>
+                    <!-- Search bar -->
+                    <div class="tw:mb-4">
+                        <input v-model="searchQuery" @input="onSearchInput" type="text" :id="`search-${type.key}`" :name="`search_${type.key}`" placeholder="Buscar por nombre" class="tw:w-full 
+                        border-bottom tw:border-gray-500 tw:border-t-0 tw:border-l-0 tw:border-r-0 
+                        tw:focus:ring-0 tw:focus:outline-none tw:focus:border-gray-500 tw:bg-transparent">
                     </div>
-                    </Transition>
-                </div>
 
-                <div v-if="components.length === 0" class="tw:text-center tw:py-4 tw:text-gray-500">
-                     No se ha encontrado ningún componente.
-                </div>
+                    <!-- Advanced search toggle -->
+                    <div v-if="filterDefs.length > 0" class="tw:mb-4">
+                        <button
+                            @click="toggleAdvancedFilters"
+                            class="tw:text-sm tw:text-indigo-500 tw:hover:text-indigo-400 tw:flex tw:items-center tw:gap-1 tw:transition-colors"
+                            type="button"
+                        >
+                            <i class="bi" :class="showAdvancedFilters ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+                            Búsqueda avanzada
+                        </button>
 
-                <div v-else class="tw:space-y-2">
-                     <div
-                         v-for="item in components"
-                         :key="item.id"
-                         @click="selectItem(item)"
-                         class="tw:p-3 mb-3 tw:bg-transparent rounded-4 rounded-bottom-right-none tw:border tw:hover:border-indigo-500 tw:cursor-pointer tw:flex tw:justify-between tw:items-center tw:transition"
-                     >
-                          <div>
-                              <p class="tw:font-medium">{{ item.name }}</p>
-                              <div class="tw:flex tw:flex-wrap tw:gap-x-3 tw:gap-y-1 tw:mt-1 tw:text-xs">
-                                  <span v-for="spec in getSpecs(type.key, item)" :key="spec.label">
-                                      <span class="tw:text-gray-500">{{ spec.label }}:</span>
-                                      <span class="tw:text-indigo-500 tw:font-semibold tw:ml-1">{{ spec.value }}</span>
-                                  </span>
-                              </div>
-                          </div>
-                          <div class="tw:font-bold tw:text-indigo-600 tw:dark:text-indigo-400">
-                              {{ item.price ? item.price + '€' : 'Sin stock' }}
-                          </div>
-                     </div>
-                </div>
-                <div v-if="hasMore" class="w-100 d-flex justify-content-center mt-2">
-                    <button @click="loadMore" class="py-2 px-5 tw:bg-indigo-500 tw:hover:bg-indigo-400 rounded-3 rounded-bottom-right-none text-white">
-                        Ver más
-                    </button>
+                        <Transition name="advanced-filters">
+                        <div v-show="showAdvancedFilters" class="tw:mt-3 tw:p-4 tw:rounded-xl tw:border tw:border-gray-200 tw:dark:border-gray-700 tw:space-y-4">
+                            <div v-if="filterOptionsLoading" class="tw:text-sm tw:text-gray-500 tw:text-center tw:py-2">
+                                Cargando filtros...
+                            </div>
+                            <template v-else>
+                                <div
+                                    v-for="filterDef in filterDefs"
+                                    :key="filterDef.key"
+                                    class="tw:flex tw:flex-col tw:gap-1"
+                                >
+                                    <label class="tw:text-xs tw:font-semibold tw:text-gray-500 tw:dark:text-gray-400 tw:uppercase tw:tracking-wide">
+                                        {{ filterDef.label }}
+                                    </label>
+
+                                    <!-- Dropdown filter -->
+                                    <template v-if="filterDef.type === 'dropdown'">
+                                        <select
+                                            v-model="draftFilters[filterDef.key]"
+                                            class="tw:w-full bg-body tw:border tw:border-gray-300 tw:dark:border-gray-600 tw:rounded-lg tw:px-3 tw:py-2 tw:text-sm tw:focus:ring-1 tw:focus:ring-indigo-500 tw:focus:outline-none"
+                                        >
+                                            <option value="">Todos</option>
+                                            <option
+                                                v-for="option in getDropdownOptions(filterDef)"
+                                                :key="option.id"
+                                                :value="option.id"
+                                            >
+                                                {{ option.name }}
+                                            </option>
+                                        </select>
+                                    </template>
+
+                                    <!-- Range filter -->
+                                    <template v-else-if="filterDef.type === 'range'">
+                                        <div class="tw:flex tw:items-center tw:gap-2">
+                                            <div class="tw:flex tw:flex-col tw:gap-1 tw:flex-1">
+                                                <span class="tw:text-xs tw:text-gray-400">Mínimo{{ filterDef.unit ? ' (' + filterDef.unit + ')' : '' }}</span>
+                                                <input
+                                                    type="number"
+                                                    v-model.number="draftFilters[filterDef.key + '_min']"
+                                                    :min="filterOptions[filterDef.rangeKey]?.min ?? 0"
+                                                    :max="draftFilters[filterDef.key + '_max'] - 1"
+                                                    class="tw:w-fullbg-body tw:border tw:border-gray-300 tw:dark:border-gray-600 tw:rounded-lg tw:px-3 tw:py-2 tw:text-sm tw:focus:ring-1 tw:focus:ring-indigo-500 tw:focus:outline-none"
+                                                    :class="{ 'tw:border-red-500': rangeErrors[filterDef.key] }"
+                                                />
+                                            </div>
+                                            <span class="tw:text-gray-400 tw:mt-5">—</span>
+                                            <div class="tw:flex tw:flex-col tw:gap-1 tw:flex-1">
+                                                <span class="tw:text-xs tw:text-gray-400">Máximo{{ filterDef.unit ? ' (' + filterDef.unit + ')' : '' }}</span>
+                                                <input
+                                                    type="number"
+                                                    v-model.number="draftFilters[filterDef.key + '_max']"
+                                                    :min="draftFilters[filterDef.key + '_min'] + 1"
+                                                    :max="filterOptions[filterDef.rangeKey]?.max ?? 999999"
+                                                    class="tw:w-fullbg-body tw:border tw:border-gray-300 tw:dark:border-gray-600 tw:rounded-lg tw:px-3 tw:py-2 tw:text-sm tw:focus:ring-1 tw:focus:ring-indigo-500 tw:focus:outline-none"
+                                                    :class="{ 'tw:border-red-500': rangeErrors[filterDef.key] }"
+                                                />
+                                            </div>
+                                        </div>
+                                        <p v-if="rangeErrors[filterDef.key]" class="tw:text-xs tw:text-red-500">
+                                            {{ rangeErrors[filterDef.key] }}
+                                        </p>
+                                    </template>
+                                </div>
+
+                                <div class="tw:flex tw:items-center tw:justify-between tw:pt-2 tw:border-t tw:border-gray-200 tw:dark:border-gray-700">
+                                    <button
+                                        @click="resetAdvancedFilters"
+                                        type="button"
+                                        class="tw:text-sm tw:text-gray-500 tw:hover:text-gray-400 tw:transition-colors"
+                                    >
+                                        Restablecer
+                                    </button>
+                                    <button
+                                        @click="applyAdvancedFilters"
+                                        type="button"
+                                        class="tw:px-4 tw:py-1.5 tw:bg-indigo-500 tw:hover:bg-indigo-400 tw:text-white tw:text-sm rounded rounded-bottom-right-none tw:transition-colors"
+                                    >
+                                        Buscar
+                                    </button>
+                                </div>
+                            </template>
+                        </div>
+                        </Transition>
+                    </div>
+
+                    <div v-if="components.length === 0" class="tw:text-center tw:py-4 tw:text-gray-500">
+                        No se ha encontrado ningún componente.
+                    </div>
+
+                    <div v-else class="tw:space-y-2">
+                        <div
+                            v-for="item in components"
+                            :key="item.id"
+                            @click="selectItem(item)"
+                            class="tw:p-3 mb-3 tw:bg-transparent rounded-4 rounded-bottom-right-none tw:border tw:hover:border-indigo-500 tw:cursor-pointer tw:flex tw:justify-between tw:items-center tw:transition"
+                        >
+                            <div>
+                                <p class="tw:font-medium">{{ item.name }}</p>
+                                <div class="tw:flex tw:flex-wrap tw:gap-x-3 tw:gap-y-1 tw:mt-1 tw:text-xs">
+                                    <span v-for="spec in getSpecs(type.key, item)" :key="spec.label">
+                                        <span class="tw:text-gray-500">{{ spec.label }}:</span>
+                                        <span class="tw:text-indigo-500 tw:font-semibold tw:ml-1">{{ spec.value }}</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="tw:font-bold tw:text-indigo-600 tw:dark:text-indigo-400">
+                                {{ item.price ? item.price + '€' : 'Sin stock' }}
+                            </div>
+                        </div>
+                    </div>
+                    <div v-if="hasMore" class="w-100 d-flex justify-content-center mt-2">
+                        <button @click="loadMore" class="py-2 px-5 tw:bg-indigo-500 tw:hover:bg-indigo-400 rounded-3 rounded-bottom-right-none text-white">
+                            Ver más
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
         </Transition>
     </div>
 </template>
@@ -279,7 +281,6 @@ const getSpecs = (typeKey, item) => {
     return specs;
 };
 
-// Filter definitions per component type
 const allFilterDefs = {
     motherboard: [
         { key: 'socket_id', type: 'dropdown', label: 'Socket', optionsKey: 'sockets' },
@@ -396,7 +397,7 @@ const buildAdvancedParams = () => {
             const absMax = filterOptions.value[def.rangeKey]?.max ?? 999999;
             const minVal = draftFilters.value[def.key + '_min'];
             const maxVal = draftFilters.value[def.key + '_max'];
-            // Only send params if they differ from the absolute min/max
+            
             if (minVal !== absMin) {
                 params['min_' + def.rangeKey] = minVal;
             }
@@ -424,7 +425,6 @@ const resetAdvancedFilters = () => {
     fetchComponents(false);
 };
 
-// Component list state
 const searchQuery = ref('');
 const components = ref([]);
 const hasMore = ref(true);

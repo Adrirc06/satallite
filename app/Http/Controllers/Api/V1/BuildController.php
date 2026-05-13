@@ -48,14 +48,11 @@ class BuildController extends Controller
         return BuildResource::collection($query->paginate($perPage));
     }
 
-    /**
-     * Store a newly created build in storage.
-     */
+
     public function store(StoreBuildRequest $request): BuildResource
     {
         $build = request()->user()->builds()->create($request->validated());
 
-        // Cargamos las relaciones para la respuesta
         $build->load(['user', 'cpu', 'gpu', 'ram', 'motherboard', 'psu', 'drive', 'chassis'])
             ->loadAvg('ratings', 'rating')
             ->loadCount('ratings');
@@ -63,9 +60,6 @@ class BuildController extends Controller
         return new BuildResource($build);
     }
 
-    /**
-     * Update the specified build in storage.
-     */
     public function update(StoreBuildRequest $request, Build $build): BuildResource
     {
         if (request()->user()->id !== $build->user_id) {

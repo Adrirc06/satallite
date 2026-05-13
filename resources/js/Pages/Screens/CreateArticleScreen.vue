@@ -6,16 +6,19 @@
             <form @submit.prevent="submitArticle" class="tw:flex tw:flex-col tw:gap-4 tw:grow">
                 <div class="tw:flex tw:flex-col tw:gap-2">
                     <label for="title" class="tw:text-lg tw:font-medium">Título del artículo</label>
-                    <input v-model="form.title" type="text" id="title" name="title" class="tw:border tw:border-gray-500 tw:rounded-md rounded-bottom-right-none tw:px-3 tw:py-2 focus:tw:outline-none focus:tw:ring-2 focus:tw:ring-indigo-500 focus:tw:border-transparent" required>
+                    <input v-model="form.title" type="text" id="title" name="title" class="tw:border tw:border-gray-500 tw:rounded-md rounded-bottom-right-none tw:px-3 tw:py-2
+                     focus:tw:outline-none focus:tw:ring-2 focus:tw:ring-indigo-500 focus:tw:border-transparent" required>
                 </div>
                 <div class="tw:flex tw:flex-col tw:gap-2">
                     <label for="subtitle" class="tw:text-lg tw:font-medium">Subtítulo del artículo</label>
-                    <input v-model="form.subtitle" type="text" id="subtitle" name="subtitle" class="tw:border tw:border-gray-500 tw:rounded-md rounded-bottom-right-none tw:px-3 tw:py-2 focus:tw:outline-none focus:tw:ring-2 focus:tw:ring-indigo-500 focus:tw:border-transparent" required>
+                    <input v-model="form.subtitle" type="text" id="subtitle" name="subtitle" class="tw:border tw:border-gray-500 tw:rounded-md rounded-bottom-right-none tw:px-3 tw:py-2
+                     focus:tw:outline-none focus:tw:ring-2 focus:tw:ring-indigo-500 focus:tw:border-transparent" required>
                 </div>
                 <div class="tw:flex tw:flex-col tw:gap-2">
                     <label class="tw:text-lg tw:font-medium">Banner del artículo</label>
                     <div 
-                        class="tw:relative tw:cursor-pointer tw:rounded-lg tw:overflow-hidden tw:w-full tw:h-64 tw:border-4 tw:border-dashed tw:border-gray-500 hover:tw:border-indigo-500 tw:transition-colors tw:group tw:flex tw:items-center tw:justify-center tw:bg-gray-800/10 banner-hover-container"
+                        class="tw:relative tw:cursor-pointer tw:rounded-lg tw:overflow-hidden tw:w-full tw:h-64 tw:border-4 tw:border-dashed tw:border-gray-500 hover:tw:border-indigo-500
+                         tw:transition-colors tw:group tw:flex tw:items-center tw:justify-center tw:bg-gray-800/10 banner-hover-container"
                         @click="showPhotoDialog = true"
                     >
                         <template v-if="form.banner_url && form.banner_url !== '/img/banners/banner1.webp'">
@@ -24,7 +27,8 @@
                                 alt="Banner del artículo" 
                                 class="tw:w-full tw:h-full tw:object-cover banner-img"
                             >
-                            <div class="tw:absolute tw:inset-0 tw:flex tw:items-center tw:justify-center tw:opacity-0 group-hover:tw:opacity-100 tw:transition-opacity tw:bg-black/50 tw:backdrop-blur-sm banner-hover-target">
+                            <div class="tw:absolute tw:inset-0 tw:flex tw:items-center tw:justify-center tw:opacity-0 group-hover:tw:opacity-100 tw:transition-opacity
+                             tw:bg-black/50 tw:backdrop-blur-sm banner-hover-target">
                                 <i class="bi bi-pencil profile-icon tw:text-white" style="font-size: 2.5rem;"></i>
                             </div>
                         </template>
@@ -38,7 +42,8 @@
                 </div>
                 <div class="tw:flex tw:flex-col tw:gap-2 tw:grow">
                     <label for="content" class="tw:text-lg tw:font-medium">Contenido del artículo</label>
-                    <textarea v-model="form.content" id="content" name="content" class="tw:min-h-50 tw:grow tw:resize-none tw:border tw:border-gray-500 tw:rounded-md rounded-bottom-right-none tw:px-3 tw:py-2 focus:tw:outline-none focus:tw:ring-2 focus:tw:ring-indigo-500 focus:tw:border-transparent" required></textarea>
+                    <textarea v-model="form.content" id="content" name="content" class="tw:min-h-50 tw:grow tw:resize-none tw:border tw:border-gray-500 tw:rounded-md 
+                    rounded-bottom-right-none tw:px-3 tw:py-2 focus:tw:outline-none focus:tw:ring-2 focus:tw:ring-indigo-500 focus:tw:border-transparent" required></textarea>
                 </div>
                 <div class="tw:flex tw:items-center tw:gap-4 tw:self-start">
                     <button type="submit" class="custom-btn rounded-2 tw:!text-white rounded-bottom-right-none tw:bg-indigo-500 tw:hover:bg-indigo-400" :disabled="loading">
@@ -115,16 +120,6 @@
 
     </div>
 </template>
-
-<style scoped>
-.banner-hover-container .banner-img {
-    transition: opacity 0.3s ease;
-}
-.banner-hover-container .banner-hover-target {
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-}
-</style>
 <script setup>
 import { ref } from 'vue';
 import { router } from '@inertiajs/vue3';
@@ -137,7 +132,7 @@ import 'vue-advanced-cropper/dist/style.css';
 const form = ref({
     title: '',
     subtitle: '',
-    banner_url: '/img/banners/banner1.webp',
+    banner_url: '/img/banners/default_banner.jpg',
     content: '',
 });
 
@@ -195,10 +190,6 @@ const zoomOut = () => {
     }
 };
 
-const onCropperChange = () => {
-    // Empty for now, handles event if needed
-};
-
 const resetImage = () => {
     imageSrc.value = null;
     if (fileInputRef.value) fileInputRef.value.value = '';
@@ -232,7 +223,7 @@ const uploadCroppedImage = () => {
         
         closePhotoDialog();
         isUploadingPhoto.value = false;
-    }, 'image/jpeg', 0.95);
+    }, 'image/webp', 0.95);
 };
 
 const submitArticle = async () => {
@@ -252,7 +243,7 @@ const submitArticle = async () => {
     formData.append('content', form.value.content);
     
     if (bannerBlob.value) {
-        formData.append('banner', bannerBlob.value, 'banner.jpg');
+        formData.append('banner', bannerBlob.value, 'banner.webp');
     } else if (form.value.banner_url && !form.value.banner_url.startsWith('blob:')) {
         formData.append('banner_url', form.value.banner_url);
     }

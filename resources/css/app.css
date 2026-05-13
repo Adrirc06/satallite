@@ -318,16 +318,34 @@ nav.navbar.navbar-hidden {
 }
 
 .article-title {
-  font-size: 3.5em;
+  font-size: 1.75em;
+}
+
+@media (min-width: 768px) {
+  .article-title {
+    font-size: 3.5em;
+  }
 }
 
 .article-subtitle {
-  font-size: 2em;
+  font-size: 1.25em;
+}
+
+@media (min-width: 768px) {
+  .article-subtitle {
+    font-size: 2em;
+  }
 }
 
 .article-content {
-  font-size: 1.25em;
+  font-size: 1.1em;
   text-align: justify;
+}
+
+@media (min-width: 768px) {
+  .article-content {
+    font-size: 1.25em;
+  }
 }
 
 .hidden {
@@ -348,6 +366,14 @@ nav.navbar.navbar-hidden {
 }
 [data-bs-theme="dark"] .page-icon {
     color: #6b7280 !important;
+}
+
+.banner-hover-container .banner-img {
+    transition: opacity 0.3s ease;
+}
+.banner-hover-container .banner-hover-target {
+    transition: opacity 0.3s ease;
+    pointer-events: none;
 }
 
 .profile-hover-container {
